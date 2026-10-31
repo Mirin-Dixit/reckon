@@ -15,7 +15,24 @@ A fundamental failure mode of Retrieval-Augmented Generation (RAG) systems is ge
 
 ---
 
-## Stage 1: Retrieval Foundation
+## Current Backend Status
+
+Stage 3G.1 provides a local FastAPI backend, provider-neutral generation contracts,
+three decision baselines, an optional OpenAI adapter, and an evaluation runner.
+The API supports BM25 retrieval and a synchronous, process-local experiment
+registry. Dense and hybrid retrieval remain available as Python interfaces;
+no production embedder is wired into the API. Stage 4 frontend development has
+not begun.
+
+The accepted, frozen pilot contains 17 documents and 54 questions (Train 50,
+Dev 3, Test 1). Train contains 30 answerable and 20 unanswerable questions.
+The 100-question corpus remains a future expansion target; its historical
+allocation plan is preserved in [the pilot plan](docs/benchmark/pilot_plan.md).
+These splits do not support statistical generalization claims.
+See [API configuration and startup](docs/api/api_reference.md), including the
+required `server` extra and local-only deployment limits.
+
+## Stage 1: Retrieval Foundation (Historical Snapshot)
 
 The core data ingestion, chunking, and retrieval foundations are implemented and verified against unit and integration test fixtures using the Python standard library with zero external runtime dependencies.
 
@@ -94,7 +111,10 @@ The sample dataset in [`data/sample/`](data/sample/) provides a concrete develop
 
 ## Testing Strategy & Semantic Quality Caveat
 
-Automated tests are located under [`backend/tests/`](backend/tests/) and run completely offline without downloading models or accessing the network.
+Automated tests are located under [`backend/tests/`](backend/tests/) and require
+no external services, model downloads, or paid model calls. Provider interactions
+use deterministic test doubles. The startup smoke test starts Uvicorn and makes
+a real HTTP request over loopback (`127.0.0.1`), then shuts the server down.
 
 > [!WARNING]
 > **Dense and Hybrid Testing Note:**
@@ -105,6 +125,10 @@ Automated tests are located under [`backend/tests/`](backend/tests/) and run com
 ## Development & Testing Commands
 
 The project uses Python 3.11+ (tested on Python 3.13) with `pytest` and `ruff`.
+
+The synchronous FastAPI backend is documented in
+[`docs/api/api_reference.md`](docs/api/api_reference.md). It currently exposes
+the configured BM25 runtime and in-memory evaluation registry.
 
 ### Running Tests (Windows PowerShell)
 ```powershell
@@ -124,14 +148,14 @@ The project uses Python 3.11+ (tested on Python 3.13) with `pytest` and `ruff`.
 ragbench/
 ├── backend/
 │   ├── app/
-│   │   ├── api/            # API endpoints (scaffolded)
+│   │   ├── api/            # Versioned FastAPI endpoints
 │   │   ├── core/           # Shared configuration (scaffolded)
 │   │   ├── db/             # Storage and persistence (scaffolded)
-│   │   ├── evaluation/     # Metrics, risk-coverage curves (planned)
-│   │   ├── generation/     # Generation & abstention policies (planned)
+│   │   ├── evaluation/     # Evaluation runner, records, and metrics
+│   │   ├── generation/     # Provider contracts, generation, and policies
 │   │   ├── ingestion/      # Document schema, JSONL loader, and chunker
 │   │   └── retrieval/      # BM25, dense, and hybrid RRF indices
-│   └── tests/              # 59 automated unit and integration tests
+│   └── tests/              # Offline unit, integration, and API tests
 ├── data/
 │   └── sample/             # 5 Python 3.11 docs, 10 labeled questions
 ├── docs/                   # Decisions, reference notes, and results

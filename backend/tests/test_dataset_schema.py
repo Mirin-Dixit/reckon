@@ -105,7 +105,11 @@ def test_valid_answerable_question():
 
 def test_valid_unanswerable_question_categories():
     """Verify that all three allowed unanswerable categories are accepted."""
-    for category in UnanswerableCategory:
+    for category in (
+        UnanswerableCategory.OFF_TOPIC,
+        UnanswerableCategory.TEMPORAL_NEAR_MISS,
+        UnanswerableCategory.ENTITY_ATTRIBUTE_NEAR_MISS,
+    ):
         q_data = {
             "id": f"q_un_{category.value}",
             "question": "Does urllib support max_retries?",
