@@ -1,13 +1,13 @@
-# RAGBench Studio frontend - Stage 4A
+# RAGBench Studio frontend
 
-This local workbench foundation provides System Status only. It calls the existing
-`GET /api/v1/health` endpoint; it does not send questions, run evaluations, access
-benchmark labels, or make provider calls. Query Lab, Experiment Runner, analytics,
-and deployment remain outside this batch.
+The Workbench provides read-only System Status. `/query-lab` submits individual
+questions to the existing `POST /api/v1/query` endpoint. P3 Batch 2 displays retrieved evidence, exact citation highlights, decisions,
+score provenance and execution metadata. Experiment execution remains outside this batch. No benchmark
+labels are loaded by the frontend.
 
 The Workbench has a near-black hero with a wide green particle mesh. The planned
 workflow and decision notation sit below it, followed by real System Status
-controls. Health fields and the conceptual sketch use closed disclosures. Planned workspaces are non-interactive
+controls. Health fields and the conceptual sketch use closed disclosures. Experiments and Evaluation Results remain planned, non-interactive
 text, not placeholder routes. The System Status link jumps to the working panel.
 
 ## Requirements
@@ -97,7 +97,11 @@ npm.cmd run start
 - `lib/configuration.ts`: shared loopback-origin validation before public values
   are bundled and before browser requests.
 - `lib/api.ts`: typed health/error contracts, runtime payload validation, safe
-  public failures, and a health-only client with injectable fetch for tests.
+  public failures, and bounded shared JSON transport with injectable fetch.
+- `lib/query-api.ts` / `query-contracts.ts` / `query-schema.json`: typed query
+  requests, nested response validation and query-only backend contract snapshot.
+- `lib/query-lab.ts`: form validation and single-flight request lifecycle.
+- `components/query-lab.tsx`: accessible query controls and basic observed output.
 - `lib/system-status.ts`: maps client results to explicit loading/ready/error states.
 - `components/system-status.tsx`: mounts the health check, offers manual refresh,
   cancels obsolete requests and ignores stale results.
@@ -169,3 +173,139 @@ share actionable guidance. Execution/configuration failures are not abstentions.
 
 The API has no authentication. CORS does not provide access control. Keep this
 prototype local; public deployment requires a separate security design.
+
+## Query Lab (P3 Batch 1)
+
+Open `http://127.0.0.1:3000/query-lab` (or port 3001 when configured above).
+No query is sent on page load. Enter a corpus question and submit explicitly.
+BM25, dense and hybrid retrieval work with always-answer, threshold and
+prompt-abstention. Defaults: BM25, top-k 3, prompt-abstention. Hybrid defaults
+RRF k to 60; blank candidate k uses the backend automatic value. Threshold
+uses the matching score family, `at_least`, and ABSTAIN on missing scores.
+The default threshold 0 is an operating point, not a calibrated recommendation.
+It resets when retrieval changes. Thresholds outside a score range are allowed
+for deliberate always/never-answer experiments, as in the backend contract.
+
+Use the accepted local backend configuration from the root README/API reference:
+`RAGBENCH_PROVIDER=ollama`, `RAGBENCH_MODEL=qwen3:4b-q4_K_M`, local Ollama with
+cloud disabled. Dense/hybrid additionally require installed `all-minilm:22m`.
+Keep the existing 1.5 GiB RAM reserve and concurrency-one limits. No model is
+downloaded or configured by the frontend. Do not enable paid providers.
+Provider settings, keys and generation overrides are never sent by this form.
+The unauthenticated backend must remain loopback-only; CORS is not authentication.
+
+The query client validates a query-only snapshot of the actual backend schemas,
+including nested response types, decision/reason pairing and score provenance.
+It caps JSON reads at 1 MiB and waits at most 270 seconds, covering the two bounded
+120-second provider phases plus overhead. Health retains its 16 KiB / 5-second
+limits. Both requests omit credentials, reject redirects and release their streams.
+No automatic retries, local storage, external evidence links or HTML rendering
+are used. Backend error messages are discarded in favor of fixed safe messages.
+Cancelling or timing out stops browser waiting; it cannot guarantee cancellation
+of synchronous backend inference or reclaim its shared provider-attempt budget.
+Execution failures never appear as intentional ABSTAIN results.
+
+Validation (no inference):
+
+```powershell
+# Repository root: exact schema drift + nine request combinations
+.\.venv\Scripts\python.exe frontend/tests/check_query_contract.py
+# frontend directory
+npm.cmd test
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+```
+
+Node tests use mocked transport, session lifecycle tests and server-rendered views.
+They do not replace manual desktop/mobile, keyboard and browser acceptance checks.
+Evidence/citation visualization validates returned source coordinates; exact quote
+matches and citation counts do not prove semantic grounding. Scores remain uncalibrated and are not answerability probabilities.
+
+
+## Query Lab evidence and decisions (P3 Batch 2)
+
+The observed response contains the actual decision/reason code and explanation,
+separate relevance/sufficiency assessments, missing premises, unsupported
+assumptions and contradictions. ANSWER, intentional ABSTAIN and CLARIFY use
+text labels and distinct rule treatments; execution errors remain separate.
+
+The evidence ledger displays every returned chunk with document/chunk IDs,
+metadata, rank and source coordinates. URLs remain inert text. Source passages
+are untrusted data, including any flagged injection content. Claim citations link
+to focusable passages. Highlighting uses only validated original-document
+half-open offsets `[start, end)` in Unicode code points, matching Python indexing.
+It does not search for quotes, normalize text or convert offsets to UTF-16 units.
+Duplicate chunk IDs, mismatched text lengths, out-of-range spans and nonmatching
+quotes reject the response as malformed. Overlapping spans share highlights
+without duplicating source text. Validation checks the returned chunk, not the
+full document on disk, and does not establish semantic support.
+
+Score tables preserve the supplied family, source, role, effective parameters,
+range, direction, availability and uncalibrated status. Threshold inputs show the
+actual score and comparison; null stays unavailable and zero stays zero. Missing
+RRF bound provenance is labeled unavailable, not unbounded. Prompt self-assessment
+never overrides a decision. Empty retrieval does not imply corpus-wide absence.
+
+Execution details display only supplied model/provider, prompt version, latency
+and token fields. There is no fabricated per-stage timing or missing-token estimate.
+Use keyboard-accessible disclosures and horizontally scrollable score tables on
+narrow screens. The evidence interface adds no animation and inherits reduced-motion
+and focus styles. Automated tests remain deterministic and offline; real-model and
+manual browser acceptance require separate review.
+
+Focused evidence tests, after `npm.cmd test` compiles them:
+
+```powershell
+node --test .test-build/tests/evidence-ledger.test.js
+```
+
+
+## P3 final manual acceptance
+
+P3 Batch 3 adds an offline integration bridge that sends frontend-built requests
+through the actual FastAPI ASGI route and real retrieval/pipeline code, using
+existing fake embedding/generation transports and synthetic documents only.
+All nine combinations are checked along with independent decision/error cases,
+response parsing, citation rendering, and rejection of benchmark-only fields.
+`npm.cmd test` now needs the existing root `.venv` backend test environment as
+well as frontend dependencies; it makes no real model or embedding calls.
+
+Focus moves to Cancel while a request is active, to the observed-response heading
+on completion/failure/cancellation, and to the validation message on invalid
+submission. Decision headings keep their heading semantics inside a live region.
+An unsuccessful execution inside an HTTP 200 payload is rejected as malformed;
+it does not fabricate a 502 status. Genuine backend 502/504 errors remain failures,
+not intentional abstentions. No unrelated cleanup or backend changes were needed.
+
+Browser QA was attempted but unavailable: browser access host and native pipe
+could not connect. The following remain **unverified** and require manual review:
+
+1. At 1440x900 and 390px, verify navigation, form, evidence ledger and scrollable
+   score tables remain readable without page-wide horizontal overflow.
+2. Use Tab/Shift+Tab and Enter/Space: navigate to Query Lab, trigger empty-input
+   validation, use every select, operate disclosures and follow citation anchors.
+   Verify visible focus reaches validation, Cancel, response heading and passages.
+3. With an explicitly approved local request or a separate test-only mocked backend,
+   inspect ANSWER, ABSTAIN, CLARIFY, execution failure, empty evidence and null scores.
+   Do not initiate real inference merely to complete this checklist without approval.
+4. Check loading, cancellation, stale completion, timeout and network failure.
+   Cancellation must say that backend inference may continue. No automatic retry.
+5. Check screen-reader announcements, table headers/captions and heading order;
+   enable reduced motion and verify focus and all controls remain usable.
+6. Check real browser CORS/configuration against the local backend without making
+   an unapproved model call. Inspect for hydration warnings or browser errors.
+
+Gold data is not fetched by the frontend or loaded by ordinary query runtime
+initialization. Benchmark-only request fields are rejected before execution.
+Free-text input cannot prevent a user manually pasting a known benchmark question
+or reference answer; this interface must not be described as a content sandbox.
+These checks do not establish model quality, semantic grounding or public-deployment
+security. The API remains an unauthenticated, loopback-only local prototype.
+
+
+Final offline validation for P3: 197 frontend tests and 649 backend tests passed,
+with TypeScript, ESLint, production build, Ruff and schema/dataset checks passing.
+The browser checks above were not performed. Dataset working-file SHA-256 hashes
+match the accepted P2 baseline. The questions file uses CRLF locally and LF in
+Git; its clean-filtered Git blob identity is unchanged.

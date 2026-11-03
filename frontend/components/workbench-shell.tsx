@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { WorkbenchNavigation } from "./workbench-navigation";
 import { WorkflowLine } from "./workflow-line";
@@ -6,15 +7,15 @@ import { ParticleWave } from "./particle-wave";
 import { SufficiencyLine } from "./sufficiency-line";
 import { DecisionMark } from "./decision-mark";
 
-export function WorkbenchShell({ children }: { children: ReactNode }) {
+export function WorkbenchShell({ children, workspace = "workbench" }: { children: ReactNode; workspace?: "workbench" | "query-lab" }) {
   return <div className="workbench-frame">
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className="masthead">
-      <a className="wordmark" href="#main-content" aria-label="RAGBench Studio workbench">RAGBench <span>Studio</span></a>
-      <WorkbenchNavigation />
+      <Link className="wordmark" href="/#main-content" aria-label="RAGBench Studio workbench">RAGBench <span>Studio</span></Link>
+      <WorkbenchNavigation workspace={workspace} />
     </header>
     <main id="main-content" tabIndex={-1}>
-      <section className="notebook-opening" aria-labelledby="workbench-title">
+      {workspace === "workbench" ? <><section className="notebook-opening" aria-labelledby="workbench-title">
         <ParticleWave />
         <div className="hero-copy"><p className="page-eyebrow">Retrieval / Evidence / Decision</p>
           <h1 id="workbench-title">Evaluating RAG<br />with <em>evidence.</em></h1>
@@ -37,14 +38,14 @@ export function WorkbenchShell({ children }: { children: ReactNode }) {
             <p><DecisionMark decision="clarify" /> {"\u2013"} the question is unclear</p>
           </div></MarginNote>
         </div>
-      </section>
+      </section></> : children}
     </main>
     <footer className="workbench-footer">
       <div className="footer-identity"><p className="footer-wordmark">RAGBench Studio</p>
         <p>A workbench for evaluating evidence-grounded AI decisions.</p>
-        <p className="footer-request-note">No questions, experiments, or benchmark labels are requested here.</p>
+        <p className="footer-request-note">{workspace === "workbench" ? "No questions, experiments, or benchmark labels are requested here." : "Queries run only when submitted. Benchmark gold labels are not requested."}</p>
       </div>
-      <div className="footer-local"><p><strong>Local prototype</strong><a href="#system-status">System status</a></p>
+      <div className="footer-local"><p><strong>Local prototype</strong><a href={workspace === "workbench" ? "#system-status" : "/#system-status"}>System status</a></p>
         <p>The API has no authentication. Keep this workspace on loopback.</p>
       </div>
     </footer>

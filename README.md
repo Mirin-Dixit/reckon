@@ -50,8 +50,9 @@ The API supports BM25 retrieval and a synchronous, process-local experiment
 registry. P2 Batch 2 wires dense and hybrid retrieval into HTTP using the local
 embedding adapter and cache, verified with bounded genuine local calls.
 P2 Batches 1-4 are accepted. Stage 4A adds a local frontend
-foundation and read-only System Status view; Query Lab, experiment execution UI,
-analytics and deployment are not implemented. See
+foundation and read-only System Status view. P3 Batch 1 adds the functional
+Query Lab foundation; experiment execution UI, analytics and deployment remain
+unimplemented. See
 [frontend setup and verification](frontend/README.md).
 
 The accepted, frozen pilot contains 17 documents and 54 questions (Train 50,
@@ -293,3 +294,16 @@ ragbench/
    * Risk–coverage curves and Area Under Risk–Coverage Curve (AURC).
    * Bootstrap confidence intervals to assess statistical significance across retrieval methods.
 5. **Interactive Workbench UI**: Web interface to inspect retrieved evidence passages, trigger benchmark runs, and visualize selective prediction tradeoffs.
+
+
+### P3 Batch 1 - Query Lab foundation
+
+The frontend `/query-lab` now provides explicit question submission to
+`/api/v1/query`, with BM25/dense/hybrid and all three policies, validated controls,
+cancellation and basic observed decisions/answers. Execution errors are distinct
+from intentional abstention. No model calls occur automatically on page load.
+See [frontend setup and offline checks](frontend/README.md#query-lab-p3-batch-1).
+P3 Batch 2 adds the evidence ledger, exact Unicode citation highlights, typed
+score provenance and supplied execution metadata. Manual browser acceptance
+remains pending; these interfaces do not establish semantic grounding, retrieval
+quality or benchmark-wide reliability.

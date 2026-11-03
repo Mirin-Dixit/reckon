@@ -98,7 +98,8 @@ Validation: 649 backend tests, Ruff, dataset/hash and diff checks passed.
 No Test inference, paid calls or benchmark edits occurred; spending was INR 0.
 Historical failures and raw captures are preserved. This accepts local integration,
 not benchmark-wide retrieval quality, calibration or generalization. See the API
-reference for recorded budgets, caveats and final targeted results. P3 is pending.
+reference for recorded budgets, caveats and final targeted results. P3 implementation
+is complete through Batch 3 offline checks; manual browser acceptance is pending.
 
 ### P3 - Query Lab
 
@@ -109,6 +110,16 @@ reference for recorded budgets, caveats and final targeted results. P3 is pendin
 
 Gate: automated UI/API tests and desktop/mobile keyboard/browser checks cover
 loading, success, malformed responses, connection failures and cancellation.
+
+The original acceptance checkboxes remain open until manual acceptance.
+Batch 3 verifies all nine retrieval/policy combinations through the actual FastAPI
+ASGI route and real retrieval/pipeline implementations with deterministic fake
+embedding/generation transports. This is offline integration evidence, not live
+model verification. ANSWER, ABSTAIN, CLARIFY and execution failure are tested
+independently. No P3 live inference was authorized or performed. Browser automation
+was unavailable (browser host/native connection unavailable); desktop/mobile,
+keyboard focus and screen-reader acceptance remain manual gates. See the
+[manual checklist](../frontend/README.md#p3-final-manual-acceptance).
 
 ### B2 - Benchmark v2 (parallel workstream)
 

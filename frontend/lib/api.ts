@@ -1,4 +1,4 @@
-/** The Stage 4A client exposes only the existing read-only health operation. */
+/** Bounded, loopback-only JSON transport shared by health and query operations. */
 import { localBackendOrigin } from "./configuration";
 
 export interface HealthResponse {
@@ -100,7 +100,7 @@ function discardBody(response: Response): void {
   }
 }
 
-async function readJson(response: Response, signal: AbortSignal): Promise<unknown> {
+async function readJson(response: Response, signal: AbortSignal, maxBytes: number): Promise<unknown> {
   if (response.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json" || !response.body) {
     discardBody(response);
     throw new ApiClientError("malformed");
@@ -116,7 +116,7 @@ async function readJson(response: Response, signal: AbortSignal): Promise<unknow
       const { done, value } = await reader.read();
       if (done) break;
       length += value.byteLength;
-      if (length > 16_384) throw new ApiClientError("malformed");
+      if (length > maxBytes) throw new ApiClientError("malformed");
       chunks.push(value);
     }
     const bytes = new Uint8Array(length);
@@ -136,58 +136,62 @@ async function readJson(response: Response, signal: AbortSignal): Promise<unknow
 
 export interface HealthClient { getHealth(signal?: AbortSignal): Promise<HealthResponse> }
 
-export function createApiClient(
-  origin?: string,
-  options: { fetch?: typeof fetch; timeoutMs?: number } = {},
-): HealthClient {
-  return {
-    async getHealth(signal) {
-      const base = backendOrigin(origin);
-      const timeoutMs = options.timeoutMs ?? 5_000;
-      if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 30_000) throw new ApiClientError("configuration");
-      if (signal?.aborted) throw new ApiClientError("cancelled");
-      const controller = new AbortController();
-      let listener: (() => void) | undefined;
-      let timer: ReturnType<typeof setTimeout> | undefined;
-      const cancelled = new Promise<never>((_, reject) => {
-        listener = () => { reject(new ApiClientError("cancelled")); controller.abort(); };
-        signal?.addEventListener("abort", listener, { once: true });
+export function createJsonRequest<T>(
+  path: "/api/v1/health" | "/api/v1/query", parse: (value: unknown) => T,
+  origin?: string, options: { fetch?: typeof fetch; timeoutMs?: number } = {},
+): (signal?: AbortSignal, body?: unknown) => Promise<T> {
+  return async (signal, requestBody) => {
+    const base = backendOrigin(origin);
+    const timeoutMs = options.timeoutMs ?? (path === "/api/v1/health" ? 5_000 : 270_000);
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > (path === "/api/v1/health" ? 30_000 : 300_000)) throw new ApiClientError("configuration");
+    if (signal?.aborted) throw new ApiClientError("cancelled");
+    const controller = new AbortController();
+    let listener: (() => void) | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const cancelled = new Promise<never>((_, reject) => {
+      listener = () => { reject(new ApiClientError("cancelled")); controller.abort(); };
+      signal?.addEventListener("abort", listener, { once: true });
+    });
+    const deadline = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => { reject(new ApiClientError("timeout")); controller.abort(); }, timeoutMs);
+    });
+    const operation = async (): Promise<T> => {
+      const response = await (options.fetch ?? fetch)(`${base}${path}`, {
+        method: path === "/api/v1/health" ? "GET" : "POST",
+        headers: { Accept: "application/json", ...(requestBody === undefined ? {} : { "Content-Type": "application/json" }) },
+        body: requestBody === undefined ? undefined : JSON.stringify(requestBody), cache: "no-store",
+        credentials: "omit", redirect: "error", referrerPolicy: "no-referrer",
+        signal: controller.signal,
       });
-      const deadline = new Promise<never>((_, reject) => {
-        timer = setTimeout(() => { reject(new ApiClientError("timeout")); controller.abort(); }, timeoutMs);
-      });
-      const operation = async (): Promise<HealthResponse> => {
-        const response = await (options.fetch ?? fetch)(`${base}/api/v1/health`, {
-          method: "GET", headers: { Accept: "application/json" }, cache: "no-store",
-          credentials: "omit", redirect: "error", referrerPolicy: "no-referrer",
-          signal: controller.signal,
-        });
-        // A non-cooperative fetch can resolve after our deadline or cancellation.
-        // Release that late response rather than starting a new body read.
-        if (controller.signal.aborted) {
-          discardBody(response);
-          throw new ApiClientError("cancelled");
-        }
-        const body = await readJson(response, controller.signal);
-        if (!response.ok) {
-          if (!isErrorEnvelope(body)) throw new ApiClientError("malformed");
-          // The backend's message/code are untrusted and never retained or reflected.
-          throw new ApiClientError("http", response.status);
-        }
-        return parseHealth(body);
-      };
-      try {
-        return await Promise.race([operation(), deadline, cancelled]);
-      } catch (error: unknown) {
-        if (error instanceof ApiClientError) throw error;
-        throw new ApiClientError("connection");
-      } finally {
-        clearTimeout(timer);
-        if (listener) signal?.removeEventListener("abort", listener);
-        // Always terminate this client's private request after it settles.
-        // This also covers failures before a response reader was acquired.
-        controller.abort();
+      // A non-cooperative fetch can resolve after our deadline or cancellation.
+      // Release that late response rather than starting a new body read.
+      if (controller.signal.aborted) {
+        discardBody(response);
+        throw new ApiClientError("cancelled");
       }
-    },
+      const body = await readJson(response, controller.signal, path === "/api/v1/health" ? 16_384 : 1_048_576);
+      if (!response.ok) {
+        if (!isErrorEnvelope(body)) throw new ApiClientError("malformed");
+        // The backend's message/code are untrusted and never retained or reflected.
+        throw new ApiClientError("http", response.status);
+      }
+      return parse(body);
+    };
+    try {
+      return await Promise.race([operation(), deadline, cancelled]);
+    } catch (error: unknown) {
+      if (error instanceof ApiClientError) throw error;
+      throw new ApiClientError("connection");
+    } finally {
+      clearTimeout(timer);
+      if (listener) signal?.removeEventListener("abort", listener);
+      // Always terminate this client's private request after it settles.
+      // This also covers failures before a response reader was acquired.
+      controller.abort();
+    }
   };
+}
+
+export function createApiClient(origin?: string, options: { fetch?: typeof fetch; timeoutMs?: number } = {}): HealthClient {
+  return { getHealth: createJsonRequest("/api/v1/health", parseHealth, origin, options) };
 }

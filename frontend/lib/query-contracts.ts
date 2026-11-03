@@ -1,0 +1,24 @@
+/** Query-only contract snapshot generated from app.api.models. No benchmark annotations. */
+export type GenerationRequest = { "model"?: string | null; "temperature"?: number | null; "max_output_tokens"?: number | null; "timeout_seconds"?: number | null };
+export type PolicyRequest = { "name": "always_answer" | "prompt_abstention" | "threshold"; "score_type"?: "bm25" | "dense_cosine" | "hybrid_rrf" | null; "threshold"?: number | null; "direction"?: "at_least" | "at_most"; "missing_score_decision"?: "ABSTAIN" | "ANSWER" };
+export type RetrievalRequest = { "method"?: "bm25" | "dense" | "hybrid"; "top_k"?: number; "candidate_k"?: number | null; "rrf_k"?: number | null };
+export type AssessmentResponse = { "relevance": Relevance; "sufficiency": Sufficiency; "supporting_evidence_ids": (string)[]; "contradictions": (string)[]; "missing_premises": (string)[]; "unsupported_assumptions": (string)[]; "ambiguity_requiring_clarification": string | null };
+export type CitationResponse = { "claim": string; "evidence_id": string; "quote": string; "start_char": number; "end_char": number };
+export type Decision = "ANSWER" | "ABSTAIN" | "CLARIFY";
+export type EvidenceResponse = { "chunk_id": string; "document_id": string; "text": string; "start_char": number; "end_char": number; "title"?: string | null; "source_url"?: string | null; "version"?: string | null; "source_date"?: string | null; "domain"?: string | null; "retrieval_rank"?: number | null; "retrieval_score"?: number | null; "retrieval_method"?: string | null; "contains_injection"?: boolean; "score"?: ScoreResponse | null };
+export type ExecutionStatus = "succeeded" | "failed" | "timed_out" | "refused" | "incomplete";
+export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
+export type PolicyParameters = { "model"?: string | null; "provider"?: string | null; "settings"?: SettingsResponse | null; "score_type"?: string | null; "threshold"?: number | null; "direction"?: string | null; "aggregation"?: string | null; "observed_aggregate_score"?: number | null; "missing_score_decision"?: string | null };
+export type ProviderResponse = { "provider": string; "model": string; "request_id"?: string | null; "api_version"?: string | null; "model_digest"?: string | null; "quantization"?: string | null; "completion_reason"?: string | null };
+export type ReasonCode = "insufficient_evidence" | "conflicting_evidence" | "unsupported_premise" | "ambiguous_intent" | "out_of_scope" | "other";
+export type ReasonResponse = { "code": ReasonCode; "explanation": string };
+export type Relevance = "relevant" | "partially_relevant" | "irrelevant" | "not_assessed";
+export type ScoreKind = "bm25" | "dense_cosine" | "hybrid_rrf" | "prompt_self_assessment";
+export type ScoreResponse = { "kind": ScoreKind; "value": number | null; "source": ScoreSource; "retrieval_method": string | null; "parameters": Record<string, JsonValue>; "role": ScoreRole; "threshold": number | null; "threshold_direction": "at_least" | "at_most" | null; "unavailable_reason": string | null; "availability": "available" | "unavailable"; "lower_bound": number; "upper_bound": number | null; "direction": "higher_is_more_support" | "higher_is_more_relevant"; "calibration": "uncalibrated"; "schema_version": "ragbench.score.v1" };
+export type ScoreRole = "observational" | "threshold_input" | "self_assessment";
+export type ScoreSource = "retrieval" | "model_self_report";
+export type SettingsResponse = { "temperature": number | null; "seed": number | null; "max_output_tokens": number | null; "timeout_seconds": number };
+export type Sufficiency = "sufficient" | "partial" | "insufficient" | "contradictory" | "not_assessed";
+export type UsageResponse = { "input_tokens": number | null; "output_tokens": number | null; "total_tokens": number | null };
+export type QueryRequest = { "question": string; "retrieval"?: RetrievalRequest; "policy": PolicyRequest; "generation"?: GenerationRequest; "experiment_id"?: string | null; "run_id"?: string | null };
+export type QueryResponse = { "experiment_id": string | null; "run_id": string | null; "decision": Decision; "answer": string | null; "clarification_question": string | null; "decision_reason": ReasonResponse | null; "citations": (CitationResponse)[]; "retrieved_evidence": (EvidenceResponse)[]; "evidence_assessment": AssessmentResponse; "policy_name": string | null; "policy_parameters": PolicyParameters; "provider": ProviderResponse | null; "execution_status": ExecutionStatus; "unsupported_premises": (string)[]; "surfaced_contradictions": (string)[]; "prompt_version": string | null; "latency_ms": number | null; "token_usage": UsageResponse | null; "scores"?: (ScoreResponse)[]; "retrieval_parameters"?: Record<string, JsonValue> };
