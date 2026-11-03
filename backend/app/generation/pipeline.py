@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
 from typing import Protocol
 
 from app.generation.contracts import (
@@ -20,6 +20,7 @@ from app.generation.contracts import (
     TokenUsage,
     validate_citations,
 )
+from app.generation.scores import ScoreSignal, ScoreSource, retrieval_signal
 from app.ingestion.chunking import Chunk
 from app.ingestion.schema import Document
 from app.retrieval.bm25 import ScoredChunk
@@ -55,6 +56,7 @@ class DecisionSelection:
     provider: ProviderMetadata | None = None
     latency_ms: float | None = None
     token_usage: TokenUsage | None = None
+    scores: tuple[ScoreSignal, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.decision, Decision):
@@ -116,6 +118,7 @@ class PipelineConfig:
     top_k: int = 5
     retrieval_method: str = "custom"
     prompt_version: str = "mock-v1"
+    retrieval_parameters: dict[str, object] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if type(self.top_k) is not int or self.top_k <= 0:
@@ -207,25 +210,43 @@ class RagPipeline:
 
         assessment = EvidenceAssessment()
         retrieval: RetrievalMetadata | None = None
+        scores: tuple[ScoreSignal, ...] = ()
         try:
             scored_chunks = self.retriever.search(
                 question, top_k=self.config.top_k
             )
+            parameters = dict(self.config.retrieval_parameters)
+            parameters.setdefault("score_aggregation", "max")
+            describe = getattr(self.retriever, "score_parameters", None)
+            if callable(describe):
+                parameters.update(describe(question, scored_chunks, self.config.top_k))
             contexts = tuple(
-                self._to_context(scored, rank)
+                self._to_context(scored, rank, parameters)
                 for rank, scored in enumerate(scored_chunks, start=1)
             )
+            signal = retrieval_signal(
+                contexts, method=self.config.retrieval_method, parameters=parameters,
+            )
+            retrieval_scores = (signal,) if signal is not None else ()
             retrieval = RetrievalMetadata(
                 method=self.config.retrieval_method,
                 top_k=self.config.top_k,
                 evidence=contexts,
+                parameters=parameters,
+                scores=retrieval_scores,
             )
             assessment = self.assessor.assess(question, contexts)
             selection = self.policy.decide(question, assessment, contexts)
+            scores = tuple(
+                replace(s, parameters={**parameters, **s.parameters})
+                if s.source is ScoreSource.RETRIEVAL else s
+                for s in (selection.scores or retrieval_scores)
+            )
 
             if selection.decision is Decision.ABSTAIN:
                 return RunResult(
                     decision=Decision.ABSTAIN,
+                    scores=scores,
                     abstention_reason=selection.reason,
                     decision_reason=selection.reason,
                     evidence_assessment=assessment,
@@ -241,6 +262,7 @@ class RagPipeline:
             if selection.decision is Decision.CLARIFY:
                 return RunResult(
                     decision=Decision.CLARIFY,
+                    scores=scores,
                     clarification_question=selection.clarification_question,
                     decision_reason=selection.reason,
                     evidence_assessment=assessment,
@@ -258,6 +280,7 @@ class RagPipeline:
             validate_citations(generated.citations, contexts)
             return RunResult(
                 decision=Decision.ANSWER,
+                scores=scores,
                 answer=generated.answer,
                 unsupported_premises=generated.unsupported_premises,
                 surfaced_contradictions=generated.contradictions,
@@ -284,6 +307,7 @@ class RagPipeline:
             status = _execution_status(error)
             return RunResult(
                 decision=None,
+                scores=scores or (retrieval.scores if retrieval is not None else ()),
                 evidence_assessment=assessment,
                 execution_status=status,
                 retrieval=retrieval,
@@ -291,7 +315,8 @@ class RagPipeline:
                 prompt_version=self.config.prompt_version,
             )
 
-    def _to_context(self, scored: ScoredChunk, rank: int) -> EvidenceContext:
+    def _to_context(self, scored: ScoredChunk, rank: int,
+                    parameters: dict | None = None) -> EvidenceContext:
         chunk: Chunk = scored.chunk
         document = self.documents.get(chunk.doc_id)
         if document is None:
@@ -308,7 +333,7 @@ class RagPipeline:
             chunk.start_char < end and start < chunk.end_char
             for start, end in document.injection_spans
         )
-        return EvidenceContext(
+        context = EvidenceContext(
             chunk_id=chunk.chunk_id,
             document_id=document.id,
             text=chunk.text,
@@ -320,10 +345,12 @@ class RagPipeline:
             start_char=chunk.start_char,
             end_char=chunk.end_char,
             retrieval_rank=rank,
-            retrieval_score=float(scored.score),
+            retrieval_score=None if scored.score is None else float(scored.score),
             retrieval_method=self.config.retrieval_method,
             contains_injection=document.contains_injection or overlaps_injection,
         )
+        signal = retrieval_signal((context,), parameters=parameters)
+        return replace(context, score=signal)
 
 
 def _combined_usage(

@@ -11,6 +11,7 @@ from app.api.errors import ApiProblem
 from app.api.models import QueryRequest, QueryResponse
 from app.evaluation.serialization import sanitize_serialized
 from app.generation.contracts import ExecutionStatus, ProviderError, ProviderErrorKind
+from app.retrieval.runtime import RetrievalFailure
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -28,6 +29,10 @@ def query(body: QueryRequest, runtime=Depends(get_runtime_service)):
             )
     try:
         result = runtime.execute_query(body)
+    except RetrievalFailure as error:
+        raise ApiProblem(error.status, error.code,
+                         "The configured local retrieval could not be completed.",
+                         error.execution_status) from None
     except ProviderError as error:
         if error.kind is ProviderErrorKind.CONFIGURATION:
             raise ApiProblem(
@@ -91,6 +96,8 @@ def query(body: QueryRequest, runtime=Depends(get_runtime_service)):
         prompt_version=payload["prompt_version"],
         latency_ms=payload["latency_ms"],
         token_usage=payload["token_usage"],
+        scores=payload["scores"],
+        retrieval_parameters=(payload.get("retrieval") or {}).get("parameters", {}),
     )
     return QueryResponse.model_validate(sanitize_serialized(response))
 

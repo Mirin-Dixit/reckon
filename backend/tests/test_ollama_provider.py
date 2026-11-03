@@ -89,6 +89,7 @@ class FakeTransport:
                     "supporting_evidence_ids": [evidence["evidence_id"]]
                     if mode == "ANSWER"
                     else [],
+                    "self_assessment": 0.75,
                     "clarification_question": "Which approval?"
                     if mode == "CLARIFY"
                     else None,

@@ -7,10 +7,12 @@ BM25 retrieval, generation contracts, decision policies, and Stage 3F evaluation
 runner. HTTP validation and serialization live under `backend/app/api/`; domain
 logic remains in the existing modules.
 
-The built-in HTTP runtime currently configures **BM25 only**. Dense and hybrid
-retrieval interfaces exist, but the repository has no concrete production
-embedder to configure for this API. Requests for other methods are rejected;
-the underlying retrieval modules are unchanged.
+The built-in HTTP runtime defaults to BM25 and also supports dense and hybrid
+retrieval through the local Ollama embedding adapter and persistent cache.
+P2 Batches 1-4 are accepted after deterministic tests and bounded genuine local
+Train verification. This is integration evidence, not corpus-wide retrieval-quality
+measurement. The underlying
+BM25, cosine ranking and RRF algorithms remain unchanged.
 
 The benchmark files are fixed server-side paths. Requests cannot provide file
 paths, Python objects, benchmark annotations, expected answers, or credentials.
@@ -63,6 +65,197 @@ decision behavior are unchanged. `experiment_id` and `run_id` are optional
 caller-provided UUID-shaped correlation values only; the query route does not use them to
 load or score benchmark records.
 
+Retrieval methods and threshold score families are distinct:
+
+| Request `method` | Evidence `retrieval_method` / threshold `score_type` |
+|---|---|
+| `bm25` (default) | `bm25` |
+| `dense` | `dense_cosine` |
+| `hybrid` | `hybrid_rrf` |
+
+`top_k` retains its default 5 and range 1-20. Hybrid alone accepts `rrf_k`
+(integer 1-1000, default 60) and `candidate_k` (integer from `top_k` through
+256). Omitted candidate depth preserves the existing HybridIndex default:
+`max(top_k*3, 50, number_of_chunks)`. Explicit booleans/fractional fusion settings,
+wrong score families and fusion settings on BM25/dense are rejected with 422.
+The same retrieval contract applies to `POST /api/v1/evaluations`.
+
+Dense/hybrid are opt-in: set `RAGBENCH_EMBEDDING_MODEL=all-minilm:22m` on the
+server only after separate model-download approval. They reuse the numeric
+loopback `RAGBENCH_OLLAMA_URL`, with CPU embedding, no cloud aliases, zero retries
+and Batch 1 memory checks. The cache directory is server-side
+`RAGBENCH_DENSE_CACHE_DIR`, default `.ragbench-cache/dense`; clients cannot set
+model identities or paths. Cache and in-memory index keys include the exact
+supplied document snapshot and settings; evaluation uses its own loaded snapshot.
+The effective embedding identity is recorded in evaluation retrieval provenance.
+An eight-entry in-memory LRU reuses indexes; dense vectors also persist on disk.
+
+Unconfigured/missing models, incompatible identities and resource errors never
+fall back to BM25. Setup failures use safe error envelopes (503 for unavailable
+embedding configuration/resources, 422 for incompatible retrieval settings).
+Query-time retrieval failure returns 502 with `retrieval_execution_failure` and
+`execution_status=failed`, without a decision. Evaluation retains its existing
+per-run failure/partial-result semantics. Invalid output, timeouts and cache
+failures are execution failures rather than intentional abstentions. These
+retrieval scores remain uncalibrated ranking values, not answerability probabilities;
+Batch 3 adds typed score reporting. Batch 4 subsequently verified live score
+transport but found the reason-code defect documented below; no calibration
+verification has occurred.
+
+### Typed observed scores (P2 Batch 3)
+
+Successful queries expose `scores` and `retrieval_parameters`; every returned
+evidence chunk also carries its typed `score` beside the unchanged numeric
+`retrieval_score`. Evaluation observations and nested retrieval metadata carry
+the same signals, including on failed executions when a signal was observed
+before the failure. A score does not imply successful execution or a decision.
+
+Each `ragbench.score.v1` signal records `kind`, `value`, `source`,
+`retrieval_method`, `parameters`, `role`, `availability`, `unavailable_reason`,
+`lower_bound`, `upper_bound`, `direction` and `calibration`. Threshold inputs
+add the actual `threshold` and `threshold_direction` used by the existing policy.
+
+| Kind | Range | Interpretation |
+|---|---|---|
+| `bm25` | [0, no fixed upper bound] | Lexical relevance |
+| `dense_cosine` | [-1,1] | Vector similarity |
+| `hybrid_rrf` | [0, rank_lists/(rrf_k+1)] | Rank fusion; effective k and nonempty contributing lists recorded |
+| `prompt_self_assessment` | [0,1] | Model-reported evidence sufficiency; not confidence in its chosen decision |
+
+All signals explicitly remain `uncalibrated`. Ranking scores have direction
+`higher_is_more_relevant`; model self-assessment uses `higher_is_more_support`.
+Neither means a calibrated probability of correctness or answerability.
+Always-answer reports scores observationally. Threshold uses its unchanged
+maximum-score comparison; no score normalization or threshold clamping occurs.
+Prompt self-assessment is reported separately and never overrides ANSWER,
+ABSTAIN, CLARIFY or the independent evidence-assessment fields.
+
+Missing scores remain null with `availability=unavailable` and a reason; a real
+zero remains available. Custom/legacy RRF observations without fusion provenance
+cannot acquire an invented bound: their typed score is unavailable. Unsupported
+custom retrievers have no invented score family. Effective parameters preserve
+aggregation, chunk/index settings and the supplied document-snapshot fingerprint;
+dense/hybrid also preserve embedding identity, cache key and vector fingerprint.
+Fusion metadata is per query and does not change RRF ranking mathematics.
+
+The prompt decision contract requires a `self_assessment`
+number or explicit JSON null. Booleans, strings, nonfinite/out-of-range values
+and omitted required fields fail validation; they are not silently corrected.
+The current pipeline prompt version is `api-v4` / `prompt-decision-v3`.
+Previous accepted P1 live
+results used `api-v2` and remain historical evidence for that version only.
+The updated decision/reason contract passed the final targeted real-model HTTP
+check below; the earlier broad batch remains evidence for its original version.
+
+Score fields are additive and optional for older API/experiment observations.
+The experiment envelope remains `ragbench.experiment.v2`; the score structure
+has its own version. The reader validates new score fields when present and
+continues accepting older v2 observations without them. No evaluation metrics,
+calibration fitting or threshold sweeps are introduced by this batch.
+
+### P2 Batch 4 reason-code finding and offline remediation
+
+The genuine `api-v3` / `prompt-decision-v2` run completed all planned calls:
+10 query POSTs, one Train evaluation POST, 12 embedding calls and 13 generation
+attempts, with zero retries and zero paid spending. All nine combinations on
+Train `q_pilot_020` returned HTTP 200 / ANSWER. The dense prompt query on
+`q_batch2_011` returned ABSTAIN with null self-assessment; the hybrid threshold
+evaluation at tau=1 deliberately abstained above the attainable RRF bound.
+All 13 citations passed exact-offset validation and manual support review.
+
+The three prompt-policy ANSWER outputs nevertheless used
+`reason_code=ambiguous_intent`, despite supported explanations and no clarification
+request. Enum membership alone did not enforce cross-field consistency. These
+are genuine metadata defects, not schema failures or successful clarification.
+Original raw responses, experiment records and review artifacts remain outside
+Git and unchanged; they must not be relabeled as results of the remediated prompt.
+
+The prompt-policy validator now enforces this table:
+
+| Decision | Allowed `reason_code` values |
+|---|---|
+| ANSWER | `other` |
+| ABSTAIN | `insufficient_evidence`, `conflicting_evidence`, `unsupported_premise`, `out_of_scope`, `other` |
+| CLARIFY | `ambiguous_intent`, `other` |
+
+`other` preserves the existing generic fallback. Specific evidence/premise/scope
+codes describe why the policy abstains; unresolved intent belongs to clarification.
+An ANSWER can still report generator-observed unsupported premises separately;
+that does not turn its decision reason into an abstention code. No reason enums,
+threshold comparisons, scores or citation rules changed.
+
+`prompt-decision-v3` gives the model explicit allowed pairs; `api-v4` identifies
+the revised runtime prompt. Inconsistent pairs raise validation errors and become
+execution failures, never silently remapped answers, abstentions or clarifications.
+The field layout, nullable self-assessment semantics and uncalibrated status are
+unchanged. Historical archived results remain readable without retroactive edits.
+
+Equivalent instructions were compacted to preserve existing context limits.
+Offline reconstruction against captured Batch 4 evidence and the recorded Qwen3
+template fits context 8192, including the 1024 output allowance. The largest
+conservative bound is 8144; future evidence/template changes may still exceed the
+budget and must fail rather than truncate. This sizing check is not live inference.
+The remediated prompt subsequently passed separately approved targeted live
+verification, described below. Offline remediation itself authorized no inference.
+
+### Accepted P2 installation and final targeted verification
+
+P2 Batches 1-4 are accepted. Official `all-minilm:22m` was installed and verified:
+45,960,996 bytes, F16, BERT architecture, 384 dimensions, Apache 2.0, digest
+`1b226e2802dbb772b5fc32a58f103ca1804ef7501331012de126ab22f67475ef`.
+The artifact config uses context 256; architecture metadata reports maximum 512.
+The embedding adapter retains its explicit 256 context and `truncate:false`.
+The broad run built 25 chunk vectors using four embedding calls, then made eight
+query embeddings. One disk-cache miss, one disk-cache hit and eight memory-index
+hits preserved matching snapshot/cache/vector fingerprints; cache hits were not
+counted as embedding calls. The minimum sampled RAM was 2.11 GiB.
+
+After offline reason-code remediation, a one-POST, one-generation-attempt check
+produced a genuine ANSWER/other decision and valid 0.9 self-assessment, but HTTP
+returned 502 / failed when the adapter blocked the second call needed for answer
+generation. It was a budget-limited execution failure, not intentional abstention
+or a successful complete HTTP verification. The original record remains intact.
+
+The final targeted run used a fresh independent two-attempt budget:
+
+| Item | Actual result |
+|---|---|
+| Train question | `q_pilot_020` only |
+| Retrieval / policy | BM25 top-k 3 / prompt-abstention |
+| Versions | `api-v4` / `prompt-decision-v3` |
+| Provider / model | Local Ollama 0.40.14 / `qwen3:4b-q4_K_M` |
+| Settings | Context 8192, output 1024 per attempt, thinking disabled, temperature 0, zero retries, concurrency 1 |
+| HTTP / execution | 200 / `succeeded` (the actual API success value, not `completed`) |
+| Decision / reason | ANSWER / `other` |
+| Self-assessment | 0.9, explicitly uncalibrated |
+| Calls | One query POST, two generation attempts, zero embedding calls |
+| Tokens | 1604 input / 289 output total across both model calls |
+| HTTP latency | 30.01 seconds |
+| Minimum sampled available RAM | 2.46 GiB |
+| Conservative decision-context bound | 7389 of 8192 |
+
+The answer correctly described obtaining aware UTC with
+`datetime.datetime.now(timezone.utc)`. Its supplied evidence ID was
+`doc_py311_datetime_c0000`; the exact quote resolved to original Python 3.11
+source offsets [84,259), end exclusive. Structural offset validation passed;
+manual review separately confirmed semantic support. The BM25 maximum was
+27.10194614811292, observational and uncalibrated, with the document fingerprint
+preserved. There was no silent decision/reason remapping or fallback.
+
+Accepted offline validation recorded 649 passing backend tests, Ruff and diff
+checks passing, and unchanged dataset hashes. These historical results are not
+claimed as newly executed documentation checks. All genuine inference was
+loopback-only, cloud disabled, with zero paid spending and no Test inference or
+gold labels in model prompts. Prior failures, original responses, usage, review
+and experiment artifacts remain outside Git, unchanged.
+
+These small Train checks establish local integration only. They do not establish
+benchmark-wide retrieval quality, calibrated confidence, held-out performance or
+generalization. Nullable self-assessment, short embedding context, narrow context
+headroom, model-swapping latency, sampled memory guards and process-local budgets
+remain limitations. Future live work requires separate authorization; P3 is not
+part of this checkpoint.
+
 Example answer response (abridged):
 
 ```json
@@ -86,7 +279,7 @@ Example answer response (abridged):
   "execution_status": "succeeded",
   "unsupported_premises": [],
   "surfaced_contradictions": [],
-  "prompt_version": "api-v2",
+  "prompt_version": "api-v4",
   "latency_ms": 125.0,
   "token_usage": {"input_tokens": 100, "output_tokens": 30, "total_tokens": 130}
 }
@@ -351,7 +544,7 @@ The schema and instructions explicitly require JSON `null` for
 String placeholders such as `"None"`, `"null"`, `"N/A"` and empty strings are
 rejected; they are never converted to null. Missing required fields, provider
 refusal, incomplete responses and validation failures remain execution failures.
-The API prompt version is `api-v2`, distinguishing these instructions and the
+The P1.1 API prompt version was `api-v2`, distinguishing these instructions and the
 new model-facing citation format from earlier observations.
 
 The three initial genuine local queries all failed validation: the answer

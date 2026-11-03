@@ -68,6 +68,7 @@ def policy_payload(
         "reason": reason,
         "reason_code": reason_code,
         "supporting_evidence_ids": list(support_ids),
+        "self_assessment": 0.75,
         "clarification_question": clarification,
     }
 

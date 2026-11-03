@@ -11,6 +11,7 @@ from app.api.errors import ApiProblem
 from app.api.models import EvaluationAccepted, EvaluationMetadata, EvaluationRequest
 from app.evaluation.runner import ErrorHandlingMode, PolicyRunConfig
 from app.generation.contracts import ProviderError, ProviderErrorKind
+from app.retrieval.runtime import RetrievalFailure
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -34,7 +35,9 @@ def start_evaluation(
                     model,
                     model_settings(generation_configuration),
                 ),
-                parameters=_policy_parameters(policy, model),
+                parameters=_policy_parameters(
+                    policy, model, generation_configuration["provider"],
+                ),
             )
             for policy in body.policies
         ]
@@ -52,6 +55,10 @@ def start_evaluation(
                 else ErrorHandlingMode.CONTINUE
             ),
         )
+    except RetrievalFailure as error:
+        raise ApiProblem(error.status, error.code,
+                         "The configured local retrieval could not be completed.",
+                         error.execution_status) from None
     except ProviderError as error:
         if error.kind is ProviderErrorKind.CONFIGURATION:
             raise ApiProblem(
@@ -119,10 +126,10 @@ def get_evaluation(experiment_id: str, request: Request):
     )
 
 
-def _policy_parameters(policy, model):
+def _policy_parameters(policy, model, provider):
     params = {
         "model": model,
-        "provider": "openai",
+        "provider": provider,
     }
     if policy.name == "threshold":
         params.update(

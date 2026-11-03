@@ -11,6 +11,8 @@ from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import StrEnum
 from typing import Any, Protocol, TypeAlias
 
+from app.generation.scores import ScoreSignal
+
 
 class Decision(StrEnum):
     """The three user-facing outcomes supported by the RAG system."""
@@ -233,6 +235,7 @@ class EvidenceContext:
     retrieval_score: float | None = None
     retrieval_method: str | None = None
     contains_injection: bool = False
+    score: ScoreSignal | None = None
 
     def __post_init__(self) -> None:
         for value, name in (
@@ -358,6 +361,7 @@ class RetrievalMetadata:
     top_k: int
     evidence: tuple[EvidenceContext, ...] = ()
     parameters: dict[str, Any] = field(default_factory=dict)
+    scores: tuple[ScoreSignal, ...] = ()
 
     def __post_init__(self) -> None:
         _non_empty(self.method, "method")
@@ -387,6 +391,7 @@ class RunResult:
     latency_ms: float | None = None
     token_usage: TokenUsage | None = None
     observed_safe_behavior: bool | None = None
+    scores: tuple[ScoreSignal, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.evidence_assessment, EvidenceAssessment):

@@ -68,15 +68,37 @@ this is not benchmark-wide reliability or generalization evidence.
 
 ### P2 - Retrieval + Confidence
 
-- [ ] Expose working dense and hybrid retrieval over HTTP.
-- [ ] Use real embeddings rather than mock-only semantic retrieval.
-- [ ] Return confidence/evidence scores from all three policies, explicitly
+- [x] Expose working dense and hybrid retrieval over HTTP.
+- [x] Use real embeddings rather than mock-only semantic retrieval.
+- [x] Return confidence/evidence scores from all three policies, explicitly
   identifying source, range, direction and calibration status.
-- [ ] Preserve distinctions among BM25, dense cosine, hybrid RRF and any
+- [x] Preserve distinctions among BM25, dense cosine, hybrid RRF and any
   model-reported confidence; do not equate relevance with sufficiency.
 
 Gate: retrieval/score serialization tests and real HTTP checks cover all
 retrieval-policy combinations, missing scores and provider failures.
+
+P2 Batches 1-4 are accepted following offline and bounded genuine Train
+verification. Local Ollama `all-minilm:22m` (384-dimensional F16) has digest
+`1b226e2802dbb772b5fc32a58f103ca1804ef7501331012de126ab22f67475ef`.
+Dense/hybrid HTTP retrieval reuses snapshot-specific indexes and the persistent
+vector cache; typed scores remain explicitly uncalibrated and preserve provenance.
+
+The initial live batch completed all nine retrieval/policy combinations, the
+unsupported logo-color abstention, and a deliberate high-threshold evaluation:
+10 query POSTs, one evaluation, 12 embedding calls and 13 generation attempts.
+Three prompt ANSWER results had inconsistent ambiguity reason codes. Offline
+remediation added 52 regression cases and explicit reason rules. The first
+one-attempt targeted rerun validated ANSWER/other but returned HTTP 502 because
+answer generation needed another call. The final fresh two-attempt rerun returned
+HTTP 200 / succeeded / ANSWER / other with validated citation offsets and manual
+semantic support under `api-v4` / `prompt-decision-v3`.
+
+Validation: 649 backend tests, Ruff, dataset/hash and diff checks passed.
+No Test inference, paid calls or benchmark edits occurred; spending was INR 0.
+Historical failures and raw captures are preserved. This accepts local integration,
+not benchmark-wide retrieval quality, calibration or generalization. See the API
+reference for recorded budgets, caveats and final targeted results. P3 is pending.
 
 ### P3 - Query Lab
 
@@ -176,4 +198,4 @@ criteria independently of Pass 1 functional progress.
 
 The pre-flight loader inventory and baseline validation are inspection checks,
 not Test inference experiments or tuning. Future research execution must obey
-the freeze rules above. Only P1 is accepted here, within its explicitly limited local BM25 scope.
+the freeze rules above. P1 and P2 are accepted within their explicitly documented local integration scopes.

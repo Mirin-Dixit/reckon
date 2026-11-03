@@ -24,6 +24,7 @@ from app.generation.config import (
 )
 from app.generation.contracts import (
     EvidenceAssessment,
+    ExecutionStatus,
     GenerationRequest,
     GenerationResponse,
     LLMProvider,
@@ -50,7 +51,7 @@ from app.generation.providers.openai_responses import OpenAIResponsesProvider
 from app.ingestion.chunking import chunk_documents
 from app.ingestion.loader import load_documents_from_jsonl
 from app.ingestion.schema import Document
-from app.retrieval.bm25 import BM25Index
+from app.retrieval.runtime import RetrievalFailure, RetrievalRuntime
 
 if TYPE_CHECKING:
     from app.api.models import (
@@ -70,7 +71,7 @@ CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 BM25_K1 = 1.5
 BM25_B = 0.75
-PROMPT_VERSION = "api-v2"
+PROMPT_VERSION = "api-v4"
 
 
 def openai_sdk_available() -> bool:
@@ -113,6 +114,8 @@ class RuntimeService:
         documents: list[Document],
         provider: LLMProvider,
         provider_config: OpenAIProviderConfig | OllamaProviderConfig,
+        *,
+        retrieval_runtime: RetrievalRuntime | None = None,
     ) -> None:
         self.documents = {document.id: document for document in documents}
         self.chunks = chunk_documents(
@@ -120,6 +123,7 @@ class RuntimeService:
         )
         self.provider = provider
         self.provider_config = provider_config
+        self.retrieval_runtime = retrieval_runtime or RetrievalRuntime()
 
     @classmethod
     def from_environment(cls) -> RuntimeService:
@@ -172,28 +176,31 @@ class RuntimeService:
         documents: Mapping[str, Document] | None = None,
         retrieval_configuration: Mapping[str, Any] | None = None,
     ) -> RagPipeline:
-        if method != "bm25":
-            raise ValueError("Only BM25 retrieval is configured for the API runtime")
         generator = _LazyAnswerGenerator(self.provider, model, settings)
         source_documents = self.documents if documents is None else documents
-        config = retrieval_configuration or self.retrieval_configuration_values(top_k)
-        chunks = chunk_documents(
-            list(source_documents.values()),
-            chunk_size=config["chunking"]["size"],
-            chunk_overlap=config["chunking"]["overlap"],
-        )
+        if retrieval_configuration is None:
+            from app.api.models import RetrievalRequest
+
+            config = self.retrieval_configuration(
+                RetrievalRequest(method=method, top_k=top_k),
+            )
+        else:
+            config = retrieval_configuration
+        if config["method"] != method or config["top_k"] != top_k:
+            raise RetrievalFailure("invalid_retrieval_configuration", 422)
+        retriever = self.retrieval_runtime.get(source_documents, config)
         return RagPipeline(
-            retriever=BM25Index(
-                chunks, k1=config["index"]["k1"], b=config["index"]["b"]
-            ),
+            retriever=retriever,
             documents=source_documents,
             assessor=_NeutralEvidenceAssessor(),
             policy=policy,
             generator=generator,
             config=PipelineConfig(
                 top_k=top_k,
-                retrieval_method="bm25",
+                retrieval_method={"bm25": "bm25", "dense": "dense_cosine",
+                                  "hybrid": "hybrid_rrf"}[method],
                 prompt_version=PROMPT_VERSION,
+                retrieval_parameters={**config, **getattr(retriever, "provenance", {})},
             ),
         )
 
@@ -210,7 +217,12 @@ class RuntimeService:
             settings=settings,
             retrieval_configuration=self.retrieval_configuration(request.retrieval),
         )
-        return pipeline.run(request.question)
+        result = pipeline.run(request.question)
+        if request.retrieval.method != "bm25" and result.retrieval is None:
+            if result.execution_status is ExecutionStatus.TIMED_OUT:
+                raise RetrievalFailure("retrieval_timeout", 504, "timed_out")
+            raise RetrievalFailure("retrieval_execution_failure", 502)
+        return result
 
     def resolve_model(self, requested_model: str | None) -> str | None:
         configured_model = self.provider_config.model
@@ -281,7 +293,14 @@ class RuntimeService:
         }
 
     def retrieval_configuration(self, retrieval: RetrievalRequest) -> dict[str, Any]:
-        return self.retrieval_configuration_values(retrieval.top_k)
+        config = self.retrieval_configuration_values(retrieval.top_k)
+        config["method"] = retrieval.method
+        if retrieval.method != "bm25":
+            config["embedding"] = self.retrieval_runtime.embedding_configuration()
+        if retrieval.method == "hybrid":
+            config.update(rrf_k=retrieval.rrf_k or 60,
+                          candidate_k=retrieval.candidate_k)
+        return config
 
     def can_generate(self, requested_model: str | None) -> bool:
         try:

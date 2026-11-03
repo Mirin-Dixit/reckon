@@ -115,6 +115,7 @@ class RecordingProvider:
                 "decision": "ANSWER", "reason": "The passage supports an answer.",
                 "reason_code": "other",
                 "supporting_evidence_ids": [evidence["evidence_id"]],
+                "self_assessment": 0.75,
                 "clarification_question": None,
             }
         else:

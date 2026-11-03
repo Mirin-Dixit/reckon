@@ -560,6 +560,7 @@ class AdversarialSDK:
                 "supporting_evidence_ids": [evidence[0]["evidence_id"]]
                 if self.mode == "ANSWER"
                 else [],
+                "self_assessment": 0.75,
                 "clarification_question": "Which limit?"
                 if self.mode == "CLARIFY"
                 else None,
@@ -738,7 +739,8 @@ def test_response_validation_errors_hide_values_from_clients_and_server_logs(cap
 
 
 @pytest.mark.parametrize("method", ["dense", "hybrid"])
-def test_unsupported_retrieval_never_falls_back_to_bm25(monkeypatch, method):
+def test_unconfigured_retrieval_never_falls_back_to_bm25(monkeypatch, method):
+    monkeypatch.delenv("RAGBENCH_EMBEDDING_MODEL", raising=False)
     sdk = AdversarialSDK()
     with TestClient(adversarial_application(monkeypatch, sdk)) as c:
         reply = c.post(
@@ -749,7 +751,8 @@ def test_unsupported_retrieval_never_falls_back_to_bm25(monkeypatch, method):
                 "policy": {"name": "always_answer"},
             },
         )
-        assert reply.status_code == 422
+        assert reply.status_code == 503
+        assert reply.json()["error"]["code"] == "embedding_not_configured"
         assert not sdk.calls
 
 

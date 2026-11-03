@@ -360,6 +360,7 @@ def test_openai_components_are_pluggable_into_existing_prompt_policy():
         "reason": "Evidence supports this.",
         "reason_code": "other",
         "supporting_evidence_ids": ["chunk-1"],
+        "self_assessment": 0.75,
         "clarification_question": None,
     }
     answer = {

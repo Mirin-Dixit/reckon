@@ -47,8 +47,9 @@ and [accepted verification results](docs/api/api_reference.md#accepted-p1-local-
 Stage 3G.1 provides a local FastAPI backend, provider-neutral generation contracts,
 three decision baselines, an optional OpenAI adapter, and an evaluation runner.
 The API supports BM25 retrieval and a synchronous, process-local experiment
-registry. Dense and hybrid retrieval remain available as Python interfaces;
-no production embedder is wired into the API. Stage 4A adds a local frontend
+registry. P2 Batch 2 wires dense and hybrid retrieval into HTTP using the local
+embedding adapter and cache, verified with bounded genuine local calls.
+P2 Batches 1-4 are accepted. Stage 4A adds a local frontend
 foundation and read-only System Status view; Query Lab, experiment execution UI,
 analytics and deployment are not implemented. See
 [frontend setup and verification](frontend/README.md).
@@ -60,6 +61,91 @@ allocation plan is preserved in [the pilot plan](docs/benchmark/pilot_plan.md).
 These splits do not support statistical generalization claims.
 See [API configuration and startup](docs/api/api_reference.md), including the
 required `server` extra and local-only deployment limits.
+
+### Accepted P2: local retrieval, scores and provenance
+
+`OllamaEmbedder` implements the existing `Embedder` protocol for the approved
+installed `all-minilm:22m` model (384 dimensions, F16, Apache 2.0).
+Its verified digest is
+`1b226e2802dbb772b5fc32a58f103ca1804ef7501331012de126ab22f67475ef`. It uses numeric-loopback HTTP only, checks local
+weights/digest and embedding capability, rejects remote aliases, sends
+`truncate:false`, and performs CPU batches of at most eight with zero retries.
+Inputs exceeding the model context fail instead of being silently truncated.
+The adapter uses the existing bounded HTTP transport (64 KiB requests, 1 MiB
+responses), an operation deadline and a shared per-instance attempt budget.
+It checks the 1.5 GiB available-RAM reserve before/after batches, requiring an
+additional 512 MiB allowance before inference. These sampled checks cannot
+reserve OS memory or prevent another process from consuming it during a call.
+
+`DenseIndexCache.get_or_build()` returns the existing `DenseIndex` backed by
+validated precomputed vectors. Callers provide the exact chunks, documents-only
+snapshot SHA-256 and chunking configuration. Cache keys include these inputs,
+ordered chunk IDs/text hashes/offsets, model digest, dimensions, preprocessing,
+context, server version and execution settings. JSON entries carry a vector
+checksum; malformed, incompatible or corrupt entries rebuild in full. Atomic
+same-directory replacement prevents readers from seeing partial writes.
+
+Use a private configured directory such as `.ragbench-cache/dense` (ignored by
+Git). Default limits are eight entries, 2 MiB per entry and 16 MiB total;
+eviction touches only owned SHA-256-named JSON files. No pickle, raw source text,
+benchmark questions or gold annotations are stored. The cache coordinates
+threads/instances in one process. Other processes may duplicate a build; strict
+cross-process quota coordination is not implemented. Hashes detect corruption,
+not deliberate modification by an attacker with cache-directory write access.
+Trusted injected Python transports/callbacks are not sandboxed.
+
+Batch 1 introduced no API wiring, model download or real embedding verification.
+Batch 2 now supports `bm25`, `dense` and `hybrid` through query and evaluation
+HTTP requests. BM25 remains the default and needs no embedding configuration.
+Dense/hybrid require server-side `RAGBENCH_EMBEDDING_MODEL=all-minilm:22m` and
+use `RAGBENCH_DENSE_CACHE_DIR` (default `.ragbench-cache/dense`). There is no
+automatic download or fallback. Runtime indexes reuse an eight-entry LRU keyed
+by the supplied document snapshot and effective settings. Evaluation snapshots
+remain separate from ordinary runtime documents. See the API reference for
+fusion settings and score-family names. Automated tests remain deterministic
+and offline; bounded genuine model runs were separately authorized and recorded.
+Further downloads or inference require separate approval.
+
+P2 Batch 3 adds versioned typed scores to query responses and evaluation records:
+BM25 relevance, dense cosine, bounded RRF and nullable prompt-policy evidence
+self-assessment. Signals preserve source, range, direction, effective settings,
+availability and uncalibrated status. Threshold scores include the actual value,
+threshold and comparison; always-answer scores are observational. Self-assessment
+does not override the model's decision or the independent evidence assessment.
+Missing values remain null. The runtime prompt version is now `api-v4`
+(`prompt-decision-v3` for decision instructions); earlier P1 observations used
+`api-v2`, and the P2 Batch 4 live run used `api-v3` / `prompt-decision-v2`.
+No calibration, answerability-probability or generalization claim follows.
+
+P2 Batch 4 completed 10 query POSTs and one Train evaluation within its limits:
+12 embedding calls, 13 generation attempts, zero retries and zero paid spending.
+All nine retrieval/policy combinations answered the Train UTC question; the
+logo-color query abstained, and the high-threshold evaluation abstained by design.
+All 13 citations matched source offsets and passed manual semantic-support review.
+However, all three prompt-policy ANSWER results incorrectly used
+`ambiguous_intent`. Those original observations/artifacts are preserved unchanged.
+Offline remediation now rejects inconsistent decision/reason pairs rather than
+remapping outputs: ANSWER permits `other`; ABSTAIN permits evidence/premise/scope
+codes or `other`; CLARIFY permits `ambiguous_intent` or `other`.
+
+A first targeted one-attempt rerun produced ANSWER/other but HTTP 502: the decision
+consumed the budget before answer generation. It was not counted as a successful
+HTTP query. A separately authorized final rerun used a fresh two-attempt budget
+and returned HTTP 200, `execution_status=succeeded`, ANSWER/other under
+`api-v4` / `prompt-decision-v3`. Its citation matched Python 3.11 source offsets
+[84,259) and passed manual semantic-support review. Self-assessment was 0.9,
+explicitly uncalibrated; usage was 1604 input / 289 output tokens and HTTP latency
+30.01 seconds. It used one query POST, two generation calls, zero embeddings and
+zero retries; minimum sampled RAM was 2.46 GiB. No output was silently remapped.
+
+Accepted P2 validation: 649 backend tests passed, Ruff and diff checks passed,
+and dataset hashes remained unchanged. All live work was local-only with cloud
+disabled and zero paid spending (₹0), using Train questions only. Raw artifacts
+remain outside Git. These checks establish integration, not benchmark-wide
+retrieval quality, calibration, statistical performance or generalization.
+The 256-token embedding context, conservative generation budget, model swapping,
+sampled RAM guards, process-local quotas and prototype deployment limits remain.
+P3 has not begun.
 
 ## Stage 1: Retrieval Foundation (Historical Snapshot)
 

@@ -13,6 +13,7 @@ from typing import Any
 
 from app.evaluation.results import EXPERIMENT_SCHEMA_VERSION, ExperimentRecord
 from app.generation.contracts import Decision, ExecutionStatus
+from app.generation.scores import score_from_dict
 from app.ingestion.schema import ALLOWED_SPLITS
 
 
@@ -160,6 +161,20 @@ def experiment_from_json(payload: str) -> dict[str, Any]:
         if not isinstance(run["observed"], dict) or not isinstance(run["gold"], dict):
             raise ValueError("run observed and gold must be objects")
         observed = run["observed"]
+        if "scores" in observed:
+            if not isinstance(observed["scores"], list):
+                raise ValueError("observed scores must be an array")
+            for score in observed["scores"]:
+                score_from_dict(score)
+        retrieval = observed.get("retrieval")
+        if isinstance(retrieval, dict):
+            if not isinstance(retrieval.get("scores", []), list):
+                raise ValueError("retrieval scores must be an array")
+            for score in retrieval.get("scores", []):
+                score_from_dict(score)
+            for evidence in retrieval.get("evidence", []):
+                if isinstance(evidence, dict) and evidence.get("score") is not None:
+                    score_from_dict(evidence["score"])
         if not {"decision", "execution_status", "evidence_assessment"}.issubset(
             observed
         ):

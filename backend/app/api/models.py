@@ -13,6 +13,7 @@ from app.generation.contracts import (
     Relevance,
     Sufficiency,
 )
+from app.generation.scores import ScoreKind, ScoreRole, ScoreSource, score_from_dict
 
 
 class StrictModel(BaseModel):
@@ -20,8 +21,25 @@ class StrictModel(BaseModel):
 
 
 class RetrievalRequest(StrictModel):
-    method: Literal["bm25"] = "bm25"
+    method: Literal["bm25", "dense", "hybrid"] = "bm25"
     top_k: int = Field(default=5, ge=1, le=20)
+    candidate_k: int | None = Field(default=None, ge=1, le=256, strict=True)
+    rrf_k: int | None = Field(default=None, ge=1, le=1000, strict=True)
+
+    @model_validator(mode="after")
+    def validate_method_settings(self):
+        if self.method != "hybrid" and (
+            self.candidate_k is not None or self.rrf_k is not None
+        ):
+            raise ValueError("Fusion settings require hybrid retrieval")
+        if self.candidate_k is not None and self.candidate_k < self.top_k:
+            raise ValueError("candidate_k must be at least top_k")
+        return self
+
+    @property
+    def score_type(self) -> str:
+        return {"bm25": "bm25", "dense": "dense_cosine",
+                "hybrid": "hybrid_rrf"}[self.method]
 
 
 class PolicyRequest(StrictModel):
@@ -74,7 +92,7 @@ class QueryRequest(StrictModel):
     def validate_score_method(self):
         if (
             self.policy.name == "threshold"
-            and self.policy.score_type != self.retrieval.method
+            and self.policy.score_type != self.retrieval.score_type
         ):
             raise ValueError("threshold score_type must match retrieval method")
         return self
@@ -101,7 +119,7 @@ class EvaluationRequest(StrictModel):
         for policy in self.policies:
             if (
                 policy.name == "threshold"
-                and policy.score_type != self.retrieval.method
+                and policy.score_type != self.retrieval.score_type
             ):
                 raise ValueError("threshold score_type must match retrieval method")
         return self
@@ -143,6 +161,29 @@ class CitationResponse(PublicModel):
     end_char: int
 
 
+class ScoreResponse(PublicModel):
+    kind: ScoreKind
+    value: float | None = Field(strict=True, allow_inf_nan=False)
+    source: ScoreSource
+    retrieval_method: str | None
+    parameters: dict[str, JsonValue]
+    role: ScoreRole
+    threshold: float | None = Field(strict=True, allow_inf_nan=False)
+    threshold_direction: Literal["at_least", "at_most"] | None
+    unavailable_reason: str | None
+    availability: Literal["available", "unavailable"]
+    lower_bound: float
+    upper_bound: float | None
+    direction: Literal["higher_is_more_support", "higher_is_more_relevant"]
+    calibration: Literal["uncalibrated"]
+    schema_version: Literal["ragbench.score.v1"]
+
+    @model_validator(mode="after")
+    def validate_score_provenance(self):
+        score_from_dict(self.model_dump())
+        return self
+
+
 class EvidenceResponse(PublicModel):
     chunk_id: str
     document_id: str
@@ -158,6 +199,7 @@ class EvidenceResponse(PublicModel):
     retrieval_score: float | None = None
     retrieval_method: str | None = None
     contains_injection: bool = False
+    score: ScoreResponse | None = None
 
 
 class AssessmentResponse(PublicModel):
@@ -224,6 +266,8 @@ class QueryResponse(PublicModel):
     prompt_version: str | None
     latency_ms: float | None
     token_usage: UsageResponse | None
+    scores: list[ScoreResponse] = Field(default_factory=list)
+    retrieval_parameters: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class EvaluationAccepted(BaseModel):
@@ -249,6 +293,7 @@ class RetrievalResponse(PublicModel):
     top_k: int
     evidence: list[EvidenceResponse]
     parameters: dict[str, JsonValue]
+    scores: list[ScoreResponse] = Field(default_factory=list)
 
 
 class ObservedResultResponse(PublicModel):
@@ -270,6 +315,7 @@ class ObservedResultResponse(PublicModel):
     latency_ms: float | None
     token_usage: UsageResponse | None
     observed_safe_behavior: bool | None
+    scores: list[ScoreResponse] = Field(default_factory=list)
 
 
 class GoldSpanResponse(PublicModel):

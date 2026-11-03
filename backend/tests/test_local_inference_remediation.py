@@ -72,6 +72,7 @@ def decision(value="ANSWER", clarification=None):
         "reason": "Offline decision fixture.",
         "reason_code": "other",
         "supporting_evidence_ids": ["chunk-1"] if value == "ANSWER" else [],
+        "self_assessment": 0.75,
         "clarification_question": clarification,
     }
 
