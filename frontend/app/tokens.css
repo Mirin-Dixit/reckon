@@ -1,0 +1,57 @@
+/* Shared near-black workbench tokens. Font assets are Latin subsets served locally. */
+:root {
+  color-scheme: dark;
+  --canvas: #090d0c;
+  --ink: #eaede7;
+  --muted: #aeb9b1;
+  --stone: #3b4941;
+  --accent: #70d99d;
+  --positive: #8ee2ad;
+  --surface: #131b18;
+  --highlight: #70d99d;
+  --wave-sage: #b5e5c6;
+  --wave-green: #46dc8c;
+  --wave-sea: #39bca2;
+  --wave-deep: #168360;
+  --type-xs: 12px;
+  --type-sm: 14px;
+  --type-body: 16px;
+  --type-lead: 20px;
+  --type-section: 28px;
+  --type-title: 44px;
+  --type-display: 72px;
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 72px;
+  --s9: 96px;
+  --duration-fast: 150ms;
+  --duration-state: 240ms;
+  --duration-draw: 400ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@theme inline {
+  --color-paper: var(--canvas);
+  --color-ink: var(--ink);
+  --color-forest: var(--canvas);
+  --color-emerald: var(--accent);
+  --color-highlight: var(--highlight);
+  --color-olive: var(--positive);
+  --color-stone: var(--stone);
+  --font-sans: var(--font-plex-sans);
+  --font-serif: var(--font-source-serif);
+  --font-mono: var(--font-plex-mono);
+  --text-xs: var(--type-xs);
+  --text-sm: var(--type-sm);
+  --text-base: var(--type-body);
+  --text-xl: var(--type-lead);
+  --text-2xl: var(--type-section);
+  --text-4xl: var(--type-title);
+  --text-7xl: var(--type-display);
+  --spacing: var(--s1);
+  --ease-notebook: var(--ease);
+}

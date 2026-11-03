@@ -43,7 +43,7 @@ from app.generation.policies import (
 )
 from app.generation.providers.openai_responses import OpenAIResponsesProvider
 from app.ingestion.chunking import chunk_documents
-from app.ingestion.loader import load_dataset
+from app.ingestion.loader import load_documents_from_jsonl
 from app.ingestion.schema import Document
 from app.retrieval.bm25 import BM25Index
 
@@ -118,7 +118,7 @@ class RuntimeService:
 
     @classmethod
     def from_environment(cls) -> RuntimeService:
-        documents, _ = load_dataset(DOCUMENTS_PATH, QUESTIONS_PATH)
+        documents = load_documents_from_jsonl(DOCUMENTS_PATH)
         provider_config = OpenAIProviderConfig.from_env()
         provider = _LazyOpenAIProvider(provider_config)
         return cls(documents, provider, provider_config)

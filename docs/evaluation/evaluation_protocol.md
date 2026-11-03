@@ -26,6 +26,13 @@ sanitized environment metadata, outcomes, errors, and metric summaries.
 
 ## Runtime/gold separation
 
+Ordinary API initialization uses `load_documents_from_jsonl` and never opens the
+benchmark question file. Health and query execution therefore do not require
+questions to be available. Only the explicit evaluation path constructs an
+`EvaluationRunner`, which loads and fingerprints both files as before. Static
+architectural checks prohibit gold-loader imports/calls in inference modules;
+runtime read guards and gold-sentinel tests cover the supported query path.
+
 Gold fields are held as validated `Question` records only inside the evaluator.
 The pipeline factory receives the selected policy object, a read-only mapping of
 `Document` objects, sanitized retrieval and generation configurations, and the

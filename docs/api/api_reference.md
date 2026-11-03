@@ -193,6 +193,7 @@ From the repository root in PowerShell:
 .\.venv\Scripts\python.exe -m pip install -e ".[server,dev,openai]"
 $env:RAGBENCH_MODEL = "your-configured-model"
 # Configure OPENAI_API_KEY through your local secret manager or shell profile.
+$env:RAGBENCH_CORS_ORIGINS = "http://127.0.0.1:3000,http://127.0.0.1:3001"
 .\.venv\Scripts\python.exe -m uvicorn app.api.main:app --app-dir backend --host 127.0.0.1 --port 8000
 ```
 
@@ -207,6 +208,9 @@ a configured provider and model.
 CORS is disabled when `RAGBENCH_CORS_ORIGINS` is empty. Configure exact
 comma-separated origins for browser clients. Wildcard origins are rejected;
 credentials are not enabled. CORS is not authentication.
+The local Workbench uses port 3001 when port 3000 is occupied. Configure its
+exact origin before starting Uvicorn and restart the backend after changes; CORS
+settings are captured when the application is created. Defaults remain empty.
 
 Authentication is out of scope; no placeholder auth is provided. Bind to
 localhost for development and place the API behind an authenticated trusted

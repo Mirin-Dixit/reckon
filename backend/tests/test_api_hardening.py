@@ -11,7 +11,8 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
-from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 from uuid import uuid4
 
 import pytest
@@ -74,6 +75,94 @@ def test_documented_uvicorn_startup_serves_health_without_provider_calls():
                 assert reply.status == 200
                 assert body["runtime_initialized"] is True
                 assert body["provider_connection_tested"] is False
+        finally:
+            server.should_exit = True
+            worker.join(timeout=10)
+            assert not worker.is_alive()
+
+
+def test_local_frontend_cors_configuration_is_exact():
+    settings = ApiSettings.from_env(
+        {"RAGBENCH_CORS_ORIGINS": "http://127.0.0.1:3000,http://127.0.0.1:3001"}
+    )
+    assert settings.cors_origins == (
+        "http://127.0.0.1:3000", "http://127.0.0.1:3001"
+    )
+    assert ApiSettings.from_env({}).cors_origins == ()
+    with pytest.raises(ValueError, match="Wildcard CORS"):
+        ApiSettings.from_env({"RAGBENCH_CORS_ORIGINS": "http://127.0.0.1:3001,*"})
+
+
+def test_local_frontend_cors_over_real_loopback_http():
+    origin = "http://127.0.0.1:3001"
+    application = create_app(
+        settings=ApiSettings.from_env({"RAGBENCH_CORS_ORIGINS": origin}),
+        runtime_factory=FakeRuntime,
+    )
+
+    @application.get("/cors-test-error")
+    def unexpected():
+        raise RuntimeError("PRIVATE_CORS_ERROR_SENTINEL")
+
+    server = uvicorn.Server(uvicorn.Config(application, log_level="error"))
+    with socket.socket() as listener:
+        listener.bind(("127.0.0.1", 0))
+        listener.listen()
+        base = f"http://127.0.0.1:{listener.getsockname()[1]}"
+        worker = threading.Thread(
+            target=server.run, kwargs={"sockets": [listener]}, daemon=True
+        )
+        worker.start()
+        try:
+            deadline = time.monotonic() + 10
+            while not server.started and worker.is_alive():
+                assert time.monotonic() < deadline, "Server did not start"
+                time.sleep(0.01)
+            assert server.started
+            for requested_origin, allowed in (
+                (origin, True), ("https://unexpected.example", False),
+                ("http://127.0.0.1:30010", False),
+            ):
+                request = Request(
+                    base + "/api/v1/health", headers={"Origin": requested_origin}
+                )
+                with urlopen(request, timeout=5) as reply:
+                    assert reply.status == 200
+                    assert json.load(reply)["provider_connection_tested"] is False
+                    assert reply.headers.get("Access-Control-Allow-Origin") == (
+                        origin if allowed else None
+                    )
+                    assert reply.headers.get("Access-Control-Allow-Credentials") is None
+            preflight = Request(
+                base + "/api/v1/health", method="OPTIONS",
+                headers={"Origin": origin, "Access-Control-Request-Method": "GET"},
+            )
+            with urlopen(preflight, timeout=5) as reply:
+                assert reply.headers["Access-Control-Allow-Origin"] == origin
+            denied_preflight = Request(
+                base + "/api/v1/health", method="OPTIONS",
+                headers={
+                    "Origin": "https://unexpected.example",
+                    "Access-Control-Request-Method": "GET",
+                },
+            )
+            with pytest.raises(HTTPError) as denied:
+                urlopen(denied_preflight, timeout=5)
+            with denied.value as reply:
+                assert reply.code == 400
+                assert reply.headers.get("Access-Control-Allow-Origin") is None
+                assert reply.headers.get("Access-Control-Allow-Credentials") is None
+            error_request = Request(
+                base + "/cors-test-error", headers={"Origin": origin}
+            )
+            with pytest.raises(HTTPError) as captured:
+                urlopen(error_request, timeout=5)
+            with captured.value as reply:
+                assert reply.code == 500
+                assert reply.headers["Access-Control-Allow-Origin"] == origin
+                body = reply.read().decode()
+                assert json.loads(body)["error"]["code"] == "internal_error"
+                assert "PRIVATE_CORS_ERROR_SENTINEL" not in body
         finally:
             server.should_exit = True
             worker.join(timeout=10)

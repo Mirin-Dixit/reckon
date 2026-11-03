@@ -21,8 +21,10 @@ Stage 3G.1 provides a local FastAPI backend, provider-neutral generation contrac
 three decision baselines, an optional OpenAI adapter, and an evaluation runner.
 The API supports BM25 retrieval and a synchronous, process-local experiment
 registry. Dense and hybrid retrieval remain available as Python interfaces;
-no production embedder is wired into the API. Stage 4 frontend development has
-not begun.
+no production embedder is wired into the API. Stage 4A adds a local frontend
+foundation and read-only System Status view; Query Lab, experiment execution UI,
+analytics and deployment are not implemented. See
+[frontend setup and verification](frontend/README.md).
 
 The accepted, frozen pilot contains 17 documents and 54 questions (Train 50,
 Dev 3, Test 1). Train contains 30 answerable and 20 unanswerable questions.
@@ -159,7 +161,7 @@ ragbench/
 ├── data/
 │   └── sample/             # 5 Python 3.11 docs, 10 labeled questions
 ├── docs/                   # Decisions, reference notes, and results
-├── frontend/               # Next.js web interface (scaffolded)
+├── frontend/               # Next.js foundation and System Status
 ├── pyproject.toml          # Project configuration and dev dependencies
 └── README.md
 ```
