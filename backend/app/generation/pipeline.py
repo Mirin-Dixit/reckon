@@ -275,7 +275,9 @@ class RagPipeline:
                     if generated.latency_ms is not None
                     else selection.latency_ms
                 ),
-                token_usage=generated.token_usage or selection.token_usage,
+                token_usage=_combined_usage(
+                    selection.token_usage, generated.token_usage
+                ),
                 prompt_version=self.config.prompt_version,
             )
         except Exception as error:
@@ -322,6 +324,26 @@ class RagPipeline:
             retrieval_method=self.config.retrieval_method,
             contains_injection=document.contains_injection or overlaps_injection,
         )
+
+
+def _combined_usage(
+    first: TokenUsage | None, second: TokenUsage | None
+) -> TokenUsage | None:
+    """Combine reported decision and answer usage; never invent missing counts."""
+    if first is None:
+        return second
+    if second is None:
+        return first
+
+    def total(name: str) -> int | None:
+        left, right = getattr(first, name), getattr(second, name)
+        return left + right if left is not None and right is not None else None
+
+    return TokenUsage(
+        input_tokens=total("input_tokens"),
+        output_tokens=total("output_tokens"),
+        total_tokens=total("total_tokens"),
+    )
 
 
 def _execution_status(error: Exception) -> ExecutionStatus:

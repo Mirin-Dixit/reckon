@@ -125,8 +125,6 @@ class RecordingProvider:
                     "claim": "Manager approval is required.",
                     "evidence_id": evidence["evidence_id"],
                     "quote": evidence["text"],
-                    "start_char": evidence["start_char"],
-                    "end_char": evidence["end_char"],
                 }],
             }
         return GenerationResponse(

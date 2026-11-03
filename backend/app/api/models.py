@@ -175,6 +175,9 @@ class ProviderResponse(PublicModel):
     model: str
     request_id: str | None = None
     api_version: str | None = None
+    model_digest: str | None = None
+    quantization: str | None = None
+    completion_reason: str | None = None
 
 
 class UsageResponse(PublicModel):

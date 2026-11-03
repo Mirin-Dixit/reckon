@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import threading
 import time
 from collections.abc import Callable, Mapping
 from typing import Any
@@ -37,6 +38,8 @@ class OpenAIResponsesProvider:
     ) -> None:
         self.config = config
         self._sleep = sleep_fn
+        self._request_lock = threading.Lock()
+        self._request_count = 0
         if client is not None:
             self._client = client
             return
@@ -110,7 +113,16 @@ class OpenAIResponsesProvider:
         if temperature is not None:
             parameters["temperature"] = temperature
         if max_output_tokens is not None:
+            if max_output_tokens > self.config.max_output_tokens:
+                raise ProviderError(
+                    ProviderErrorKind.CONFIGURATION,
+                    "Output-token limit exceeds the server-configured maximum",
+                )
             parameters["max_output_tokens"] = max_output_tokens
+        if not 0 < timeout_seconds <= 120:
+            raise ProviderError(
+                ProviderErrorKind.CONFIGURATION, "Request timeout exceeds 120 seconds"
+            )
         if request.structured_output is not None:
             spec = request.structured_output
             parameters["text"] = {
@@ -127,6 +139,17 @@ class OpenAIResponsesProvider:
         if callable(with_options):
             client = with_options(timeout=timeout_seconds, max_retries=0)
         started_at = time.perf_counter()
+        # Count attempts, including retries and failures, before any network call.
+        # This process-local safety budget is not a persistent daily spend cap.
+        with self._request_lock:
+            if self._request_count >= self.config.max_provider_requests:
+                raise ProviderError(
+                    ProviderErrorKind.RATE_LIMIT,
+                    "The local provider request budget is exhausted",
+                    retryable=False,
+                    provider="openai",
+                )
+            self._request_count += 1
         try:
             response = client.responses.create(**parameters)
         except Exception as error:

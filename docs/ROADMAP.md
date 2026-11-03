@@ -29,21 +29,42 @@ credential in the current process. No live provider calls were made.
 Retrieval scores are not calibrated answerability probabilities; the current
 answered-run ranking diagnostic is not a true threshold sweep.
 
+## Current constraint update - zero spending
+
+The user's zero-spending instruction supersedes the earlier OpenAI-first and
+paid-cloud execution plans below. P1 uses local Ollama and an approved open-weight
+model. OpenAI remains optional inactive adapter code. Installations and model
+downloads require explicit approval; no paid APIs, credits or hosting are allowed.
+Later embeddings and judging must also run locally with reviewed licenses.
+Demonstration/deployment uses existing hardware; no paid cloud service is planned.
+Historical pre-flight findings above remain historical, not current readiness.
+
 ## Pass 1 - Functional, research-backed RAGBench
 
-### P1 - Live BM25 + OpenAI
+### P1 - Live BM25 + local Ollama
 
-- [ ] Correct or reverify strict evaluator-only gold-label loading.
-- [ ] Configure the provider safely, including explicit model, timeout,
+- [x] Correct or reverify strict evaluator-only gold-label loading.
+- [x] Configure the provider safely, including explicit model, timeout,
   bounded retries and output-token limits; keep credentials server-side.
-- [ ] Execute real BM25-backed answer generation through the actual versioned
-  query HTTP route, with authorization for any paid calls.
-- [ ] Preserve execution failure versus intentional abstention and record
+- [x] Execute real BM25-backed answer generation through the actual versioned
+  query HTTP route, after authorized local installation/model download; no paid calls.
+- [x] Preserve execution failure versus intentional abstention and record
   effective settings, model/provider metadata, token usage and provenance.
 
 Gate: isolation/provider/API regression tests pass; a documented real HTTP
 answer cites supplied evidence, and failure paths remain distinguishable.
 Do not claim live generation from mocked success.
+
+Accepted 3 November 2026 for local BM25 integration only: Ollama 0.40.14,
+`qwen3:4b-q4_K_M`, context 8192, top-k 3, output 1024, thinking disabled,
+zero retries, concurrency 1, loopback and cloud disabled. Three genuine Train
+HTTP requests returned 200: always-answer and threshold tau=0 on `q_pilot_020`
+returned ANSWER; prompt-abstention on `q_batch2_011` returned ABSTAIN.
+One adapter used 3/4 provider attempts; spending was ₹0. Exact citation offsets
+and manual semantic support were verified. Backend validation: 380 tests passed,
+Ruff and diff checks passed. Earlier validation failures and the memory-blocked
+attempt remain documented in the API reference. No Test inference occurred;
+this is not benchmark-wide reliability or generalization evidence.
 
 ### P2 - Retrieval + Confidence
 
@@ -155,4 +176,4 @@ criteria independently of Pass 1 functional progress.
 
 The pre-flight loader inventory and baseline validation are inspection checks,
 not Test inference experiments or tuning. Future research execution must obey
-the freeze rules above. No implementation milestone is marked complete here.
+the freeze rules above. Only P1 is accepted here, within its explicitly limited local BM25 scope.

@@ -17,7 +17,11 @@ from fastapi import Request
 from app.api.errors import ApiProblem
 from app.evaluation.runner import EvaluationRunner
 from app.generation.answering import ProviderAnswerGenerator
-from app.generation.config import OpenAIProviderConfig
+from app.generation.config import (
+    OllamaProviderConfig,
+    OpenAIProviderConfig,
+    load_provider_config,
+)
 from app.generation.contracts import (
     EvidenceAssessment,
     GenerationRequest,
@@ -41,6 +45,7 @@ from app.generation.policies import (
     ThresholdDirection,
     ThresholdScoreType,
 )
+from app.generation.providers.ollama import OllamaProvider
 from app.generation.providers.openai_responses import OpenAIResponsesProvider
 from app.ingestion.chunking import chunk_documents
 from app.ingestion.loader import load_documents_from_jsonl
@@ -65,7 +70,7 @@ CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 BM25_K1 = 1.5
 BM25_B = 0.75
-PROMPT_VERSION = "api-v1"
+PROMPT_VERSION = "api-v2"
 
 
 def openai_sdk_available() -> bool:
@@ -107,7 +112,7 @@ class RuntimeService:
         self,
         documents: list[Document],
         provider: LLMProvider,
-        provider_config: OpenAIProviderConfig,
+        provider_config: OpenAIProviderConfig | OllamaProviderConfig,
     ) -> None:
         self.documents = {document.id: document for document in documents}
         self.chunks = chunk_documents(
@@ -119,8 +124,12 @@ class RuntimeService:
     @classmethod
     def from_environment(cls) -> RuntimeService:
         documents = load_documents_from_jsonl(DOCUMENTS_PATH)
-        provider_config = OpenAIProviderConfig.from_env()
-        provider = _LazyOpenAIProvider(provider_config)
+        provider_config = load_provider_config()
+        provider = (
+            OllamaProvider(provider_config)
+            if isinstance(provider_config, OllamaProviderConfig)
+            else _LazyOpenAIProvider(provider_config)
+        )
         return cls(documents, provider, provider_config)
 
     def close(self) -> None:
@@ -215,7 +224,15 @@ class RuntimeService:
     def resolve_generation(self, generation: ApiGenerationRequest) -> dict[str, Any]:
         """Resolve request overrides once, before execution and provenance recording."""
         config = self.provider_config
-        return {
+        if (
+            generation.max_output_tokens is not None
+            and generation.max_output_tokens > config.max_output_tokens
+        ):
+            raise ProviderError(
+                ProviderErrorKind.CONFIGURATION,
+                "Output-token limit exceeds the server-configured maximum",
+            )
+        effective = {
             "provider": config.provider,
             "model": self.resolve_model(generation.model),
             "temperature": (
@@ -234,11 +251,21 @@ class RuntimeService:
                 else config.timeout_seconds
             ),
             "retry_count": config.retry_count,
+            "max_provider_requests": config.max_provider_requests,
             "sdk_retry_count": 0,
             "store": False,
             "prompt_version": PROMPT_VERSION,
             "seed_applied": False,
         }
+        if isinstance(config, OllamaProviderConfig):
+            effective["timeout_seconds"] = min(
+                effective["timeout_seconds"], config.timeout_seconds
+            )
+            effective.update(
+                base_url=config.base_url, context_size=config.context_size,
+                think=False, concurrency=1,
+            )
+        return effective
 
     @staticmethod
     def retrieval_configuration_values(top_k: int) -> dict[str, Any]:
@@ -261,6 +288,8 @@ class RuntimeService:
             model = self.resolve_model(requested_model)
         except ProviderError:
             return False
+        if isinstance(self.provider_config, OllamaProviderConfig):
+            return bool(model) and self.provider.available(model)
         return (
             bool(model)
             and bool(os.environ.get(self.provider_config.api_key_env_var))

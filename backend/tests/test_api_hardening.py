@@ -566,7 +566,8 @@ class AdversarialSDK:
             }
         else:
             first = evidence[0]
-            quote = first["text"][:10]
+            # The offset-free wire format needs a uniquely occurring quotation.
+            quote = first["text"]
             payload = {
                 "answer": "A mock grounded answer.",
                 "citations": [
@@ -576,8 +577,6 @@ class AdversarialSDK:
                         if self.mode == "invalid_citation"
                         else first["evidence_id"],
                         "quote": quote,
-                        "start_char": first["start_char"],
-                        "end_char": first["start_char"] + len(quote),
                     }
                 ],
                 "unsupported_premises": ["No approval established."],

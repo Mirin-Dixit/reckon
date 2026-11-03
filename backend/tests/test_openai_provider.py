@@ -300,8 +300,6 @@ def test_provider_answer_generator_handles_untrusted_content_and_validates_ids()
         "claim": "Approval is required.",
         "evidence_id": "e-1",
         "quote": source_text,
-        "start_char": 50,
-        "end_char": 50 + len(source_text),
     }
     answer_payload = {
         "answer": "Requests need approval.",
@@ -338,8 +336,6 @@ def test_answer_generator_rejects_unknown_evidence_ids():
                 "claim": "Claim.",
                 "evidence_id": "unknown",
                 "quote": "Evidence text.",
-                "start_char": 0,
-                "end_char": len("Evidence text."),
             }
         ],
         "unsupported_premises": [],
@@ -373,8 +369,6 @@ def test_openai_components_are_pluggable_into_existing_prompt_policy():
                 "claim": "The account renews annually.",
                 "evidence_id": "chunk-1",
                 "quote": text,
-                "start_char": 0,
-                "end_char": len(text),
             }
         ],
         "unsupported_premises": [],

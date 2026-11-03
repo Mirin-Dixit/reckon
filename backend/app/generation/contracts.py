@@ -140,6 +140,9 @@ class ProviderMetadata:
     model: str
     request_id: str | None = None
     api_version: str | None = None
+    model_digest: str | None = None
+    quantization: str | None = None
+    completion_reason: str | None = None
 
     def __post_init__(self) -> None:
         _non_empty(self.provider, "provider")

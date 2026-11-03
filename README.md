@@ -17,6 +17,33 @@ A fundamental failure mode of Retrieval-Augmented Generation (RAG) systems is ge
 
 ## Current Backend Status
 
+P1 now defaults to a local-only Ollama provider with structured JSON, bounded
+context/output, one-inference concurrency and a shared attempt budget. The
+project has a strict zero-spending constraint: paid inference plans are cancelled.
+OpenAI remains optional, inactive compatibility code, never an automatic fallback.
+P1 is accepted within the local BM25 integration scope. On 3 November 2026,
+three genuine Train POST requests to `/api/v1/query` returned HTTP 200:
+always-answer and threshold (tau=0) on `q_pilot_020` returned ANSWER;
+prompt-abstention on `q_batch2_011` returned ABSTAIN. Verification used Ollama
+0.40.14, exact local model `qwen3:4b-q4_K_M`, BM25 top-k 3, context 8192,
+thinking disabled, output limit 1024, zero retries and concurrency 1. One shared
+adapter consumed 3 of 4 allowed provider attempts. Cloud was disabled and the
+server bound to loopback. Spending was ₹0; existing hardware, electricity and
+internet remain resource costs.
+
+All four answer citations matched exact source offsets and passed manual
+semantic-support review. Backend validation passed 380 tests, Ruff and
+`git diff --check`. These Train checks establish local BM25 integration only,
+not benchmark-wide reliability, held-out performance or generalization.
+Structural citation validation is not an automated semantic judge.
+
+Historically, the initial three local queries failed strict citation/decision
+validation. P1.1 resolved offsets from unique exact quotes and strengthened
+JSON-null instructions. A later readiness attempt stopped before inference
+due to insufficient RAM; the accepted batch proceeded only after memory checks.
+See [local setup](docs/api/api_reference.md#installation-and-model-approval-gate)
+and [accepted verification results](docs/api/api_reference.md#accepted-p1-local-inference-verification).
+
 Stage 3G.1 provides a local FastAPI backend, provider-neutral generation contracts,
 three decision baselines, an optional OpenAI adapter, and an evaluation runner.
 The API supports BM25 retrieval and a synchronous, process-local experiment
