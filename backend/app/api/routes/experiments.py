@@ -17,11 +17,26 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+def authorized_runtime(request: Request):
+    """Block legacy empirical execution before runtime/provider initialization.
+
+    A trusted server-side authorizer is injectable for offline contract tests.
+    No environment variable or HTTP input enables empirical evaluation.
+    Future real-data integration must verify acceptance and inference permission.
+    """
+    authorizer = request.app.state.evaluation_authorizer
+    if authorizer is None:
+        raise ApiProblem(403, "empirical_evaluation_deferred",
+                         "Empirical evaluation is deferred. Use synthetic experiments.")
+    authorizer()
+    return get_runtime_service(request)
+
+
 @router.post("/evaluations", response_model=EvaluationAccepted)
 def start_evaluation(
     body: EvaluationRequest,
     request: Request,
-    runtime=Depends(get_runtime_service),
+    runtime=Depends(authorized_runtime),
 ):
     try:
         runner = runtime.evaluation_runner()

@@ -1,0 +1,3090 @@
+{
+  "schema_version": "ragbench.experiment-job.v1",
+  "id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c",
+  "status": "done",
+  "created_at": "2026-11-04T09:12:06.125786Z",
+  "updated_at": "2026-11-04T09:12:06.814455Z",
+  "notice": "Synthetic fixture \u2014 development only; no empirical claims.",
+  "empirical_evaluation": false,
+  "configuration": {
+    "split": "dev",
+    "question_ids": [
+      "synthetic_dev_01"
+    ],
+    "policies": [
+      {
+        "name": "always_answer",
+        "score_type": null,
+        "threshold": null,
+        "direction": "at_least",
+        "missing_score_decision": "ABSTAIN"
+      },
+      {
+        "name": "prompt_abstention",
+        "score_type": null,
+        "threshold": null,
+        "direction": "at_least",
+        "missing_score_decision": "ABSTAIN"
+      },
+      {
+        "name": "threshold",
+        "score_type": "bm25",
+        "threshold": 0.0,
+        "direction": "at_least",
+        "missing_score_decision": "ABSTAIN"
+      }
+    ],
+    "retrieval": {
+      "method": "bm25",
+      "top_k": 3,
+      "candidate_k": null,
+      "rrf_k": null,
+      "chunk_size": 500,
+      "chunk_overlap": 50,
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "generation": null,
+    "random_seed": 0,
+    "fail_fast": false,
+    "profile": "p4-synthetic.v1"
+  },
+  "runtime_source_sha256": "b37259df7ddd3e43cab7bad925904cdb0d9802de8f0f433332009aa791f6ed2b",
+  "dataset_fingerprint": {
+    "documents_sha256": "f219b9bd69632f6a34f9eb0a2b350d44146e0051068d32f1a9632e8c152d0f43",
+    "questions_sha256": "087836bee1757d4f929b73e3e96389a62c180fb6da7dfd0b30f5bf627a29d73f"
+  },
+  "expected_run_count": 3,
+  "observed_run_count": 3,
+  "observations": [
+    {
+      "run_id": "f7e46888-bdda-4d6e-a997-471f52260dc5",
+      "question_id": "synthetic_dev_01",
+      "policy_name": "always_answer",
+      "observed": {
+        "decision": "ANSWER",
+        "evidence_assessment": {
+          "relevance": "not_assessed",
+          "sufficiency": "not_assessed",
+          "supporting_evidence_ids": [],
+          "contradictions": [],
+          "missing_premises": [],
+          "unsupported_assumptions": [],
+          "ambiguity_requiring_clarification": null
+        },
+        "execution_status": "succeeded",
+        "answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+        "unsupported_premises": [],
+        "surfaced_contradictions": [],
+        "clarification_question": null,
+        "abstention_reason": null,
+        "decision_reason": {
+          "code": "other",
+          "explanation": "Always-answer baseline selects ANSWER regardless of evidence."
+        },
+        "citations": [
+          {
+            "claim": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "evidence_id": "synthetic-ledger_c0000",
+            "quote": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "start_char": 0,
+            "end_char": 63
+          }
+        ],
+        "policy_name": "always_answer",
+        "policy_parameters": {},
+        "retrieval": {
+          "method": "bm25",
+          "top_k": 3,
+          "evidence": [
+            {
+              "chunk_id": "synthetic-ledger_c0000",
+              "document_id": "synthetic-ledger",
+              "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "start_char": 0,
+              "end_char": 63,
+              "title": "Fictional inventory ledger",
+              "source_url": "local:synthetic-ledger",
+              "version": "synthetic.v1",
+              "source_date": null,
+              "domain": "synthetic",
+              "retrieval_rank": 1,
+              "retrieval_score": 1.5206052401022703,
+              "retrieval_method": "bm25",
+              "contains_injection": false,
+              "score": {
+                "kind": "bm25",
+                "value": 1.5206052401022703,
+                "source": "retrieval",
+                "retrieval_method": "bm25",
+                "parameters": {
+                  "method": "bm25",
+                  "top_k": 3,
+                  "candidate_k": null,
+                  "rrf_k": null,
+                  "chunk_size": 500,
+                  "chunk_overlap": 50,
+                  "k1": 1.5,
+                  "b": 0.75,
+                  "score_aggregation": "max"
+                },
+                "role": "observational",
+                "threshold": null,
+                "threshold_direction": null,
+                "unavailable_reason": null,
+                "availability": "available",
+                "lower_bound": 0.0,
+                "upper_bound": null,
+                "direction": "higher_is_more_relevant",
+                "calibration": "uncalibrated",
+                "schema_version": "ragbench.score.v1"
+              }
+            }
+          ],
+          "parameters": {
+            "method": "bm25",
+            "top_k": 3,
+            "candidate_k": null,
+            "rrf_k": null,
+            "chunk_size": 500,
+            "chunk_overlap": 50,
+            "k1": 1.5,
+            "b": 0.75,
+            "score_aggregation": "max"
+          },
+          "scores": [
+            {
+              "kind": "bm25",
+              "value": 1.5206052401022703,
+              "source": "retrieval",
+              "retrieval_method": "bm25",
+              "parameters": {
+                "method": "bm25",
+                "top_k": 3,
+                "candidate_k": null,
+                "rrf_k": null,
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "k1": 1.5,
+                "b": 0.75,
+                "score_aggregation": "max"
+              },
+              "role": "observational",
+              "threshold": null,
+              "threshold_direction": null,
+              "unavailable_reason": null,
+              "availability": "available",
+              "lower_bound": 0.0,
+              "upper_bound": null,
+              "direction": "higher_is_more_relevant",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            }
+          ]
+        },
+        "provider": {
+          "provider": "synthetic",
+          "model": "fixture-rules.v1",
+          "request_id": null,
+          "api_version": null,
+          "model_digest": null,
+          "quantization": null,
+          "completion_reason": null
+        },
+        "prompt_version": "synthetic-fixture.v1",
+        "latency_ms": null,
+        "token_usage": null,
+        "observed_safe_behavior": null,
+        "scores": [
+          {
+            "kind": "bm25",
+            "value": 1.5206052401022703,
+            "source": "retrieval",
+            "retrieval_method": "bm25",
+            "parameters": {
+              "method": "bm25",
+              "top_k": 3,
+              "candidate_k": null,
+              "rrf_k": null,
+              "chunk_size": 500,
+              "chunk_overlap": 50,
+              "k1": 1.5,
+              "b": 0.75,
+              "score_aggregation": "max"
+            },
+            "role": "observational",
+            "threshold": null,
+            "threshold_direction": null,
+            "unavailable_reason": null,
+            "availability": "available",
+            "lower_bound": 0.0,
+            "upper_bound": null,
+            "direction": "higher_is_more_relevant",
+            "calibration": "uncalibrated",
+            "schema_version": "ragbench.score.v1"
+          }
+        ]
+      },
+      "gold": {
+        "question_id": "synthetic_dev_01",
+        "split": "dev",
+        "is_answerable": true,
+        "expected_answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+        "expected_safe_behavior": null,
+        "unanswerable_category": null,
+        "ambiguity_type": null,
+        "domain": "synthetic",
+        "question_type": "synthetic fixture",
+        "evidence_spans": [
+          {
+            "doc_id": "synthetic-ledger",
+            "start_char": 0,
+            "end_char": 63,
+            "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "id": "synthetic-ledger_s0_63"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "run_id": "1863dac5-ce92-4085-ae1e-7cb46aae234a",
+      "question_id": "synthetic_dev_01",
+      "policy_name": "prompt_abstention",
+      "observed": {
+        "decision": "ANSWER",
+        "evidence_assessment": {
+          "relevance": "not_assessed",
+          "sufficiency": "not_assessed",
+          "supporting_evidence_ids": [],
+          "contradictions": [],
+          "missing_premises": [],
+          "unsupported_assumptions": [],
+          "ambiguity_requiring_clarification": null
+        },
+        "execution_status": "succeeded",
+        "answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+        "unsupported_premises": [],
+        "surfaced_contradictions": [],
+        "clarification_question": null,
+        "abstention_reason": null,
+        "decision_reason": {
+          "code": "other",
+          "explanation": "Synthetic rule response."
+        },
+        "citations": [
+          {
+            "claim": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "evidence_id": "synthetic-ledger_c0000",
+            "quote": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "start_char": 0,
+            "end_char": 63
+          }
+        ],
+        "policy_name": "prompt_based_abstention",
+        "policy_parameters": {
+          "model": "fixture-rules.v1",
+          "settings": {
+            "temperature": null,
+            "seed": null,
+            "max_output_tokens": null,
+            "timeout_seconds": 30.0
+          }
+        },
+        "retrieval": {
+          "method": "bm25",
+          "top_k": 3,
+          "evidence": [
+            {
+              "chunk_id": "synthetic-ledger_c0000",
+              "document_id": "synthetic-ledger",
+              "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "start_char": 0,
+              "end_char": 63,
+              "title": "Fictional inventory ledger",
+              "source_url": "local:synthetic-ledger",
+              "version": "synthetic.v1",
+              "source_date": null,
+              "domain": "synthetic",
+              "retrieval_rank": 1,
+              "retrieval_score": 1.5206052401022703,
+              "retrieval_method": "bm25",
+              "contains_injection": false,
+              "score": {
+                "kind": "bm25",
+                "value": 1.5206052401022703,
+                "source": "retrieval",
+                "retrieval_method": "bm25",
+                "parameters": {
+                  "method": "bm25",
+                  "top_k": 3,
+                  "candidate_k": null,
+                  "rrf_k": null,
+                  "chunk_size": 500,
+                  "chunk_overlap": 50,
+                  "k1": 1.5,
+                  "b": 0.75,
+                  "score_aggregation": "max"
+                },
+                "role": "observational",
+                "threshold": null,
+                "threshold_direction": null,
+                "unavailable_reason": null,
+                "availability": "available",
+                "lower_bound": 0.0,
+                "upper_bound": null,
+                "direction": "higher_is_more_relevant",
+                "calibration": "uncalibrated",
+                "schema_version": "ragbench.score.v1"
+              }
+            }
+          ],
+          "parameters": {
+            "method": "bm25",
+            "top_k": 3,
+            "candidate_k": null,
+            "rrf_k": null,
+            "chunk_size": 500,
+            "chunk_overlap": 50,
+            "k1": 1.5,
+            "b": 0.75,
+            "score_aggregation": "max"
+          },
+          "scores": [
+            {
+              "kind": "bm25",
+              "value": 1.5206052401022703,
+              "source": "retrieval",
+              "retrieval_method": "bm25",
+              "parameters": {
+                "method": "bm25",
+                "top_k": 3,
+                "candidate_k": null,
+                "rrf_k": null,
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "k1": 1.5,
+                "b": 0.75,
+                "score_aggregation": "max"
+              },
+              "role": "observational",
+              "threshold": null,
+              "threshold_direction": null,
+              "unavailable_reason": null,
+              "availability": "available",
+              "lower_bound": 0.0,
+              "upper_bound": null,
+              "direction": "higher_is_more_relevant",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            }
+          ]
+        },
+        "provider": {
+          "provider": "synthetic",
+          "model": "fixture-rules.v1",
+          "request_id": null,
+          "api_version": null,
+          "model_digest": null,
+          "quantization": null,
+          "completion_reason": null
+        },
+        "prompt_version": "synthetic-fixture.v1",
+        "latency_ms": null,
+        "token_usage": null,
+        "observed_safe_behavior": null,
+        "scores": [
+          {
+            "kind": "bm25",
+            "value": 1.5206052401022703,
+            "source": "retrieval",
+            "retrieval_method": "bm25",
+            "parameters": {
+              "method": "bm25",
+              "top_k": 3,
+              "candidate_k": null,
+              "rrf_k": null,
+              "chunk_size": 500,
+              "chunk_overlap": 50,
+              "k1": 1.5,
+              "b": 0.75,
+              "score_aggregation": "max"
+            },
+            "role": "observational",
+            "threshold": null,
+            "threshold_direction": null,
+            "unavailable_reason": null,
+            "availability": "available",
+            "lower_bound": 0.0,
+            "upper_bound": null,
+            "direction": "higher_is_more_relevant",
+            "calibration": "uncalibrated",
+            "schema_version": "ragbench.score.v1"
+          },
+          {
+            "kind": "prompt_self_assessment",
+            "value": null,
+            "source": "model_self_report",
+            "retrieval_method": null,
+            "parameters": {
+              "model": "fixture-rules.v1",
+              "provider": "synthetic",
+              "prompt_version": "prompt-decision-v3"
+            },
+            "role": "self_assessment",
+            "threshold": null,
+            "threshold_direction": null,
+            "unavailable_reason": "not_reported",
+            "availability": "unavailable",
+            "lower_bound": 0.0,
+            "upper_bound": 1.0,
+            "direction": "higher_is_more_support",
+            "calibration": "uncalibrated",
+            "schema_version": "ragbench.score.v1"
+          }
+        ]
+      },
+      "gold": {
+        "question_id": "synthetic_dev_01",
+        "split": "dev",
+        "is_answerable": true,
+        "expected_answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+        "expected_safe_behavior": null,
+        "unanswerable_category": null,
+        "ambiguity_type": null,
+        "domain": "synthetic",
+        "question_type": "synthetic fixture",
+        "evidence_spans": [
+          {
+            "doc_id": "synthetic-ledger",
+            "start_char": 0,
+            "end_char": 63,
+            "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "id": "synthetic-ledger_s0_63"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "run_id": "20127e14-3063-44f0-a8e7-bff64934b538",
+      "question_id": "synthetic_dev_01",
+      "policy_name": "threshold",
+      "observed": {
+        "decision": "ANSWER",
+        "evidence_assessment": {
+          "relevance": "not_assessed",
+          "sufficiency": "not_assessed",
+          "supporting_evidence_ids": [],
+          "contradictions": [],
+          "missing_premises": [],
+          "unsupported_assumptions": [],
+          "ambiguity_requiring_clarification": null
+        },
+        "execution_status": "succeeded",
+        "answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+        "unsupported_premises": [],
+        "surfaced_contradictions": [],
+        "clarification_question": null,
+        "abstention_reason": null,
+        "decision_reason": {
+          "code": "other",
+          "explanation": "Maximum bm25 retrieval score 1.5206052401022703 >= threshold 0.0."
+        },
+        "citations": [
+          {
+            "claim": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "evidence_id": "synthetic-ledger_c0000",
+            "quote": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "start_char": 0,
+            "end_char": 63
+          }
+        ],
+        "policy_name": "threshold_based_abstention",
+        "policy_parameters": {
+          "score_type": "bm25",
+          "threshold": 0.0,
+          "direction": "at_least",
+          "aggregation": "max",
+          "observed_aggregate_score": 1.5206052401022703
+        },
+        "retrieval": {
+          "method": "bm25",
+          "top_k": 3,
+          "evidence": [
+            {
+              "chunk_id": "synthetic-ledger_c0000",
+              "document_id": "synthetic-ledger",
+              "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "start_char": 0,
+              "end_char": 63,
+              "title": "Fictional inventory ledger",
+              "source_url": "local:synthetic-ledger",
+              "version": "synthetic.v1",
+              "source_date": null,
+              "domain": "synthetic",
+              "retrieval_rank": 1,
+              "retrieval_score": 1.5206052401022703,
+              "retrieval_method": "bm25",
+              "contains_injection": false,
+              "score": {
+                "kind": "bm25",
+                "value": 1.5206052401022703,
+                "source": "retrieval",
+                "retrieval_method": "bm25",
+                "parameters": {
+                  "method": "bm25",
+                  "top_k": 3,
+                  "candidate_k": null,
+                  "rrf_k": null,
+                  "chunk_size": 500,
+                  "chunk_overlap": 50,
+                  "k1": 1.5,
+                  "b": 0.75,
+                  "score_aggregation": "max"
+                },
+                "role": "observational",
+                "threshold": null,
+                "threshold_direction": null,
+                "unavailable_reason": null,
+                "availability": "available",
+                "lower_bound": 0.0,
+                "upper_bound": null,
+                "direction": "higher_is_more_relevant",
+                "calibration": "uncalibrated",
+                "schema_version": "ragbench.score.v1"
+              }
+            }
+          ],
+          "parameters": {
+            "method": "bm25",
+            "top_k": 3,
+            "candidate_k": null,
+            "rrf_k": null,
+            "chunk_size": 500,
+            "chunk_overlap": 50,
+            "k1": 1.5,
+            "b": 0.75,
+            "score_aggregation": "max"
+          },
+          "scores": [
+            {
+              "kind": "bm25",
+              "value": 1.5206052401022703,
+              "source": "retrieval",
+              "retrieval_method": "bm25",
+              "parameters": {
+                "method": "bm25",
+                "top_k": 3,
+                "candidate_k": null,
+                "rrf_k": null,
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "k1": 1.5,
+                "b": 0.75,
+                "score_aggregation": "max"
+              },
+              "role": "observational",
+              "threshold": null,
+              "threshold_direction": null,
+              "unavailable_reason": null,
+              "availability": "available",
+              "lower_bound": 0.0,
+              "upper_bound": null,
+              "direction": "higher_is_more_relevant",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            }
+          ]
+        },
+        "provider": {
+          "provider": "synthetic",
+          "model": "fixture-rules.v1",
+          "request_id": null,
+          "api_version": null,
+          "model_digest": null,
+          "quantization": null,
+          "completion_reason": null
+        },
+        "prompt_version": "synthetic-fixture.v1",
+        "latency_ms": null,
+        "token_usage": null,
+        "observed_safe_behavior": null,
+        "scores": [
+          {
+            "kind": "bm25",
+            "value": 1.5206052401022703,
+            "source": "retrieval",
+            "retrieval_method": "bm25",
+            "parameters": {
+              "method": "bm25",
+              "top_k": 3,
+              "candidate_k": null,
+              "rrf_k": null,
+              "chunk_size": 500,
+              "chunk_overlap": 50,
+              "k1": 1.5,
+              "b": 0.75,
+              "score_aggregation": "max"
+            },
+            "role": "threshold_input",
+            "threshold": 0.0,
+            "threshold_direction": "at_least",
+            "unavailable_reason": null,
+            "availability": "available",
+            "lower_bound": 0.0,
+            "upper_bound": null,
+            "direction": "higher_is_more_relevant",
+            "calibration": "uncalibrated",
+            "schema_version": "ragbench.score.v1"
+          }
+        ]
+      },
+      "gold": {
+        "question_id": "synthetic_dev_01",
+        "split": "dev",
+        "is_answerable": true,
+        "expected_answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+        "expected_safe_behavior": null,
+        "unanswerable_category": null,
+        "ambiguity_type": null,
+        "domain": "synthetic",
+        "question_type": "synthetic fixture",
+        "evidence_spans": [
+          {
+            "doc_id": "synthetic-ledger",
+            "start_char": 0,
+            "end_char": 63,
+            "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+            "id": "synthetic-ledger_s0_63"
+          }
+        ]
+      },
+      "error": null
+    }
+  ],
+  "result": {
+    "experiment_id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c",
+    "schema_version": "ragbench.experiment.v2",
+    "created_at_utc": "2026-11-04T09:12:06.230605Z",
+    "benchmark_split": "dev",
+    "selected_question_ids": [
+      "synthetic_dev_01"
+    ],
+    "dataset_fingerprint": {
+      "documents_sha256": "f219b9bd69632f6a34f9eb0a2b350d44146e0051068d32f1a9632e8c152d0f43",
+      "questions_sha256": "087836bee1757d4f929b73e3e96389a62c180fb6da7dfd0b30f5bf627a29d73f"
+    },
+    "retrieval_configuration": {
+      "method": "bm25",
+      "top_k": 3,
+      "candidate_k": null,
+      "rrf_k": null,
+      "chunk_size": 500,
+      "chunk_overlap": 50,
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "policy_configurations": [
+      {
+        "name": "always_answer",
+        "parameters": {
+          "direction": "at_least",
+          "missing_score_decision": "ABSTAIN",
+          "model": "fixture-rules.v1",
+          "provider": "synthetic"
+        }
+      },
+      {
+        "name": "prompt_abstention",
+        "parameters": {
+          "direction": "at_least",
+          "missing_score_decision": "ABSTAIN",
+          "model": "fixture-rules.v1",
+          "provider": "synthetic"
+        }
+      },
+      {
+        "name": "threshold",
+        "parameters": {
+          "score_type": "bm25",
+          "threshold": 0.0,
+          "direction": "at_least",
+          "missing_score_decision": "ABSTAIN",
+          "model": "fixture-rules.v1",
+          "provider": "synthetic"
+        }
+      }
+    ],
+    "generation_configuration": {
+      "provider": "synthetic",
+      "model": "fixture-rules.v1",
+      "embedding": "sha256-token-buckets.v1",
+      "external_calls": false,
+      "source_sha256": "b37259df7ddd3e43cab7bad925904cdb0d9802de8f0f433332009aa791f6ed2b"
+    },
+    "random_seed": 0,
+    "software_metadata": {
+      "project_version": "0.1.0",
+      "git_revision": "e07da38cde183033f8855d2d2a4695114c1f807b",
+      "working_tree_dirty": true
+    },
+    "environment_metadata": {
+      "python_version": "3.13.7",
+      "platform": "Windows-11-10.0.26200-SP0"
+    },
+    "runs": [
+      {
+        "run_id": "f7e46888-bdda-4d6e-a997-471f52260dc5",
+        "question_id": "synthetic_dev_01",
+        "policy_name": "always_answer",
+        "observed": {
+          "decision": "ANSWER",
+          "evidence_assessment": {
+            "relevance": "not_assessed",
+            "sufficiency": "not_assessed",
+            "supporting_evidence_ids": [],
+            "contradictions": [],
+            "missing_premises": [],
+            "unsupported_assumptions": [],
+            "ambiguity_requiring_clarification": null
+          },
+          "execution_status": "succeeded",
+          "answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+          "unsupported_premises": [],
+          "surfaced_contradictions": [],
+          "clarification_question": null,
+          "abstention_reason": null,
+          "decision_reason": {
+            "code": "other",
+            "explanation": "Always-answer baseline selects ANSWER regardless of evidence."
+          },
+          "citations": [
+            {
+              "claim": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "evidence_id": "synthetic-ledger_c0000",
+              "quote": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "start_char": 0,
+              "end_char": 63
+            }
+          ],
+          "policy_name": "always_answer",
+          "policy_parameters": {},
+          "retrieval": {
+            "method": "bm25",
+            "top_k": 3,
+            "evidence": [
+              {
+                "chunk_id": "synthetic-ledger_c0000",
+                "document_id": "synthetic-ledger",
+                "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+                "start_char": 0,
+                "end_char": 63,
+                "title": "Fictional inventory ledger",
+                "source_url": "local:synthetic-ledger",
+                "version": "synthetic.v1",
+                "source_date": null,
+                "domain": "synthetic",
+                "retrieval_rank": 1,
+                "retrieval_score": 1.5206052401022703,
+                "retrieval_method": "bm25",
+                "contains_injection": false,
+                "score": {
+                  "kind": "bm25",
+                  "value": 1.5206052401022703,
+                  "source": "retrieval",
+                  "retrieval_method": "bm25",
+                  "parameters": {
+                    "method": "bm25",
+                    "top_k": 3,
+                    "candidate_k": null,
+                    "rrf_k": null,
+                    "chunk_size": 500,
+                    "chunk_overlap": 50,
+                    "k1": 1.5,
+                    "b": 0.75,
+                    "score_aggregation": "max"
+                  },
+                  "role": "observational",
+                  "threshold": null,
+                  "threshold_direction": null,
+                  "unavailable_reason": null,
+                  "availability": "available",
+                  "lower_bound": 0.0,
+                  "upper_bound": null,
+                  "direction": "higher_is_more_relevant",
+                  "calibration": "uncalibrated",
+                  "schema_version": "ragbench.score.v1"
+                }
+              }
+            ],
+            "parameters": {
+              "method": "bm25",
+              "top_k": 3,
+              "candidate_k": null,
+              "rrf_k": null,
+              "chunk_size": 500,
+              "chunk_overlap": 50,
+              "k1": 1.5,
+              "b": 0.75,
+              "score_aggregation": "max"
+            },
+            "scores": [
+              {
+                "kind": "bm25",
+                "value": 1.5206052401022703,
+                "source": "retrieval",
+                "retrieval_method": "bm25",
+                "parameters": {
+                  "method": "bm25",
+                  "top_k": 3,
+                  "candidate_k": null,
+                  "rrf_k": null,
+                  "chunk_size": 500,
+                  "chunk_overlap": 50,
+                  "k1": 1.5,
+                  "b": 0.75,
+                  "score_aggregation": "max"
+                },
+                "role": "observational",
+                "threshold": null,
+                "threshold_direction": null,
+                "unavailable_reason": null,
+                "availability": "available",
+                "lower_bound": 0.0,
+                "upper_bound": null,
+                "direction": "higher_is_more_relevant",
+                "calibration": "uncalibrated",
+                "schema_version": "ragbench.score.v1"
+              }
+            ]
+          },
+          "provider": {
+            "provider": "synthetic",
+            "model": "fixture-rules.v1",
+            "request_id": null,
+            "api_version": null,
+            "model_digest": null,
+            "quantization": null,
+            "completion_reason": null
+          },
+          "prompt_version": "synthetic-fixture.v1",
+          "latency_ms": null,
+          "token_usage": null,
+          "observed_safe_behavior": null,
+          "scores": [
+            {
+              "kind": "bm25",
+              "value": 1.5206052401022703,
+              "source": "retrieval",
+              "retrieval_method": "bm25",
+              "parameters": {
+                "method": "bm25",
+                "top_k": 3,
+                "candidate_k": null,
+                "rrf_k": null,
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "k1": 1.5,
+                "b": 0.75,
+                "score_aggregation": "max"
+              },
+              "role": "observational",
+              "threshold": null,
+              "threshold_direction": null,
+              "unavailable_reason": null,
+              "availability": "available",
+              "lower_bound": 0.0,
+              "upper_bound": null,
+              "direction": "higher_is_more_relevant",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            }
+          ]
+        },
+        "gold": {
+          "question_id": "synthetic_dev_01",
+          "split": "dev",
+          "is_answerable": true,
+          "expected_answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+          "expected_safe_behavior": null,
+          "unanswerable_category": null,
+          "ambiguity_type": null,
+          "domain": "synthetic",
+          "question_type": "synthetic fixture",
+          "evidence_spans": [
+            {
+              "doc_id": "synthetic-ledger",
+              "start_char": 0,
+              "end_char": 63,
+              "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "id": "synthetic-ledger_s0_63"
+            }
+          ]
+        },
+        "error": null
+      },
+      {
+        "run_id": "1863dac5-ce92-4085-ae1e-7cb46aae234a",
+        "question_id": "synthetic_dev_01",
+        "policy_name": "prompt_abstention",
+        "observed": {
+          "decision": "ANSWER",
+          "evidence_assessment": {
+            "relevance": "not_assessed",
+            "sufficiency": "not_assessed",
+            "supporting_evidence_ids": [],
+            "contradictions": [],
+            "missing_premises": [],
+            "unsupported_assumptions": [],
+            "ambiguity_requiring_clarification": null
+          },
+          "execution_status": "succeeded",
+          "answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+          "unsupported_premises": [],
+          "surfaced_contradictions": [],
+          "clarification_question": null,
+          "abstention_reason": null,
+          "decision_reason": {
+            "code": "other",
+            "explanation": "Synthetic rule response."
+          },
+          "citations": [
+            {
+              "claim": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "evidence_id": "synthetic-ledger_c0000",
+              "quote": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "start_char": 0,
+              "end_char": 63
+            }
+          ],
+          "policy_name": "prompt_based_abstention",
+          "policy_parameters": {
+            "model": "fixture-rules.v1",
+            "settings": {
+              "temperature": null,
+              "seed": null,
+              "max_output_tokens": null,
+              "timeout_seconds": 30.0
+            }
+          },
+          "retrieval": {
+            "method": "bm25",
+            "top_k": 3,
+            "evidence": [
+              {
+                "chunk_id": "synthetic-ledger_c0000",
+                "document_id": "synthetic-ledger",
+                "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+                "start_char": 0,
+                "end_char": 63,
+                "title": "Fictional inventory ledger",
+                "source_url": "local:synthetic-ledger",
+                "version": "synthetic.v1",
+                "source_date": null,
+                "domain": "synthetic",
+                "retrieval_rank": 1,
+                "retrieval_score": 1.5206052401022703,
+                "retrieval_method": "bm25",
+                "contains_injection": false,
+                "score": {
+                  "kind": "bm25",
+                  "value": 1.5206052401022703,
+                  "source": "retrieval",
+                  "retrieval_method": "bm25",
+                  "parameters": {
+                    "method": "bm25",
+                    "top_k": 3,
+                    "candidate_k": null,
+                    "rrf_k": null,
+                    "chunk_size": 500,
+                    "chunk_overlap": 50,
+                    "k1": 1.5,
+                    "b": 0.75,
+                    "score_aggregation": "max"
+                  },
+                  "role": "observational",
+                  "threshold": null,
+                  "threshold_direction": null,
+                  "unavailable_reason": null,
+                  "availability": "available",
+                  "lower_bound": 0.0,
+                  "upper_bound": null,
+                  "direction": "higher_is_more_relevant",
+                  "calibration": "uncalibrated",
+                  "schema_version": "ragbench.score.v1"
+                }
+              }
+            ],
+            "parameters": {
+              "method": "bm25",
+              "top_k": 3,
+              "candidate_k": null,
+              "rrf_k": null,
+              "chunk_size": 500,
+              "chunk_overlap": 50,
+              "k1": 1.5,
+              "b": 0.75,
+              "score_aggregation": "max"
+            },
+            "scores": [
+              {
+                "kind": "bm25",
+                "value": 1.5206052401022703,
+                "source": "retrieval",
+                "retrieval_method": "bm25",
+                "parameters": {
+                  "method": "bm25",
+                  "top_k": 3,
+                  "candidate_k": null,
+                  "rrf_k": null,
+                  "chunk_size": 500,
+                  "chunk_overlap": 50,
+                  "k1": 1.5,
+                  "b": 0.75,
+                  "score_aggregation": "max"
+                },
+                "role": "observational",
+                "threshold": null,
+                "threshold_direction": null,
+                "unavailable_reason": null,
+                "availability": "available",
+                "lower_bound": 0.0,
+                "upper_bound": null,
+                "direction": "higher_is_more_relevant",
+                "calibration": "uncalibrated",
+                "schema_version": "ragbench.score.v1"
+              }
+            ]
+          },
+          "provider": {
+            "provider": "synthetic",
+            "model": "fixture-rules.v1",
+            "request_id": null,
+            "api_version": null,
+            "model_digest": null,
+            "quantization": null,
+            "completion_reason": null
+          },
+          "prompt_version": "synthetic-fixture.v1",
+          "latency_ms": null,
+          "token_usage": null,
+          "observed_safe_behavior": null,
+          "scores": [
+            {
+              "kind": "bm25",
+              "value": 1.5206052401022703,
+              "source": "retrieval",
+              "retrieval_method": "bm25",
+              "parameters": {
+                "method": "bm25",
+                "top_k": 3,
+                "candidate_k": null,
+                "rrf_k": null,
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "k1": 1.5,
+                "b": 0.75,
+                "score_aggregation": "max"
+              },
+              "role": "observational",
+              "threshold": null,
+              "threshold_direction": null,
+              "unavailable_reason": null,
+              "availability": "available",
+              "lower_bound": 0.0,
+              "upper_bound": null,
+              "direction": "higher_is_more_relevant",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            },
+            {
+              "kind": "prompt_self_assessment",
+              "value": null,
+              "source": "model_self_report",
+              "retrieval_method": null,
+              "parameters": {
+                "model": "fixture-rules.v1",
+                "provider": "synthetic",
+                "prompt_version": "prompt-decision-v3"
+              },
+              "role": "self_assessment",
+              "threshold": null,
+              "threshold_direction": null,
+              "unavailable_reason": "not_reported",
+              "availability": "unavailable",
+              "lower_bound": 0.0,
+              "upper_bound": 1.0,
+              "direction": "higher_is_more_support",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            }
+          ]
+        },
+        "gold": {
+          "question_id": "synthetic_dev_01",
+          "split": "dev",
+          "is_answerable": true,
+          "expected_answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+          "expected_safe_behavior": null,
+          "unanswerable_category": null,
+          "ambiguity_type": null,
+          "domain": "synthetic",
+          "question_type": "synthetic fixture",
+          "evidence_spans": [
+            {
+              "doc_id": "synthetic-ledger",
+              "start_char": 0,
+              "end_char": 63,
+              "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "id": "synthetic-ledger_s0_63"
+            }
+          ]
+        },
+        "error": null
+      },
+      {
+        "run_id": "20127e14-3063-44f0-a8e7-bff64934b538",
+        "question_id": "synthetic_dev_01",
+        "policy_name": "threshold",
+        "observed": {
+          "decision": "ANSWER",
+          "evidence_assessment": {
+            "relevance": "not_assessed",
+            "sufficiency": "not_assessed",
+            "supporting_evidence_ids": [],
+            "contradictions": [],
+            "missing_premises": [],
+            "unsupported_assumptions": [],
+            "ambiguity_requiring_clarification": null
+          },
+          "execution_status": "succeeded",
+          "answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+          "unsupported_premises": [],
+          "surfaced_contradictions": [],
+          "clarification_question": null,
+          "abstention_reason": null,
+          "decision_reason": {
+            "code": "other",
+            "explanation": "Maximum bm25 retrieval score 1.5206052401022703 >= threshold 0.0."
+          },
+          "citations": [
+            {
+              "claim": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "evidence_id": "synthetic-ledger_c0000",
+              "quote": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "start_char": 0,
+              "end_char": 63
+            }
+          ],
+          "policy_name": "threshold_based_abstention",
+          "policy_parameters": {
+            "score_type": "bm25",
+            "threshold": 0.0,
+            "direction": "at_least",
+            "aggregation": "max",
+            "observed_aggregate_score": 1.5206052401022703
+          },
+          "retrieval": {
+            "method": "bm25",
+            "top_k": 3,
+            "evidence": [
+              {
+                "chunk_id": "synthetic-ledger_c0000",
+                "document_id": "synthetic-ledger",
+                "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+                "start_char": 0,
+                "end_char": 63,
+                "title": "Fictional inventory ledger",
+                "source_url": "local:synthetic-ledger",
+                "version": "synthetic.v1",
+                "source_date": null,
+                "domain": "synthetic",
+                "retrieval_rank": 1,
+                "retrieval_score": 1.5206052401022703,
+                "retrieval_method": "bm25",
+                "contains_injection": false,
+                "score": {
+                  "kind": "bm25",
+                  "value": 1.5206052401022703,
+                  "source": "retrieval",
+                  "retrieval_method": "bm25",
+                  "parameters": {
+                    "method": "bm25",
+                    "top_k": 3,
+                    "candidate_k": null,
+                    "rrf_k": null,
+                    "chunk_size": 500,
+                    "chunk_overlap": 50,
+                    "k1": 1.5,
+                    "b": 0.75,
+                    "score_aggregation": "max"
+                  },
+                  "role": "observational",
+                  "threshold": null,
+                  "threshold_direction": null,
+                  "unavailable_reason": null,
+                  "availability": "available",
+                  "lower_bound": 0.0,
+                  "upper_bound": null,
+                  "direction": "higher_is_more_relevant",
+                  "calibration": "uncalibrated",
+                  "schema_version": "ragbench.score.v1"
+                }
+              }
+            ],
+            "parameters": {
+              "method": "bm25",
+              "top_k": 3,
+              "candidate_k": null,
+              "rrf_k": null,
+              "chunk_size": 500,
+              "chunk_overlap": 50,
+              "k1": 1.5,
+              "b": 0.75,
+              "score_aggregation": "max"
+            },
+            "scores": [
+              {
+                "kind": "bm25",
+                "value": 1.5206052401022703,
+                "source": "retrieval",
+                "retrieval_method": "bm25",
+                "parameters": {
+                  "method": "bm25",
+                  "top_k": 3,
+                  "candidate_k": null,
+                  "rrf_k": null,
+                  "chunk_size": 500,
+                  "chunk_overlap": 50,
+                  "k1": 1.5,
+                  "b": 0.75,
+                  "score_aggregation": "max"
+                },
+                "role": "observational",
+                "threshold": null,
+                "threshold_direction": null,
+                "unavailable_reason": null,
+                "availability": "available",
+                "lower_bound": 0.0,
+                "upper_bound": null,
+                "direction": "higher_is_more_relevant",
+                "calibration": "uncalibrated",
+                "schema_version": "ragbench.score.v1"
+              }
+            ]
+          },
+          "provider": {
+            "provider": "synthetic",
+            "model": "fixture-rules.v1",
+            "request_id": null,
+            "api_version": null,
+            "model_digest": null,
+            "quantization": null,
+            "completion_reason": null
+          },
+          "prompt_version": "synthetic-fixture.v1",
+          "latency_ms": null,
+          "token_usage": null,
+          "observed_safe_behavior": null,
+          "scores": [
+            {
+              "kind": "bm25",
+              "value": 1.5206052401022703,
+              "source": "retrieval",
+              "retrieval_method": "bm25",
+              "parameters": {
+                "method": "bm25",
+                "top_k": 3,
+                "candidate_k": null,
+                "rrf_k": null,
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+                "k1": 1.5,
+                "b": 0.75,
+                "score_aggregation": "max"
+              },
+              "role": "threshold_input",
+              "threshold": 0.0,
+              "threshold_direction": "at_least",
+              "unavailable_reason": null,
+              "availability": "available",
+              "lower_bound": 0.0,
+              "upper_bound": null,
+              "direction": "higher_is_more_relevant",
+              "calibration": "uncalibrated",
+              "schema_version": "ragbench.score.v1"
+            }
+          ]
+        },
+        "gold": {
+          "question_id": "synthetic_dev_01",
+          "split": "dev",
+          "is_answerable": true,
+          "expected_answer": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+          "expected_safe_behavior": null,
+          "unanswerable_category": null,
+          "ambiguity_type": null,
+          "domain": "synthetic",
+          "question_type": "synthetic fixture",
+          "evidence_spans": [
+            {
+              "doc_id": "synthetic-ledger",
+              "start_char": 0,
+              "end_char": 63,
+              "text": "The red bin limit is 12 tokens. The blue bin limit is 7 tokens.",
+              "id": "synthetic-ledger_s0_63"
+            }
+          ]
+        },
+        "error": null
+      }
+    ],
+    "stopped_early": false,
+    "comparison_warnings": [],
+    "metrics": {
+      "sample_count": 3,
+      "successful_run_count": 3,
+      "decision_counts": {
+        "ANSWER": 3,
+        "ABSTAIN": 0,
+        "CLARIFY": 0
+      },
+      "execution_error_rate": {
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 3,
+        "ci95_wilson": null,
+        "status": "available",
+        "ci95_note": "Not reported below n=30."
+      },
+      "decision_accuracy_against_expected_safe_behavior": {
+        "value": null,
+        "numerator": null,
+        "denominator": 0,
+        "status": "unavailable",
+        "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+      },
+      "unambiguous_answerability_decision_accuracy": {
+        "value": 1.0,
+        "numerator": 3,
+        "denominator": 3,
+        "ci95_wilson": null,
+        "status": "available",
+        "ci95_note": "Not reported below n=30."
+      },
+      "abstention_precision": {
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "ci95_wilson": null,
+        "status": "unavailable",
+        "ci95_note": "Not reported below n=30."
+      },
+      "abstention_recall": {
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "ci95_wilson": null,
+        "status": "unavailable",
+        "ci95_note": "Not reported below n=30."
+      },
+      "clarification_rate": {
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 3,
+        "ci95_wilson": null,
+        "status": "available",
+        "ci95_note": "Not reported below n=30."
+      },
+      "false_answer_rate": {
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "ci95_wilson": null,
+        "status": "unavailable",
+        "ci95_note": "Not reported below n=30."
+      },
+      "false_abstention_rate": {
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 3,
+        "ci95_wilson": null,
+        "status": "available",
+        "ci95_note": "Not reported below n=30."
+      },
+      "answer_correctness": {
+        "exact_match": {
+          "value": 1.0,
+          "numerator": 3,
+          "denominator": 3,
+          "ci95_wilson": null,
+          "status": "available",
+          "ci95_note": "Not reported below n=30."
+        },
+        "token_f1": {
+          "value": 1.0,
+          "numerator": 3.0,
+          "denominator": 3,
+          "status": "available",
+          "ci95_wilson": null,
+          "note": "Mean lexical token F1; no semantic entailment is implied."
+        },
+        "semantic_judgment": {
+          "value": null,
+          "status": "unavailable",
+          "reason": "No human or validated LLM judge is configured."
+        }
+      },
+      "evidence_quality": {
+        "citation_validity": {
+          "value": 1.0,
+          "numerator": 3,
+          "denominator": 3,
+          "ci95_wilson": null,
+          "status": "available",
+          "ci95_note": "Not reported below n=30."
+        },
+        "total_citations": 3,
+        "structurally_valid_citations": 3,
+        "invalid_citations": 0,
+        "runs_without_citations": 0,
+        "gold_span_offset_overlap_citations": 3,
+        "citation_alignment_precision": {
+          "value": 1.0,
+          "numerator": 3,
+          "denominator": 3,
+          "ci95_wilson": null,
+          "status": "available",
+          "ci95_note": "Not reported below n=30."
+        },
+        "gold_evidence_retrieval_recall": {
+          "value": 1.0,
+          "numerator": 3,
+          "denominator": 3,
+          "ci95_wilson": null,
+          "status": "available",
+          "ci95_note": "Not reported below n=30."
+        },
+        "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+      },
+      "unsupported_claim_rate": {
+        "value": null,
+        "status": "unavailable",
+        "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+      },
+      "contradiction_rate": {
+        "value": null,
+        "status": "unavailable",
+        "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+      },
+      "contradiction_surfacing_rate_on_conflict_items": {
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "ci95_wilson": null,
+        "status": "unavailable",
+        "ci95_note": "Not reported below n=30."
+      },
+      "coverage": {
+        "value": 1.0,
+        "numerator": 3,
+        "denominator": 3,
+        "ci95_wilson": null,
+        "status": "available",
+        "ci95_note": "Not reported below n=30."
+      },
+      "selective_risk_exact_match_proxy": {
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 3,
+        "ci95_wilson": null,
+        "status": "available",
+        "ci95_note": "Not reported below n=30."
+      },
+      "selective_risk_counts": {
+        "scored_answer_count": 3,
+        "missing_answer_body_count": 0,
+        "coverage_denominator": 3,
+        "risk_denominator": 3
+      },
+      "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+      "counts": {
+        "answered": 3,
+        "abstained": 0,
+        "clarified": 0,
+        "unanswerable": 0,
+        "answerable": 3,
+        "answer_exact_match_scored": 3,
+        "answer_exact_match_unscored": 0
+      },
+      "warnings": [
+        "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+        "Small sample (n=3); do not draw statistical or generalization conclusions."
+      ],
+      "breakdowns": {
+        "split": {
+          "dev": {
+            "sample_count": 3,
+            "successful_run_count": 3,
+            "decision_counts": {
+              "ANSWER": 3,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 3.0,
+                "denominator": 3,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 3,
+              "structurally_valid_citations": 3,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 3,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 3,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 3,
+              "risk_denominator": 3
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 3,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 3,
+              "answer_exact_match_scored": 3,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=3); do not draw statistical or generalization conclusions."
+            ]
+          }
+        },
+        "answerability_category": {
+          "answerable": {
+            "sample_count": 3,
+            "successful_run_count": 3,
+            "decision_counts": {
+              "ANSWER": 3,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 3.0,
+                "denominator": 3,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 3,
+              "structurally_valid_citations": 3,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 3,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 3,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 3,
+              "risk_denominator": 3
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 3,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 3,
+              "answer_exact_match_scored": 3,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=3); do not draw statistical or generalization conclusions."
+            ]
+          }
+        },
+        "domain": {
+          "synthetic": {
+            "sample_count": 3,
+            "successful_run_count": 3,
+            "decision_counts": {
+              "ANSWER": 3,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 3.0,
+                "denominator": 3,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 3,
+              "structurally_valid_citations": 3,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 3,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 3,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 3,
+              "risk_denominator": 3
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 3,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 3,
+              "answer_exact_match_scored": 3,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=3); do not draw statistical or generalization conclusions."
+            ]
+          }
+        },
+        "policy": {
+          "always_answer": {
+            "sample_count": 1,
+            "successful_run_count": 1,
+            "decision_counts": {
+              "ANSWER": 1,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 1,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 1.0,
+                "denominator": 1,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 1,
+              "structurally_valid_citations": 1,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 1,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 1,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 1,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 1,
+              "risk_denominator": 1
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 1,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 1,
+              "answer_exact_match_scored": 1,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=1); do not draw statistical or generalization conclusions."
+            ]
+          },
+          "prompt_abstention": {
+            "sample_count": 1,
+            "successful_run_count": 1,
+            "decision_counts": {
+              "ANSWER": 1,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 1,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 1.0,
+                "denominator": 1,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 1,
+              "structurally_valid_citations": 1,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 1,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 1,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 1,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 1,
+              "risk_denominator": 1
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 1,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 1,
+              "answer_exact_match_scored": 1,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=1); do not draw statistical or generalization conclusions."
+            ]
+          },
+          "threshold": {
+            "sample_count": 1,
+            "successful_run_count": 1,
+            "decision_counts": {
+              "ANSWER": 1,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 1,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 1.0,
+                "denominator": 1,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 1,
+              "structurally_valid_citations": 1,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 1,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 1,
+                "denominator": 1,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 1,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 1,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 1,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 1,
+              "risk_denominator": 1
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 1,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 1,
+              "answer_exact_match_scored": 1,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=1); do not draw statistical or generalization conclusions."
+            ]
+          }
+        },
+        "retrieval_method": {
+          "bm25": {
+            "sample_count": 3,
+            "successful_run_count": 3,
+            "decision_counts": {
+              "ANSWER": 3,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 3.0,
+                "denominator": 3,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 3,
+              "structurally_valid_citations": 3,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 3,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 3,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 3,
+              "risk_denominator": 3
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 3,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 3,
+              "answer_exact_match_scored": 3,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=3); do not draw statistical or generalization conclusions."
+            ]
+          }
+        },
+        "retrieval_configuration": {
+          "{\"b\": 0.75, \"candidate_k\": null, \"chunk_overlap\": 50, \"chunk_size\": 500, \"k1\": 1.5, \"method\": \"bm25\", \"rrf_k\": null, \"top_k\": 3}": {
+            "sample_count": 3,
+            "successful_run_count": 3,
+            "decision_counts": {
+              "ANSWER": 3,
+              "ABSTAIN": 0,
+              "CLARIFY": 0
+            },
+            "execution_error_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "decision_accuracy_against_expected_safe_behavior": {
+              "value": null,
+              "numerator": null,
+              "denominator": 0,
+              "status": "unavailable",
+              "reason": "Expected safe behavior is free text and has no human-scored observed counterpart."
+            },
+            "unambiguous_answerability_decision_accuracy": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_precision": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "abstention_recall": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "clarification_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_answer_rate": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "false_abstention_rate": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "answer_correctness": {
+              "exact_match": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "token_f1": {
+                "value": 1.0,
+                "numerator": 3.0,
+                "denominator": 3,
+                "status": "available",
+                "ci95_wilson": null,
+                "note": "Mean lexical token F1; no semantic entailment is implied."
+              },
+              "semantic_judgment": {
+                "value": null,
+                "status": "unavailable",
+                "reason": "No human or validated LLM judge is configured."
+              }
+            },
+            "evidence_quality": {
+              "citation_validity": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "total_citations": 3,
+              "structurally_valid_citations": 3,
+              "invalid_citations": 0,
+              "runs_without_citations": 0,
+              "gold_span_offset_overlap_citations": 3,
+              "citation_alignment_precision": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "gold_evidence_retrieval_recall": {
+                "value": 1.0,
+                "numerator": 3,
+                "denominator": 3,
+                "ci95_wilson": null,
+                "status": "available",
+                "ci95_note": "Not reported below n=30."
+              },
+              "interpretation": "Validity checks citation IDs, offsets, and exact quotes against retrieved text. Alignment measures overlap with annotated gold spans; neither proves entailment."
+            },
+            "unsupported_claim_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Claim-level entailment judgments are not present in the benchmark labels."
+            },
+            "contradiction_rate": {
+              "value": null,
+              "status": "unavailable",
+              "reason": "Surfacing a contradiction is recorded, but no verified run-level contradiction judgment is available."
+            },
+            "contradiction_surfacing_rate_on_conflict_items": {
+              "value": null,
+              "numerator": 0,
+              "denominator": 0,
+              "ci95_wilson": null,
+              "status": "unavailable",
+              "ci95_note": "Not reported below n=30."
+            },
+            "coverage": {
+              "value": 1.0,
+              "numerator": 3,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_exact_match_proxy": {
+              "value": 0.0,
+              "numerator": 0,
+              "denominator": 3,
+              "ci95_wilson": null,
+              "status": "available",
+              "ci95_note": "Not reported below n=30."
+            },
+            "selective_risk_counts": {
+              "scored_answer_count": 3,
+              "missing_answer_body_count": 0,
+              "coverage_denominator": 3,
+              "risk_denominator": 3
+            },
+            "selective_risk_note": "Lexical exact-match proxy; it is not semantic answer correctness.",
+            "counts": {
+              "answered": 3,
+              "abstained": 0,
+              "clarified": 0,
+              "unanswerable": 0,
+              "answerable": 3,
+              "answer_exact_match_scored": 3,
+              "answer_exact_match_unscored": 0
+            },
+            "warnings": [
+              "The current benchmark is a 54-question pilot (Train 50, Dev 3, Test 1); no result supports generalization claims.",
+              "Small sample (n=3); do not draw statistical or generalization conclusions."
+            ]
+          }
+        }
+      },
+      "answered_run_ranking": {
+        "answered_run_ranking_diagnostic": {
+          "always_answer": {
+            "bm25": [
+              {
+                "score_type": "bm25",
+                "minimum_included_score": 1.5206052401022703,
+                "answered_count": 1,
+                "execution_error_count": 0,
+                "coverage": 1.0,
+                "risk_denominator": 1,
+                "risk_exact_match_proxy": 0.0
+              }
+            ]
+          },
+          "prompt_abstention": {
+            "bm25": [
+              {
+                "score_type": "bm25",
+                "minimum_included_score": 1.5206052401022703,
+                "answered_count": 1,
+                "execution_error_count": 0,
+                "coverage": 1.0,
+                "risk_denominator": 1,
+                "risk_exact_match_proxy": 0.0
+              }
+            ]
+          },
+          "threshold": {
+            "bm25": [
+              {
+                "score_type": "bm25",
+                "minimum_included_score": 1.5206052401022703,
+                "answered_count": 1,
+                "execution_error_count": 0,
+                "coverage": 1.0,
+                "risk_denominator": 1,
+                "risk_exact_match_proxy": 0.0
+              }
+            ]
+          }
+        },
+        "population_by_policy": {
+          "always_answer": {
+            "selected_run_count": 1,
+            "execution_error_count": 0,
+            "eligible_scored_answer_count": 1,
+            "unscored_answer_count": 0
+          },
+          "prompt_abstention": {
+            "selected_run_count": 1,
+            "execution_error_count": 0,
+            "eligible_scored_answer_count": 1,
+            "unscored_answer_count": 0
+          },
+          "threshold": {
+            "selected_run_count": 1,
+            "execution_error_count": 0,
+            "eligible_scored_answer_count": 1,
+            "unscored_answer_count": 0
+          }
+        },
+        "note": "Post-hoc answered-run ranking diagnostic, not a threshold-policy risk-coverage curve. It ranks only observed ANSWER runs with scores; execution failures are included as maximum-risk errors at each point, but cannot be assigned a score threshold. Score families are ranking signals, not probabilities."
+      },
+      "run_accounting": {
+        "always_answer": {
+          "expected_runs": 1,
+          "observed_runs": 1,
+          "successful_runs": 1,
+          "execution_failures": 0,
+          "missing_runs": 0,
+          "missing_question_ids": [],
+          "duplicate_runs": 0,
+          "duplicate_question_ids": [],
+          "complete": true
+        },
+        "prompt_abstention": {
+          "expected_runs": 1,
+          "observed_runs": 1,
+          "successful_runs": 1,
+          "execution_failures": 0,
+          "missing_runs": 0,
+          "missing_question_ids": [],
+          "duplicate_runs": 0,
+          "duplicate_question_ids": [],
+          "complete": true
+        },
+        "threshold": {
+          "expected_runs": 1,
+          "observed_runs": 1,
+          "successful_runs": 1,
+          "execution_failures": 0,
+          "missing_runs": 0,
+          "missing_question_ids": [],
+          "duplicate_runs": 0,
+          "duplicate_question_ids": [],
+          "complete": true
+        }
+      },
+      "partial": false
+    }
+  },
+  "error": null
+}

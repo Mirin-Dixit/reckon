@@ -93,6 +93,9 @@ class EvaluationRunner:
         question_ids: Sequence[str] | None = None,
         error_mode: ErrorHandlingMode = ErrorHandlingMode.CONTINUE,
         output_path: str | Path | None = None,
+        experiment_id: str | None = None,
+        on_observation: Callable[[ExperimentRun], None] | None = None,
+        should_stop: Callable[[], bool] | None = None,
     ) -> ExperimentRecord:
         """Run each selected question for each policy using only question text.
 
@@ -131,9 +134,12 @@ class EvaluationRunner:
         warnings: list[str] = []
         evidence_by_question: dict[str, Any] = {}
         stopped_early = False
-        should_stop = False
+        stop_after_failure = False
 
         for policy_config in policies:
+            if should_stop is not None and should_stop():
+                stopped_early = True
+                break
             if not selected:
                 continue
             try:
@@ -152,15 +158,20 @@ class EvaluationRunner:
                         error,
                     )
                     runs.append(record)
+                    if on_observation is not None:
+                        on_observation(record)
                     if error_mode is ErrorHandlingMode.FAIL_FAST:
                         stopped_early = True
-                        should_stop = True
+                        stop_after_failure = True
                         break
-                if should_stop:
+                if stop_after_failure:
                     break
                 continue
 
             for question in selected:
+                if should_stop is not None and should_stop():
+                    stopped_early = True
+                    break
                 try:
                     observed = pipeline.run(question.question)
                     error_details = _error_from_result(observed)
@@ -180,6 +191,8 @@ class EvaluationRunner:
                     gold=GoldLabels.from_question(question),
                 )
                 runs.append(record)
+                if on_observation is not None:
+                    on_observation(record)
                 if observed.retrieval is not None:
                     evidence = to_primitive(observed.retrieval.evidence)
                     previous = evidence_by_question.setdefault(question.id, evidence)
@@ -195,13 +208,13 @@ class EvaluationRunner:
                     and error_mode is ErrorHandlingMode.FAIL_FAST
                 ):
                     stopped_early = True
-                    should_stop = True
+                    stop_after_failure = True
                     break
-            if should_stop:
+            if stop_after_failure:
                 break
 
         record = ExperimentRecord(
-            experiment_id=str(uuid.uuid4()),
+            experiment_id=experiment_id or str(uuid.uuid4()),
             schema_version=EXPERIMENT_SCHEMA_VERSION,
             created_at_utc=_utc_now(),
             benchmark_split=split,

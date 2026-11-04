@@ -139,13 +139,30 @@ review decisions are recorded, and the immutable Test freeze is approved.
 
 ### P4 - Experiment Runner
 
-- [ ] Run experiments through the UI, starting with Train/Dev.
-- [ ] Record effective retrieval, policy and generation configurations,
-  dataset fingerprints, seeds and software/provider provenance.
-- [ ] Select and freeze thresholds using Dev only.
+**Accepted: completed synthetic-only scope, 4 November 2026.**
 
-Gate: experiment round-trip and matched-question comparison tests pass;
-HTTP/UI acceptance demonstrates reproducible Train/Dev runs without gold leakage.
+- [x] Submit clearly labeled synthetic Train/Dev experiments through the UI,
+  supporting BM25, dense and hybrid retrieval with all three decision policies.
+- [x] Persist job history, saved observations, decisions and execution errors in
+  SQLite, with restart recovery and no automatic replay of interrupted work.
+- [x] Record effective retrieval, policy and fixture-generation configurations,
+  dataset/runtime fingerprints, seeds and software/provider provenance.
+- [x] Select saved results, export JSON, and freeze/export eligible completed
+  synthetic Dev configurations with immutable, persisted receipts.
+- [ ] Empirical Dev threshold selection and held-out evaluation remain deferred
+  until the applicable human-review, acceptance/freeze and inference gates pass.
+
+Accepted gate: synthetic experiment round-trip, failure isolation, exports and
+Dev-freeze persistence are verified. The previous final audit recorded 847 backend
+and 221 frontend tests passing, plus TypeScript, ESLint, production build and Ruff.
+The user manually verified a completed Dev experiment with 12/12 observations and
+result/freeze JSON exports; saved results and the same freeze receipt were
+recovered after backend restart.
+
+This acceptance establishes local synthetic infrastructure only. It does not
+establish model quality, calibrated thresholds, empirical benchmark results,
+human review completion or permission to evaluate held-out data. The full
+benchmark and exploratory pilot retain their separate gates. R1 has not begun.
 
 ### R1 - Selective-Prediction Evaluation
 

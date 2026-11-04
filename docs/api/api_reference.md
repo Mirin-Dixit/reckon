@@ -615,11 +615,17 @@ $env:RAGBENCH_MAX_PROVIDER_REQUESTS = '4'
 $env:RAGBENCH_RETRY_COUNT = '0'
 $env:RAGBENCH_TIMEOUT_SECONDS = '120'
 $env:RAGBENCH_TEMPERATURE = '0'
+$env:RAGBENCH_CORS_ORIGINS = 'http://127.0.0.1:3000'
 .\.venv\Scripts\python.exe -m uvicorn app.api.main:app --app-dir backend --host 127.0.0.1 --port 8000
 ```
 
 No API key is required. Do not set `RAGBENCH_PROVIDER=openai`. Existing browser
-CORS configuration remains exact-origin and must be set separately if needed.
+CORS configuration is exact-origin and is set in the backend terminal above.
+Restart Uvicorn after changing it. If the frontend uses another port, configure
+that exact origin explicitly; never use `*` or enable credentials. With an empty
+allowlist CORS is disabled, so browser `OPTIONS /api/v1/experiments` preflight
+returns 405 even though a plain GET can return 200. With the configured origin,
+preflight returns 200 and a valid synthetic experiment POST returns 202.
 
 ### Accepted P1 local inference verification
 

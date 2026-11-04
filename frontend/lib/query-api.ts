@@ -10,7 +10,7 @@ type Schema = { $ref?: string; anyOf?: Schema[]; const?: unknown; enum?: unknown
 const record = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
 /** Validate the query-only Pydantic schema snapshot, including every nested object. */
-function matches(value: unknown, schema: Schema, defs: Record<string, Schema>, depth = 0): boolean {
+export function matches(value: unknown, schema: Schema, defs: Record<string, Schema>, depth = 0): boolean {
   if (depth > 40) return false;
   if (schema.$ref) return matches(value, defs[schema.$ref.split("/").at(-1)!], defs, depth + 1);
   if (schema.anyOf) return schema.anyOf.some(s => matches(value, s, defs, depth + 1));

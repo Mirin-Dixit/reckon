@@ -76,7 +76,7 @@ def test_health_and_query_do_not_require_or_read_questions(
     if unavailable == "missing":
         questions.unlink()  # This test owns its temporary fixture only.
     forbid_question_reads(monkeypatch, questions)
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(evaluation_authorizer=lambda: None)) as client:
         health = client.get("/api/v1/health")
         assert health.status_code == 200
         assert health.json()["runtime_initialized"] is True
@@ -186,7 +186,7 @@ def test_evaluation_still_loads_gold_and_records_exact_snapshot_fingerprints(cor
         "documents_sha256": hashlib.sha256(documents.read_bytes()).hexdigest(),
         "questions_sha256": hashlib.sha256(questions.read_bytes()).hexdigest(),
     }
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(evaluation_authorizer=lambda: None)) as client:
         started = client.post("/api/v1/evaluations", json={
             "split": "dev", "policies": [{
                 "name": "threshold", "score_type": "bm25", "threshold": 1_000_000,

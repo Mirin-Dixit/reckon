@@ -7,6 +7,24 @@ body { margin: 0; background: var(--canvas); color: var(--ink); font: var(--type
 h1, h2, h3, p { margin: 0; }
 a { color: inherit; text-underline-offset: 4px; }
 button { font: inherit; }
+.experiment-detail { margin-top: var(--s6); border-top: 1px solid var(--stone); padding-top: var(--s5); min-width: 0; scroll-margin-top: var(--s4); }
+.experiments pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--type-sm); max-height: 32rem; overflow: auto; }
+.experiments button:not(.check-button) { background: var(--surface); color: var(--ink); border: 1px solid var(--stone); padding: var(--s2) var(--s3); min-height: 44px; cursor: pointer; }
+.experiments button:disabled { opacity: .6; cursor: not-allowed; }
+.experiments select { background: var(--surface); color: var(--ink); min-height: 44px; padding: var(--s2); border: 1px solid var(--stone); }
+.experiment-history { list-style: none; padding: 0; max-height: 30rem; overflow-y: auto; }
+.experiment-history li { border-bottom: 1px solid var(--stone); }
+.experiment-history button { width: 100%; text-align: left; overflow-wrap: anywhere; }
+.experiment-history button[aria-pressed="true"] { border-left: 3px solid var(--accent); }
+.experiment-view-label { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.experiment-detail h2 { margin-block: var(--s3); }
+.experiment-detail code { overflow-wrap: anywhere; }
+.experiment-table { width: 100%; border-collapse: collapse; text-align: left; }
+.experiment-table :is(td, th) { padding: var(--s3); border-bottom: 1px solid var(--stone); vertical-align: top; }
+.experiment-table caption { text-align: left; padding-block: var(--s3); }
+.experiment-error { border-left: 3px solid var(--accent); padding: var(--s3); }
+.query-workspace .experiment-checkbox { display: flex; gap: var(--s3); align-items: center; margin-block: var(--s4); }
+.query-workspace .experiment-checkbox input { width: auto; margin: 0; }
 :where(a, button, summary, [tabindex]):focus-visible { outline: 2px solid var(--highlight); outline-offset: 5px; }
 code { font: var(--type-xs)/1.5 var(--font-plex-mono), monospace; font-variant-numeric: tabular-nums; }
 .skip-link { position: fixed; z-index: 20; top: -100px; left: var(--s4); padding: var(--s3); background: var(--ink); color: var(--canvas); }

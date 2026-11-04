@@ -1,0 +1,1798 @@
+{
+  "JobSummary": {
+    "$defs": {
+      "JsonValue": {}
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": "ragbench.experiment-job.v1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "id": {
+        "title": "Id",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "queued",
+          "running",
+          "done",
+          "partial",
+          "failed"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "created_at": {
+        "title": "Created At",
+        "type": "string"
+      },
+      "updated_at": {
+        "title": "Updated At",
+        "type": "string"
+      },
+      "notice": {
+        "const": "Synthetic fixture \u2014 development only; no empirical claims.",
+        "title": "Notice",
+        "type": "string"
+      },
+      "empirical_evaluation": {
+        "const": false,
+        "title": "Empirical Evaluation",
+        "type": "boolean"
+      },
+      "configuration": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "Configuration",
+        "type": "object"
+      },
+      "dataset_fingerprint": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "title": "Dataset Fingerprint",
+        "type": "object"
+      },
+      "runtime_source_sha256": {
+        "title": "Runtime Source Sha256",
+        "type": "string"
+      },
+      "expected_run_count": {
+        "maximum": 40,
+        "minimum": 1,
+        "title": "Expected Run Count",
+        "type": "integer"
+      },
+      "observed_run_count": {
+        "maximum": 40,
+        "minimum": 0,
+        "title": "Observed Run Count",
+        "type": "integer"
+      },
+      "error": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Error"
+      }
+    },
+    "required": [
+      "schema_version",
+      "id",
+      "status",
+      "created_at",
+      "updated_at",
+      "notice",
+      "empirical_evaluation",
+      "configuration",
+      "dataset_fingerprint",
+      "runtime_source_sha256",
+      "expected_run_count",
+      "observed_run_count",
+      "error"
+    ],
+    "title": "JobSummary",
+    "type": "object"
+  },
+  "JobResults": {
+    "$defs": {
+      "AssessmentResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "relevance": {
+            "$ref": "#/$defs/Relevance"
+          },
+          "sufficiency": {
+            "$ref": "#/$defs/Sufficiency"
+          },
+          "supporting_evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Supporting Evidence Ids",
+            "type": "array"
+          },
+          "contradictions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Contradictions",
+            "type": "array"
+          },
+          "missing_premises": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing Premises",
+            "type": "array"
+          },
+          "unsupported_assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unsupported Assumptions",
+            "type": "array"
+          },
+          "ambiguity_requiring_clarification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ambiguity Requiring Clarification"
+          }
+        },
+        "required": [
+          "relevance",
+          "sufficiency",
+          "supporting_evidence_ids",
+          "contradictions",
+          "missing_premises",
+          "unsupported_assumptions",
+          "ambiguity_requiring_clarification"
+        ],
+        "title": "AssessmentResponse",
+        "type": "object"
+      },
+      "CitationResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "claim": {
+            "title": "Claim",
+            "type": "string"
+          },
+          "evidence_id": {
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "start_char": {
+            "title": "Start Char",
+            "type": "integer"
+          },
+          "end_char": {
+            "title": "End Char",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "claim",
+          "evidence_id",
+          "quote",
+          "start_char",
+          "end_char"
+        ],
+        "title": "CitationResponse",
+        "type": "object"
+      },
+      "Decision": {
+        "description": "The three user-facing outcomes supported by the RAG system.",
+        "enum": [
+          "ANSWER",
+          "ABSTAIN",
+          "CLARIFY"
+        ],
+        "title": "Decision",
+        "type": "string"
+      },
+      "EvidenceResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "chunk_id": {
+            "title": "Chunk Id",
+            "type": "string"
+          },
+          "document_id": {
+            "title": "Document Id",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "start_char": {
+            "title": "Start Char",
+            "type": "integer"
+          },
+          "end_char": {
+            "title": "End Char",
+            "type": "integer"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Url"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Version"
+          },
+          "source_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Date"
+          },
+          "domain": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Domain"
+          },
+          "retrieval_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Retrieval Rank"
+          },
+          "retrieval_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Retrieval Score"
+          },
+          "retrieval_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Retrieval Method"
+          },
+          "contains_injection": {
+            "default": false,
+            "title": "Contains Injection",
+            "type": "boolean"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ScoreResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "chunk_id",
+          "document_id",
+          "text",
+          "start_char",
+          "end_char"
+        ],
+        "title": "EvidenceResponse",
+        "type": "object"
+      },
+      "ExecutionStatus": {
+        "description": "Execution outcome, distinct from an intentional ABSTAIN decision.",
+        "enum": [
+          "succeeded",
+          "failed",
+          "timed_out",
+          "refused",
+          "incomplete"
+        ],
+        "title": "ExecutionStatus",
+        "type": "string"
+      },
+      "ExperimentResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {
+            "const": "ragbench.experiment.v2",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "experiment_id": {
+            "title": "Experiment Id",
+            "type": "string"
+          },
+          "created_at_utc": {
+            "title": "Created At Utc",
+            "type": "string"
+          },
+          "benchmark_split": {
+            "enum": [
+              "train",
+              "dev",
+              "test"
+            ],
+            "title": "Benchmark Split",
+            "type": "string"
+          },
+          "selected_question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Selected Question Ids",
+            "type": "array"
+          },
+          "dataset_fingerprint": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Dataset Fingerprint",
+            "type": "object"
+          },
+          "retrieval_configuration": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Retrieval Configuration",
+            "type": "object"
+          },
+          "policy_configurations": {
+            "items": {
+              "$ref": "#/$defs/PolicyConfigurationResponse"
+            },
+            "title": "Policy Configurations",
+            "type": "array"
+          },
+          "generation_configuration": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Generation Configuration",
+            "type": "object"
+          },
+          "random_seed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Random Seed"
+          },
+          "software_metadata": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Software Metadata",
+            "type": "object"
+          },
+          "environment_metadata": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Environment Metadata",
+            "type": "object"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/$defs/ExperimentRunResponse"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "stopped_early": {
+            "title": "Stopped Early",
+            "type": "boolean"
+          },
+          "comparison_warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Comparison Warnings",
+            "type": "array"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Metrics",
+            "type": "object"
+          }
+        },
+        "required": [
+          "schema_version",
+          "experiment_id",
+          "created_at_utc",
+          "benchmark_split",
+          "selected_question_ids",
+          "dataset_fingerprint",
+          "retrieval_configuration",
+          "policy_configurations",
+          "generation_configuration",
+          "random_seed",
+          "software_metadata",
+          "environment_metadata",
+          "runs",
+          "stopped_early",
+          "comparison_warnings",
+          "metrics"
+        ],
+        "title": "ExperimentResponse",
+        "type": "object"
+      },
+      "ExperimentRunResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "policy_name": {
+            "title": "Policy Name",
+            "type": "string"
+          },
+          "observed": {
+            "$ref": "#/$defs/ObservedResultResponse"
+          },
+          "gold": {
+            "$ref": "#/$defs/GoldResponse"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/RunErrorResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "run_id",
+          "question_id",
+          "policy_name",
+          "observed",
+          "gold",
+          "error"
+        ],
+        "title": "ExperimentRunResponse",
+        "type": "object"
+      },
+      "GoldResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "split": {
+            "enum": [
+              "train",
+              "dev",
+              "test"
+            ],
+            "title": "Split",
+            "type": "string"
+          },
+          "is_answerable": {
+            "title": "Is Answerable",
+            "type": "boolean"
+          },
+          "expected_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Answer"
+          },
+          "expected_safe_behavior": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Safe Behavior"
+          },
+          "unanswerable_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unanswerable Category"
+          },
+          "ambiguity_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ambiguity Type"
+          },
+          "domain": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Domain"
+          },
+          "question_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Type"
+          },
+          "evidence_spans": {
+            "items": {
+              "$ref": "#/$defs/GoldSpanResponse"
+            },
+            "title": "Evidence Spans",
+            "type": "array"
+          }
+        },
+        "required": [
+          "question_id",
+          "split",
+          "is_answerable",
+          "expected_answer",
+          "expected_safe_behavior",
+          "unanswerable_category",
+          "ambiguity_type",
+          "domain",
+          "question_type",
+          "evidence_spans"
+        ],
+        "title": "GoldResponse",
+        "type": "object"
+      },
+      "GoldSpanResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "doc_id": {
+            "title": "Doc Id",
+            "type": "string"
+          },
+          "start_char": {
+            "title": "Start Char",
+            "type": "integer"
+          },
+          "end_char": {
+            "title": "End Char",
+            "type": "integer"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "doc_id",
+          "start_char",
+          "end_char",
+          "text",
+          "id"
+        ],
+        "title": "GoldSpanResponse",
+        "type": "object"
+      },
+      "JsonValue": {},
+      "ObservedResultResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Decision"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_assessment": {
+            "$ref": "#/$defs/AssessmentResponse"
+          },
+          "execution_status": {
+            "$ref": "#/$defs/ExecutionStatus"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "unsupported_premises": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unsupported Premises",
+            "type": "array"
+          },
+          "surfaced_contradictions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Surfaced Contradictions",
+            "type": "array"
+          },
+          "clarification_question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clarification Question"
+          },
+          "abstention_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ReasonResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decision_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ReasonResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/CitationResponse"
+            },
+            "title": "Citations",
+            "type": "array"
+          },
+          "policy_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Name"
+          },
+          "policy_parameters": {
+            "$ref": "#/$defs/PolicyParameters"
+          },
+          "retrieval": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/RetrievalResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ProviderResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prompt_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Version"
+          },
+          "latency_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Ms"
+          },
+          "token_usage": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/UsageResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observed_safe_behavior": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Safe Behavior"
+          },
+          "scores": {
+            "items": {
+              "$ref": "#/$defs/ScoreResponse"
+            },
+            "title": "Scores",
+            "type": "array"
+          }
+        },
+        "required": [
+          "decision",
+          "evidence_assessment",
+          "execution_status",
+          "answer",
+          "unsupported_premises",
+          "surfaced_contradictions",
+          "clarification_question",
+          "abstention_reason",
+          "decision_reason",
+          "citations",
+          "policy_name",
+          "policy_parameters",
+          "retrieval",
+          "provider",
+          "prompt_version",
+          "latency_ms",
+          "token_usage",
+          "observed_safe_behavior"
+        ],
+        "title": "ObservedResultResponse",
+        "type": "object"
+      },
+      "PolicyConfigurationResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "parameters": {
+            "$ref": "#/$defs/PolicyParameters"
+          }
+        },
+        "required": [
+          "name",
+          "parameters"
+        ],
+        "title": "PolicyConfigurationResponse",
+        "type": "object"
+      },
+      "PolicyParameters": {
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Provider"
+          },
+          "settings": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SettingsResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "score_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Score Type"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Threshold"
+          },
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Direction"
+          },
+          "aggregation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Aggregation"
+          },
+          "observed_aggregate_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Observed Aggregate Score"
+          },
+          "missing_score_decision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Missing Score Decision"
+          }
+        },
+        "title": "PolicyParameters",
+        "type": "object"
+      },
+      "ProviderResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Request Id"
+          },
+          "api_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Version"
+          },
+          "model_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model Digest"
+          },
+          "quantization": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Quantization"
+          },
+          "completion_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Completion Reason"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "title": "ProviderResponse",
+        "type": "object"
+      },
+      "ReasonCode": {
+        "description": "Machine-readable explanations for abstention and clarification outcomes.",
+        "enum": [
+          "insufficient_evidence",
+          "conflicting_evidence",
+          "unsupported_premise",
+          "ambiguous_intent",
+          "out_of_scope",
+          "other"
+        ],
+        "title": "ReasonCode",
+        "type": "string"
+      },
+      "ReasonResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "$ref": "#/$defs/ReasonCode"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "explanation"
+        ],
+        "title": "ReasonResponse",
+        "type": "object"
+      },
+      "Relevance": {
+        "description": "How closely retrieved evidence relates to the request.",
+        "enum": [
+          "relevant",
+          "partially_relevant",
+          "irrelevant",
+          "not_assessed"
+        ],
+        "title": "Relevance",
+        "type": "string"
+      },
+      "RetrievalResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "top_k": {
+            "title": "Top K",
+            "type": "integer"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/$defs/EvidenceResponse"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "scores": {
+            "items": {
+              "$ref": "#/$defs/ScoreResponse"
+            },
+            "title": "Scores",
+            "type": "array"
+          }
+        },
+        "required": [
+          "method",
+          "top_k",
+          "evidence",
+          "parameters"
+        ],
+        "title": "RetrievalResponse",
+        "type": "object"
+      },
+      "RunErrorResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retryable"
+          }
+        },
+        "required": [
+          "kind",
+          "message",
+          "retryable"
+        ],
+        "title": "RunErrorResponse",
+        "type": "object"
+      },
+      "ScoreKind": {
+        "enum": [
+          "bm25",
+          "dense_cosine",
+          "hybrid_rrf",
+          "prompt_self_assessment"
+        ],
+        "title": "ScoreKind",
+        "type": "string"
+      },
+      "ScoreResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "$ref": "#/$defs/ScoreKind"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "source": {
+            "$ref": "#/$defs/ScoreSource"
+          },
+          "retrieval_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retrieval Method"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "role": {
+            "$ref": "#/$defs/ScoreRole"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          },
+          "threshold_direction": {
+            "anyOf": [
+              {
+                "enum": [
+                  "at_least",
+                  "at_most"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Direction"
+          },
+          "unavailable_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unavailable Reason"
+          },
+          "availability": {
+            "enum": [
+              "available",
+              "unavailable"
+            ],
+            "title": "Availability",
+            "type": "string"
+          },
+          "lower_bound": {
+            "title": "Lower Bound",
+            "type": "number"
+          },
+          "upper_bound": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper Bound"
+          },
+          "direction": {
+            "enum": [
+              "higher_is_more_support",
+              "higher_is_more_relevant"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "calibration": {
+            "const": "uncalibrated",
+            "title": "Calibration",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": "ragbench.score.v1",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "value",
+          "source",
+          "retrieval_method",
+          "parameters",
+          "role",
+          "threshold",
+          "threshold_direction",
+          "unavailable_reason",
+          "availability",
+          "lower_bound",
+          "upper_bound",
+          "direction",
+          "calibration",
+          "schema_version"
+        ],
+        "title": "ScoreResponse",
+        "type": "object"
+      },
+      "ScoreRole": {
+        "enum": [
+          "observational",
+          "threshold_input",
+          "self_assessment"
+        ],
+        "title": "ScoreRole",
+        "type": "string"
+      },
+      "ScoreSource": {
+        "enum": [
+          "retrieval",
+          "model_self_report"
+        ],
+        "title": "ScoreSource",
+        "type": "string"
+      },
+      "SettingsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "temperature": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature"
+          },
+          "seed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed"
+          },
+          "max_output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Output Tokens"
+          },
+          "timeout_seconds": {
+            "title": "Timeout Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "temperature",
+          "seed",
+          "max_output_tokens",
+          "timeout_seconds"
+        ],
+        "title": "SettingsResponse",
+        "type": "object"
+      },
+      "Sufficiency": {
+        "description": "Whether the evidence establishes the facts needed to respond.",
+        "enum": [
+          "sufficient",
+          "partial",
+          "insufficient",
+          "contradictory",
+          "not_assessed"
+        ],
+        "title": "Sufficiency",
+        "type": "string"
+      },
+      "UsageResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "input_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Tokens"
+          },
+          "total_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Tokens"
+          }
+        },
+        "required": [
+          "input_tokens",
+          "output_tokens",
+          "total_tokens"
+        ],
+        "title": "UsageResponse",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": "ragbench.experiment-job.v1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "id": {
+        "title": "Id",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "queued",
+          "running",
+          "done",
+          "partial",
+          "failed"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "created_at": {
+        "title": "Created At",
+        "type": "string"
+      },
+      "updated_at": {
+        "title": "Updated At",
+        "type": "string"
+      },
+      "notice": {
+        "const": "Synthetic fixture \u2014 development only; no empirical claims.",
+        "title": "Notice",
+        "type": "string"
+      },
+      "empirical_evaluation": {
+        "const": false,
+        "title": "Empirical Evaluation",
+        "type": "boolean"
+      },
+      "configuration": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "Configuration",
+        "type": "object"
+      },
+      "dataset_fingerprint": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "title": "Dataset Fingerprint",
+        "type": "object"
+      },
+      "runtime_source_sha256": {
+        "title": "Runtime Source Sha256",
+        "type": "string"
+      },
+      "expected_run_count": {
+        "maximum": 40,
+        "minimum": 1,
+        "title": "Expected Run Count",
+        "type": "integer"
+      },
+      "observed_run_count": {
+        "maximum": 40,
+        "minimum": 0,
+        "title": "Observed Run Count",
+        "type": "integer"
+      },
+      "error": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Error"
+      },
+      "observations": {
+        "items": {
+          "$ref": "#/$defs/ExperimentRunResponse"
+        },
+        "title": "Observations",
+        "type": "array"
+      },
+      "result": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ExperimentResponse"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "schema_version",
+      "id",
+      "status",
+      "created_at",
+      "updated_at",
+      "notice",
+      "empirical_evaluation",
+      "configuration",
+      "dataset_fingerprint",
+      "runtime_source_sha256",
+      "expected_run_count",
+      "observed_run_count",
+      "error",
+      "observations",
+      "result"
+    ],
+    "title": "JobResults",
+    "type": "object"
+  },
+  "JobList": {
+    "$defs": {
+      "JobSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {
+            "const": "ragbench.experiment-job.v1",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "queued",
+              "running",
+              "done",
+              "partial",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "string"
+          },
+          "notice": {
+            "const": "Synthetic fixture \u2014 development only; no empirical claims.",
+            "title": "Notice",
+            "type": "string"
+          },
+          "empirical_evaluation": {
+            "const": false,
+            "title": "Empirical Evaluation",
+            "type": "boolean"
+          },
+          "configuration": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "title": "Configuration",
+            "type": "object"
+          },
+          "dataset_fingerprint": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Dataset Fingerprint",
+            "type": "object"
+          },
+          "runtime_source_sha256": {
+            "title": "Runtime Source Sha256",
+            "type": "string"
+          },
+          "expected_run_count": {
+            "maximum": 40,
+            "minimum": 1,
+            "title": "Expected Run Count",
+            "type": "integer"
+          },
+          "observed_run_count": {
+            "maximum": 40,
+            "minimum": 0,
+            "title": "Observed Run Count",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "required": [
+          "schema_version",
+          "id",
+          "status",
+          "created_at",
+          "updated_at",
+          "notice",
+          "empirical_evaluation",
+          "configuration",
+          "dataset_fingerprint",
+          "runtime_source_sha256",
+          "expected_run_count",
+          "observed_run_count",
+          "error"
+        ],
+        "title": "JobSummary",
+        "type": "object"
+      },
+      "JsonValue": {}
+    },
+    "additionalProperties": false,
+    "properties": {
+      "jobs": {
+        "items": {
+          "$ref": "#/$defs/JobSummary"
+        },
+        "title": "Jobs",
+        "type": "array"
+      }
+    },
+    "required": [
+      "jobs"
+    ],
+    "title": "JobList",
+    "type": "object"
+  },
+  "DevFreeze": {
+    "$defs": {
+      "JsonValue": {}
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": "ragbench.dev-freeze.v1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "job_id": {
+        "title": "Job Id",
+        "type": "string"
+      },
+      "empirical_evaluation": {
+        "const": false,
+        "title": "Empirical Evaluation",
+        "type": "boolean"
+      },
+      "notice": {
+        "const": "Synthetic fixture \u2014 development only; no empirical claims.",
+        "title": "Notice",
+        "type": "string"
+      },
+      "configuration": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "Configuration",
+        "type": "object"
+      },
+      "dataset_fingerprint": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "title": "Dataset Fingerprint",
+        "type": "object"
+      },
+      "software_metadata": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "Software Metadata",
+        "type": "object"
+      },
+      "generation_configuration": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "Generation Configuration",
+        "type": "object"
+      },
+      "sha256": {
+        "title": "Sha256",
+        "type": "string"
+      },
+      "created_at": {
+        "title": "Created At",
+        "type": "string"
+      }
+    },
+    "required": [
+      "schema_version",
+      "job_id",
+      "empirical_evaluation",
+      "notice",
+      "configuration",
+      "dataset_fingerprint",
+      "software_metadata",
+      "generation_configuration",
+      "sha256",
+      "created_at"
+    ],
+    "title": "DevFreeze",
+    "type": "object"
+  }
+}

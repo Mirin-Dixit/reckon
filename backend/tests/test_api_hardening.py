@@ -188,7 +188,9 @@ def recorded_experiment(config, *, overrides=None):
     )
     provider = OpenAIResponsesProvider(config, client=sdk)
     runtime = RuntimeService(documents, provider, config)
-    application = create_app(runtime_factory=lambda: runtime)
+    application = create_app(
+        runtime_factory=lambda: runtime, evaluation_authorizer=lambda: None
+    )
     reply = TestClient(application).post(
         "/api/v1/evaluations",
         json={
@@ -455,7 +457,9 @@ def test_lifespan_closes_runtime_and_adapter_client_once():
     sdk = SimpleNamespace(close=lambda: closed.append(1))
     provider = OpenAIResponsesProvider(OpenAIProviderConfig(), client=sdk)
     runtime = RuntimeService([], provider, OpenAIProviderConfig())
-    application = create_app(runtime_factory=lambda: runtime)
+    application = create_app(
+        runtime_factory=lambda: runtime, evaluation_authorizer=lambda: None
+    )
     with TestClient(application) as c:
         assert c.get("/api/v1/health").status_code == 200
     assert closed == [1]
@@ -597,7 +601,7 @@ def adversarial_application(monkeypatch, sdk):
         "app.api.dependencies.OpenAIResponsesProvider",
         lambda config: OpenAIResponsesProvider(config, client=sdk),
     )
-    return create_app()
+    return create_app(evaluation_authorizer=lambda: None)
 
 
 @pytest.mark.parametrize("decision", ["ANSWER", "ABSTAIN", "CLARIFY"])

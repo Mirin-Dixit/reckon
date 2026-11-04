@@ -65,7 +65,9 @@ def environment(tmp_path):
         provider, OllamaProviderConfig(model="offline:model"),
         retrieval_runtime=RetrievalRuntime(embedder=embedder, cache=cache),
     )
-    app = create_app(runtime_factory=lambda: runtime)
+    app = create_app(
+        runtime_factory=lambda: runtime, evaluation_authorizer=lambda: None
+    )
     return runtime, app, transport, provider
 
 

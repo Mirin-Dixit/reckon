@@ -15,10 +15,11 @@ from app.api.dependencies import ApiSettings, ExperimentRegistry, RuntimeManager
 from app.api.errors import ApiProblem
 from app.api.middleware import RequestBodyLimitMiddleware, SafeErrorMiddleware
 from app.api.models import ErrorResponse
-from app.api.routes import evaluation, experiments, health, query
+from app.api.routes import evaluation, experiment_jobs, experiments, health, query
 
 
-def create_app(*, settings: ApiSettings | None = None, runtime_factory=None) -> FastAPI:
+def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
+               experiment_store_path=None, evaluation_authorizer=None) -> FastAPI:
     config = settings or ApiSettings.from_env()
     if "*" in config.cors_origins:
         raise ValueError("Wildcard CORS origins are not allowed")
@@ -28,6 +29,9 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None) -> 
         try:
             yield
         finally:
+            service = getattr(application.state, "experiment_jobs", None)
+            if service is not None:
+                await run_in_threadpool(service.close)
             await run_in_threadpool(application.state.runtime_manager.close)
 
     application = FastAPI(
@@ -48,6 +52,10 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None) -> 
     application.state.settings = config
     application.state.runtime_manager = RuntimeManager(runtime_factory)
     application.state.experiment_registry = ExperimentRegistry()
+    application.state.experiment_store_path = (
+        experiment_store_path or experiment_jobs.DEFAULT_STORE
+    )
+    application.state.evaluation_authorizer = evaluation_authorizer
 
     application.add_middleware(
         RequestBodyLimitMiddleware, max_bytes=config.max_request_bytes
@@ -116,6 +124,9 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None) -> 
     application.include_router(health.router, prefix=prefix, tags=["health"])
     application.include_router(query.router, prefix=prefix, tags=["query"])
     application.include_router(experiments.router, prefix=prefix, tags=["evaluations"])
+    application.include_router(
+        experiment_jobs.router, prefix=prefix, tags=["experiments"]
+    )
     application.include_router(evaluation.router, prefix=prefix, tags=["evaluations"])
     return application
 

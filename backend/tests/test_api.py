@@ -147,7 +147,13 @@ class FakeRuntime:
 
 def client(runtime=None, *, settings=None, runtime_factory=None):
     factory = runtime_factory or (lambda: runtime or FakeRuntime())
-    return TestClient(create_app(settings=settings, runtime_factory=factory))
+    return TestClient(
+        create_app(
+            settings=settings,
+            runtime_factory=factory,
+            evaluation_authorizer=lambda: None,
+        )
+    )
 
 
 def test_health_success_reports_initialization_without_claiming_connection_test():

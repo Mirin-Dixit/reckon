@@ -137,11 +137,12 @@ async function readJson(response: Response, signal: AbortSignal, maxBytes: numbe
 export interface HealthClient { getHealth(signal?: AbortSignal): Promise<HealthResponse> }
 
 export function createJsonRequest<T>(
-  path: "/api/v1/health" | "/api/v1/query", parse: (value: unknown) => T,
-  origin?: string, options: { fetch?: typeof fetch; timeoutMs?: number } = {},
+  path: "/api/v1/health" | "/api/v1/query" | `/api/v1/experiments${string}`, parse: (value: unknown) => T,
+  origin?: string, options: { fetch?: typeof fetch; timeoutMs?: number; method?: "GET" | "POST" } = {},
 ): (signal?: AbortSignal, body?: unknown) => Promise<T> {
   return async (signal, requestBody) => {
     const base = backendOrigin(origin);
+    if (path.startsWith("/api/v1/experiments") && !/^\/api\/v1\/experiments(?:\?limit=50&offset=\d+|\/[0-9a-f-]{36}(?:\/results|\/freeze)?)?$/.test(path)) throw new ApiClientError("configuration");
     const timeoutMs = options.timeoutMs ?? (path === "/api/v1/health" ? 5_000 : 270_000);
     if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > (path === "/api/v1/health" ? 30_000 : 300_000)) throw new ApiClientError("configuration");
     if (signal?.aborted) throw new ApiClientError("cancelled");
@@ -157,7 +158,7 @@ export function createJsonRequest<T>(
     });
     const operation = async (): Promise<T> => {
       const response = await (options.fetch ?? fetch)(`${base}${path}`, {
-        method: path === "/api/v1/health" ? "GET" : "POST",
+        method: options.method ?? (path === "/api/v1/health" ? "GET" : "POST"),
         headers: { Accept: "application/json", ...(requestBody === undefined ? {} : { "Content-Type": "application/json" }) },
         body: requestBody === undefined ? undefined : JSON.stringify(requestBody), cache: "no-store",
         credentials: "omit", redirect: "error", referrerPolicy: "no-referrer",

@@ -71,12 +71,13 @@ test("workbench establishes the research workflow without making planned workspa
   for (const step of ["Question", "Retrieval", "Evidence", "Decision", "Evaluation"]) {
     assert.match(html, new RegExp(`<h3[^>]*>${step}</h3>`));
   }
-  assert.equal((html.match(/aria-disabled="true"/g) ?? []).length, 2);
+  assert.equal((html.match(/aria-disabled="true"/g) ?? []).length, 1);
   assert.match(html, /href="#system-status"/);
   assert.match(html, /id="system-status"[^>]*tabindex="-1"/);
   assert.match(html, /href="#main-content"/);
   assert.match(html, /aria-label="Main navigation"/);
-  assert.doesNotMatch(html, /href="\/(experiments|results)|<input|<form/);
+  assert.match(html, /href="\/experiments"/);
+  assert.doesNotMatch(html, /href="\/results"|<input|<form/);
   assert.match(html, /API has no authentication/);
 });
 
@@ -192,7 +193,7 @@ test("review refinements remain conceptual and preserve planned navigation", () 
   assert.match(html, /Concept, not data/);
   assert.match(html, /not measurements or a decision rule/);
   assert.match(html, /class="concept-marker"/);
-  assert.equal((html.match(/<sup>soon<\/sup>/g) ?? []).length, 2);
+  assert.equal((html.match(/<sup>soon<\/sup>/g) ?? []).length, 1);
   assert.match(html, /Answer<\/span> \u2013 evidence is enough/);
   assert.match(html, /the question is unclear/);
   assert.equal((html.match(/class="workflow-dot"/g) ?? []).length, 5);
@@ -280,7 +281,7 @@ test("header groups the wordmark and navigation; footer is a compact page landma
   assert.ok(header);
   assert.match(header, /class="wordmark"/);
   assert.match(header, /aria-label="Main navigation"/);
-  assert.equal((header.match(/aria-disabled="true"/g) ?? []).length, 2);
+  assert.equal((header.match(/aria-disabled="true"/g) ?? []).length, 1);
   assert.doesNotMatch(header, /active-underline/);
   assert.ok(html.indexOf("</main>") < html.indexOf('<footer class="workbench-footer">'));
   const footer = html.slice(html.indexOf('<footer class="workbench-footer">'));

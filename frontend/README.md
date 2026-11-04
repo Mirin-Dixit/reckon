@@ -1,14 +1,22 @@
 # RAGBench Studio frontend
 
 The Workbench provides read-only System Status. `/query-lab` submits individual
-questions to the existing `POST /api/v1/query` endpoint. P3 Batch 2 displays retrieved evidence, exact citation highlights, decisions,
-score provenance and execution metadata. Experiment execution remains outside this batch. No benchmark
-labels are loaded by the frontend.
+questions to `POST /api/v1/query` and displays retrieved evidence, exact citation
+highlights, decisions, score provenance and execution metadata.
 
-The Workbench has a near-black hero with a wide green particle mesh. The planned
+`/experiments` provides the completed P4 synthetic-only Experiment Runner:
+Train/Dev fixture jobs, persistent history and saved results, observations,
+configuration/provenance, JSON export and immutable completed-Dev configuration
+receipts. Experiment execution uses deterministic fixtures with no model calls.
+Empirical evaluation, benchmark human acceptance and held-out testing remain
+separately gated; a synthetic Dev freeze does not satisfy those gates.
+
+The Workbench has a near-black hero with a wide green particle mesh. The research
 workflow and decision notation sit below it, followed by real System Status
-controls. Health fields and the conceptual sketch use closed disclosures. Experiments and Evaluation Results remain planned, non-interactive
-text, not placeholder routes. The System Status link jumps to the working panel.
+controls. Health fields and the conceptual sketch use closed disclosures.
+Experiments is an active workspace; Evaluation Results remains planned and
+non-interactive. The System Status link jumps to the working panel. Empirical
+benchmark gold labels and review records are not requested by these workspaces.
 
 ## Requirements
 
@@ -49,6 +57,10 @@ For the current port-3001 workspace, use `npm.cmd run dev -- --port 3001` and op
 ports. Set the CORS variable in the backend terminal **before** starting Uvicorn;
 restart that process after changing it. Changing the frontend variable does not
 update the running backend allowlist.
+For `/experiments`, the browser sends an OPTIONS preflight before the JSON POST.
+If OPTIONS returns 405, stop and restart the backend with the CORS variable above
+in that same terminal. Expect preflight 200 with the exact frontend origin and
+POST 202; an HTTP 200 history GET alone does not verify CORS for submissions.
 Use the same frontend origin in the browser and backend CORS settings. If using
 `http://localhost:3000`, explicitly add that exact origin to
 `RAGBENCH_CORS_ORIGINS`; it differs from `127.0.0.1`.
@@ -309,3 +321,32 @@ with TypeScript, ESLint, production build, Ruff and schema/dataset checks passin
 The browser checks above were not performed. Dataset working-file SHA-256 hashes
 match the accepted P2 baseline. The questions file uses CRLF locally and LF in
 Git; its clean-filtered Git blob identity is unchanged.
+
+## P4 synthetic experiment results
+
+At `/experiments`, each history entry has a **View saved results** button.
+Results appear inline in **Selected experiment**, below the form/history area;
+selecting a row moves keyboard focus and scrolls to that panel without animation.
+Selecting the same row again reloads its results. Loading, empty and failed reads
+have explicit messages, and **Retry loading results** does not submit another job.
+
+The panel shows saved status/counts, observations, decisions, recorded errors,
+configuration, dataset/runtime fingerprints and supplied provider/software
+provenance. **Export synthetic result JSON** downloads the selected saved record.
+**Freeze this Dev configuration** is enabled only for a completed synthetic Dev
+job while no mutation is pending. A successful matching receipt exposes **Export
+freeze JSON**. Train, running, partial and failed jobs cannot be frozen here.
+This fixture freeze neither accepts a benchmark nor authorizes held-out evaluation.
+
+Manual retest:
+
+1. Select an existing `dev / done / 12/12` row. Verify the panel is reached and
+   contains 12 observations, provenance and both result controls.
+2. Select that same row twice, then a different row. Verify results reload and the
+   displayed/exported experiment ID matches the selected entry each time.
+3. Use Tab and Enter to select history and operate disclosures and controls.
+4. Export JSON; compare its ID/counts with the panel. Freeze an eligible synthetic
+   Dev configuration and verify its receipt/export. Confirm ineligible controls
+   remain disabled. This action is synthetic-only and makes no model calls.
+5. Test empty history and a failed results GET. Verify explicit feedback and a
+   working read-only retry, without silently showing another experiment's data.

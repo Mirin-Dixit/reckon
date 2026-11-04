@@ -7,7 +7,7 @@ import { ParticleWave } from "./particle-wave";
 import { SufficiencyLine } from "./sufficiency-line";
 import { DecisionMark } from "./decision-mark";
 
-export function WorkbenchShell({ children, workspace = "workbench" }: { children: ReactNode; workspace?: "workbench" | "query-lab" }) {
+export function WorkbenchShell({ children, workspace = "workbench" }: { children: ReactNode; workspace?: "workbench" | "query-lab" | "experiments" }) {
   return <div className="workbench-frame">
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className="masthead">
@@ -43,7 +43,7 @@ export function WorkbenchShell({ children, workspace = "workbench" }: { children
     <footer className="workbench-footer">
       <div className="footer-identity"><p className="footer-wordmark">RAGBench Studio</p>
         <p>A workbench for evaluating evidence-grounded AI decisions.</p>
-        <p className="footer-request-note">{workspace === "workbench" ? "No questions, experiments, or benchmark labels are requested here." : "Queries run only when submitted. Benchmark gold labels are not requested."}</p>
+        <p className="footer-request-note">{workspace === "workbench" ? "No questions, experiments, or benchmark labels are requested here." : workspace === "experiments" ? "Synthetic experiments only. Empirical evaluation is deferred." : "Queries run only when submitted. Benchmark gold labels are not requested."}</p>
       </div>
       <div className="footer-local"><p><strong>Local prototype</strong><a href={workspace === "workbench" ? "#system-status" : "/#system-status"}>System status</a></p>
         <p>The API has no authentication. Keep this workspace on loopback.</p>
