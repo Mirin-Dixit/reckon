@@ -142,7 +142,9 @@ export function createJsonRequest<T>(
 ): (signal?: AbortSignal, body?: unknown) => Promise<T> {
   return async (signal, requestBody) => {
     const base = backendOrigin(origin);
-    if (path.startsWith("/api/v1/experiments") && !/^\/api\/v1\/experiments(?:\?limit=50&offset=\d+|\/[0-9a-f-]{36}(?:\/results|\/freeze)?)?$/.test(path)) throw new ApiClientError("configuration");
+    if (path.startsWith("/api/v1/experiments") &&
+        !/^\/api\/v1\/experiments(?:\?limit=50&offset=\d+|\/[0-9a-f-]{36}(?:\/results|\/freeze)?)?$/.test(path) &&
+        !/^\/api\/v1\/experiments\/[0-9a-f-]{36}\/analysis\?resamples=2000&seed=0&lexical_proxy=(?:true|false)(?:&threshold_only=true)?(?:&compare=[0-9a-f-]{36}){0,7}$/.test(path)) throw new ApiClientError("configuration");
     const timeoutMs = options.timeoutMs ?? (path === "/api/v1/health" ? 5_000 : 270_000);
     if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > (path === "/api/v1/health" ? 30_000 : 300_000)) throw new ApiClientError("configuration");
     if (signal?.aborted) throw new ApiClientError("cancelled");

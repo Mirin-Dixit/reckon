@@ -15,7 +15,14 @@ from app.api.dependencies import ApiSettings, ExperimentRegistry, RuntimeManager
 from app.api.errors import ApiProblem
 from app.api.middleware import RequestBodyLimitMiddleware, SafeErrorMiddleware
 from app.api.models import ErrorResponse
-from app.api.routes import evaluation, experiment_jobs, experiments, health, query
+from app.api.routes import (
+    analysis,
+    evaluation,
+    experiment_jobs,
+    experiments,
+    health,
+    query,
+)
 
 
 def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
@@ -128,6 +135,7 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
         experiment_jobs.router, prefix=prefix, tags=["experiments"]
     )
     application.include_router(evaluation.router, prefix=prefix, tags=["evaluations"])
+    application.include_router(analysis.router, prefix=prefix, tags=["analysis"])
     return application
 
 

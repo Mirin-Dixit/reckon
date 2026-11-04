@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { buildExperiment, createExperimentClient, experimentFailure, notice, type Freeze, type Job, type Results } from "../lib/experiment-api";
+import { RiskAnalysis } from "./risk-analysis";
 
 export function nextExperimentSelection(previous: { id: string; revision: number }, id: string) {
   // A repeated click must invalidate the request too, not just clear its result.
@@ -57,6 +58,7 @@ export function ExperimentResults({ value }: { value: Results }) {
       <tbody>{rows.map(row => <tr key={`${row.policy_name}:${row.question_id}`}><th scope="row"><code>{row.question_id}</code></th><td>{row.policy_name}</td><td>{row.observed.execution_status}</td><td>{row.observed.decision ?? "No decision"}</td><td>{row.observed.answer ?? row.observed.clarification_question ?? (row.error ? "Execution failure" : "Intentionally withheld")}</td><td>{row.error === null ? "None" : <code>{JSON.stringify(row.error)}</code>}</td></tr>)}</tbody></table></div>
     {rows.length === 0 && <p>No matching observations saved.</p>}
     {value.result && <details><summary>Synthetic summary metrics</summary><p>Fixture accounting only; these values are not empirical benchmark results.</p><pre>{JSON.stringify(value.result.metrics, null, 2)}</pre></details>}
+    {value.result && <RiskAnalysis key={value.id} experimentId={value.id} />}
     <details><summary>Full recorded evidence and synthetic reference fields</summary><pre>{JSON.stringify(value, null, 2)}</pre></details>
   </section>;
 }

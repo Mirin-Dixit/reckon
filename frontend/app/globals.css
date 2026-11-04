@@ -242,4 +242,46 @@ h2 { font: 700 var(--type-section)/1.1 var(--font-plex-sans), Arial, sans-serif;
 .claim-citations blockquote { white-space: pre-wrap; margin: var(--s3) 0; border-left: 2px solid var(--accent); padding-left: var(--s3); overflow-wrap: anywhere; }
 .query-output a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .execution-metadata summary, .evidence-table summary { cursor: pointer; padding-block: var(--s2); }
+.risk-analysis { margin-top: var(--s6); padding-top: var(--s4); border-top: 1px solid var(--stone); }
+.risk-analysis .analysis-heading { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); flex-wrap: wrap; }
+.risk-analysis h3 { font-size: var(--type-section); font-weight: 700; }
+.risk-analysis .analysis-heading p, .risk-analysis .analysis-scope { color: var(--muted); margin-top: var(--s2); max-width: 76ch; }
+.risk-analysis .analysis-label { font-size: var(--type-sm); color: var(--positive); white-space: nowrap; }
+.risk-analysis .analysis-form { max-width: 76ch; display: grid; gap: var(--s5); margin-top: var(--s5); }
+.risk-analysis fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+.risk-analysis legend, .risk-analysis h4 { font-size: var(--type-lead); font-weight: 600; margin: 0 0 var(--s3); padding: 0; }
+.risk-analysis .analysis-selection > label { display: block; font-weight: 500; }
+.risk-analysis .analysis-optional, .risk-analysis .analysis-help { color: var(--muted); font-weight: 400; }
+.risk-analysis .analysis-help { display: block; font-size: var(--type-sm); line-height: 1.65; margin-top: var(--s2); }
+.risk-analysis input[type="text"] { display: block; width: 100%; min-height: 48px; margin-block: var(--s2); border: 1px solid var(--muted); border-radius: 2px; padding: 12px 14px; background: var(--surface); color: var(--ink); font: inherit; }
+.risk-analysis input::placeholder { color: var(--muted); opacity: 1; }
+.risk-analysis .analysis-option { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: start; gap: var(--s3); padding-block: var(--s3); cursor: pointer; }
+.risk-analysis .analysis-option + .analysis-option { margin-top: var(--s2); }
+.risk-analysis .analysis-option input { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); }
+.risk-analysis .analysis-option-title { display: block; color: var(--ink); font-weight: 500; }
+.risk-analysis .analysis-option .analysis-help { margin-top: var(--s1); }
+.risk-analysis .analysis-action { border-top: 1px solid var(--stone); padding-top: var(--s4); }
+.risk-analysis .analysis-action .query-actions { margin-top: var(--s3); }
+.risk-analysis :is(input, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.risk-analysis :is(input, button):disabled { opacity: .6; cursor: not-allowed; }
+.risk-analysis .analysis-results { margin-top: var(--s6); border-top: 1px solid var(--stone); padding-top: var(--s5); min-width: 0; }
+.risk-analysis .analysis-results p { margin-block: var(--s3); overflow-wrap: anywhere; }
+.risk-analysis .analysis-results h5 { font-size: var(--type-lead); font-weight: 600; margin-block: var(--s5) var(--s3); }
+.risk-analysis .analysis-status { padding-block: var(--s3); color: var(--muted); }
+.risk-analysis .analysis-error { border-left: 2px solid var(--highlight); padding: var(--s3) var(--s4); }
+.risk-analysis .evidence-table { line-height: 1.65; }
+.risk-analysis .evidence-table th { font-weight: 600; }
+.risk-analysis details { margin-block: var(--s4); }
+.risk-analysis summary { cursor: pointer; padding-block: var(--s2); }
+.risk-plot { margin-inline: 0; max-width: 680px; overflow-x: auto; }
+.risk-plot svg { width: 100%; min-width: 520px; height: auto; color: var(--ink); }
+.risk-plot text { fill: currentColor; font: 13px var(--font-sans), sans-serif; }
+.risk-plot figcaption { color: var(--muted); }
+.risk-analysis td, .risk-analysis code { font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) {
+  .risk-analysis .analysis-form { gap: var(--s4); }
+  .risk-analysis .analysis-heading { gap: var(--s2); }
+  .risk-analysis .analysis-action .query-actions { align-items: stretch; flex-direction: column; }
+  .risk-analysis .analysis-action button { width: 100%; }
+}
 .query-output .evidence-warning { border-left: 2px solid var(--accent); padding-left: var(--s3); color: var(--ink); }

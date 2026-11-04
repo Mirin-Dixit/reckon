@@ -162,19 +162,33 @@ recovered after backend restart.
 This acceptance establishes local synthetic infrastructure only. It does not
 establish model quality, calibrated thresholds, empirical benchmark results,
 human review completion or permission to evaluate held-out data. The full
-benchmark and exploratory pilot retain their separate gates. R1 has not begun.
+benchmark and exploratory pilot retain their separate gates. R1 synthetic-only
+analysis and frontend integration are accepted; empirical evaluation remains gated.
 
 ### R1 - Selective-Prediction Evaluation
 
-This roadmap's R1 label denotes future selective-prediction work. The earlier
-milestone also called R1 concerned gold-data isolation; it is a separate scope.
+R1's local synthetic analysis scope is accepted. The earlier milestone also
+called R1 concerned gold-data isolation; it is a separate scope.
 
-- [ ] Implement genuine threshold-sweep risk-coverage analysis and AURC.
-- [ ] Keep execution failures separate and define consistent denominators,
+R1.1 implemented the statistical engine; R1.2 added matched comparisons, paired
+bootstrap uncertainty and read-only analysis integration. R1.3 completed automated
+acceptance; the project owner accepted browser rendering, navigation and exported
+JSON. Historical validation recorded 962 complete backend tests; the latest broader
+frontend pass recorded 272 frontend and 179 relevant backend tests, with TypeScript,
+ESLint, production build, Ruff and diff checks passing. These are previously
+recorded results, not tests newly executed by this documentation update.
+See [R1 methodology and acceptance](evaluation/risk_coverage.md).
+
+Acceptance is limited to local synthetic development infrastructure. It does not
+establish semantic correctness, empirical performance, held-out Test completion
+or production readiness. P5 has not begun.
+
+- [x] Implement genuine threshold-sweep risk-coverage analysis and AURC.
+- [x] Keep execution failures separate and define consistent denominators,
   score direction, ties and zero-coverage behavior.
 - [ ] Run the frozen Test configuration once for the reported evaluation,
   only after B2 freeze; record failures honestly.
-- [ ] Never substitute the existing answered-run ranking diagnostic for a
+- [x] Never substitute the existing answered-run ranking diagnostic for a
   genuine threshold-policy curve.
 
 Gate: hand-calculated metric fixtures and sweep tests pass; Train/Dev HTTP

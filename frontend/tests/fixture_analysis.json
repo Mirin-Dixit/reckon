@@ -1,0 +1,432 @@
+{
+  "schema_version": "ragbench.matched-analysis.v1",
+  "empirical_evaluation": false,
+  "notice": "Synthetic development only; lexical proxy is not semantic correctness.",
+  "split": "dev",
+  "retrieval_method": "bm25",
+  "provenance_sha256": "19848ddbb76e2d55983088b52161e08647c787cbbae16cdae289332f4ffad14d",
+  "question_ids": [
+    "synthetic_dev_01"
+  ],
+  "matched_questions": 1,
+  "resampling_units": 1,
+  "cluster_sizes": [
+    1
+  ],
+  "grouping": "question",
+  "family_map_sha256": null,
+  "seed": 0,
+  "resamples": 2000,
+  "interval_method": "paired_percentile_95",
+  "loss_basis": "synthetic_lexical_proxy",
+  "rows": [
+    {
+      "id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:always_answer",
+      "policy": "always_answer",
+      "experiment_id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c",
+      "source_record_sha256": "1fee9b015da0c6a700a5f3f2a9532376e39c4fd217bfc06d090544e66920609d",
+      "threshold": null,
+      "direction": null,
+      "end_to_end_coverage": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "successful_execution_coverage": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "failure_rate": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0
+      },
+      "missing_rate": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0
+      },
+      "judgment_completeness": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "selective_risk": 0.0,
+      "risk_bounds": [
+        0.0,
+        0.0
+      ],
+      "undefined_reason": null,
+      "uncertainty": {
+        "end_to_end_coverage": {
+          "estimate": 1.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "successful_execution_coverage": {
+          "estimate": 1.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "selective_risk": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "failure_rate": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        }
+      }
+    },
+    {
+      "id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:prompt_abstention",
+      "policy": "prompt_abstention",
+      "experiment_id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c",
+      "source_record_sha256": "1fee9b015da0c6a700a5f3f2a9532376e39c4fd217bfc06d090544e66920609d",
+      "threshold": null,
+      "direction": null,
+      "end_to_end_coverage": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "successful_execution_coverage": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "failure_rate": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0
+      },
+      "missing_rate": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0
+      },
+      "judgment_completeness": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "selective_risk": 0.0,
+      "risk_bounds": [
+        0.0,
+        0.0
+      ],
+      "undefined_reason": null,
+      "uncertainty": {
+        "end_to_end_coverage": {
+          "estimate": 1.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "successful_execution_coverage": {
+          "estimate": 1.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "selective_risk": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "failure_rate": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        }
+      }
+    },
+    {
+      "id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:threshold",
+      "policy": "threshold",
+      "experiment_id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c",
+      "source_record_sha256": "1fee9b015da0c6a700a5f3f2a9532376e39c4fd217bfc06d090544e66920609d",
+      "threshold": 0.0,
+      "direction": "at_least",
+      "end_to_end_coverage": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "successful_execution_coverage": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "failure_rate": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0
+      },
+      "missing_rate": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0
+      },
+      "judgment_completeness": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "selective_risk": 0.0,
+      "risk_bounds": [
+        0.0,
+        0.0
+      ],
+      "undefined_reason": null,
+      "uncertainty": {
+        "end_to_end_coverage": {
+          "estimate": 1.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "successful_execution_coverage": {
+          "estimate": 1.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "selective_risk": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "failure_rate": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        }
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "left": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:always_answer",
+      "right": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:prompt_abstention",
+      "difference": "left_minus_right",
+      "uncertainty": {
+        "end_to_end_coverage": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "successful_execution_coverage": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "selective_risk": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "failure_rate": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        }
+      },
+      "risk_unavailable_reason": null
+    },
+    {
+      "left": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:always_answer",
+      "right": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:threshold",
+      "difference": "left_minus_right",
+      "uncertainty": {
+        "end_to_end_coverage": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "successful_execution_coverage": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "selective_risk": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "failure_rate": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        }
+      },
+      "risk_unavailable_reason": null
+    },
+    {
+      "left": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:prompt_abstention",
+      "right": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:threshold",
+      "difference": "left_minus_right",
+      "uncertainty": {
+        "end_to_end_coverage": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "successful_execution_coverage": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "selective_risk": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        },
+        "failure_rate": {
+          "estimate": 0.0,
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 2000,
+          "undefined_replicates": 0,
+          "degenerate": true,
+          "unavailable_reason": "insufficient_resampling_units"
+        }
+      },
+      "risk_unavailable_reason": null
+    }
+  ],
+  "curves": [
+    {
+      "id": "f123a9d9aca12231",
+      "points": [
+        {
+          "row_id": "2242e7a3-a2ef-4df8-943c-bb0b10733b6c:threshold",
+          "coverage": 1.0,
+          "risk": 0.0
+        }
+      ],
+      "area": {
+        "schema_version": "ragbench.risk-coverage.v1",
+        "axis": "end_to_end_coverage",
+        "rule": "right_step",
+        "full_aurc": null,
+        "partial_aurc": null,
+        "coverage_bounds": [
+          1.0,
+          1.0
+        ],
+        "undefined_reason": "no_positive_coverage_interval"
+      },
+      "uncertainty": {
+        "estimate": null,
+        "lower": null,
+        "upper": null,
+        "valid_replicates": 0,
+        "undefined_replicates": 2000,
+        "degenerate": false,
+        "unavailable_reason": "no_positive_coverage_interval"
+      }
+    }
+  ],
+  "curve_comparisons": [],
+  "limitations": [
+    "Synthetic development only; no semantic correctness or generalization claim.",
+    "Small samples and dependent questions limit bootstrap interpretation; no significance claim.",
+    "Intervals withheld for any undefined replicate or fewer than two resampling units.",
+    "Degenerate intervals do not establish certainty; repeated policy observations are paired.",
+    "Risk differences require equal coverage; selected answer subsets may still differ.",
+    "AURC uses saved genuine threshold trials only; no inference or threshold-scale comparison.",
+    "No declared P4 question families; question independence is an assumption."
+  ]
+}

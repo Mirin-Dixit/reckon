@@ -8,7 +8,7 @@
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --incremental false",
-    "test": "tsc -p tsconfig.test.json && node --test .test-build/tests/api.test.js .test-build/tests/status-view.test.js .test-build/tests/particle-wave.test.js .test-build/tests/query-lab.test.js .test-build/tests/evidence-ledger.test.js .test-build/tests/query-integration.test.js .test-build/tests/experiment-runner.test.js"
+    "test": "tsc -p tsconfig.test.json && node --test .test-build/tests/api.test.js .test-build/tests/status-view.test.js .test-build/tests/particle-wave.test.js .test-build/tests/query-lab.test.js .test-build/tests/evidence-ledger.test.js .test-build/tests/query-integration.test.js .test-build/tests/experiment-runner.test.js .test-build/tests/risk-analysis.test.js"
   },
   "dependencies": {
     "next": "16.4.3",
