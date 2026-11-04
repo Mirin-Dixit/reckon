@@ -285,3 +285,66 @@ h2 { font: 700 var(--type-section)/1.1 var(--font-plex-sans), Arial, sans-serif;
   .risk-analysis .analysis-action button { width: 100%; }
 }
 .query-output .evidence-warning { border-left: 2px solid var(--accent); padding-left: var(--s3); color: var(--ink); }
+
+/* Shared application controls and research-ledger rhythm. */
+.query-lab { padding-block: var(--s6) var(--s7); }
+.query-lab :is(form, fieldset, section) { min-width: 0; }
+.query-heading p { margin-top: var(--s3); color: var(--muted); }
+.query-workspace { align-items: start; }
+.query-workspace fieldset > label, .query-workspace fieldset > .query-settings { margin-top: var(--s4); }
+.query-lab label { display: block; }
+.query-lab :is(textarea, select):not(:where(.risk-analysis *)), .query-lab input:not([type="checkbox"]):not(:where(.risk-analysis *)) { display: block; width: 100%; min-height: 44px; padding: var(--s3); border: 1px solid var(--muted); border-radius: 2px; background: var(--surface); color: var(--ink); font: inherit; }
+.query-lab input[readonly] { color: var(--muted); }
+.query-lab input::placeholder, .query-lab textarea::placeholder { color: var(--muted); opacity: 1; }
+.query-lab input[type="checkbox"] { width: 20px; height: 20px; min-height: 20px; accent-color: var(--accent); flex: 0 0 20px; }
+.query-workspace .experiment-checkbox { align-items: start; line-height: 1.6; }
+.query-workspace .experiment-checkbox input { margin-top: var(--s1); }
+.query-lab button:not(.check-button) { min-height: 44px; padding: var(--s2) var(--s4); border: 1px solid var(--stone); border-radius: 2px; color: var(--ink); background: var(--surface); cursor: pointer; }
+.query-lab :is(input, select, textarea, button), .workspace-links a, .workbench-footer a, summary { transition: border-color var(--duration-fast) var(--ease), background-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease); }
+.query-lab button:hover:not(:disabled):not(.check-button), summary:hover { border-color: var(--muted); color: var(--positive); }
+.query-lab :is(input, select, textarea, button):focus-visible { outline: 2px solid var(--accent); outline-offset: var(--s1); }
+.query-lab :is(input, select, textarea, button):disabled { opacity: .6; cursor: not-allowed; }
+.query-lab pre { max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--type-sm); }
+.query-lab code { font-size: var(--type-sm); }
+.query-lab details { margin-block: var(--s4); }
+.query-lab summary { padding-block: var(--s3); cursor: pointer; line-height: 1.6; }
+.query-lab details[open] > summary { color: var(--positive); margin-bottom: var(--s3); }
+.query-lab :is(.evidence-table, .experiment-table) { line-height: 1.65; font-size: var(--type-sm); }
+.query-lab :is(.evidence-table, .experiment-table) :is(td, th) { min-width: 120px; padding: var(--s3) var(--s4); overflow-wrap: anywhere; }
+.query-lab :is(.evidence-table, .experiment-table) thead { background: var(--surface); }
+.query-lab :is(.evidence-table, .experiment-table) th { font-weight: 600; }
+.query-lab .ledger-scroll { margin-block: var(--s4); }
+.query-lab .workspace-feedback { margin-block: var(--s4); padding: var(--s3) var(--s4); border-left: 2px solid var(--positive); line-height: 1.6; }
+.query-lab .workspace-feedback[role="alert"] { border-color: var(--highlight); }
+.experiment-detail h2, .experiment-detail #experiment-result-heading { font-weight: 600; margin-block: var(--s4); }
+.experiment-detail #experiment-result-heading { font-size: var(--type-lead); }
+.experiment-detail .query-actions { margin-bottom: var(--s4); }
+.experiment-detail > section > :is(p, section) { margin-top: var(--s4); }
+.experiment-detail > section > .query-actions + p { color: var(--muted); }
+.experiment-detail select { width: auto; max-width: 100%; margin-top: var(--s2); }
+.experiment-history { margin-block: var(--s4); }
+.experiment-history button { padding: var(--s4); line-height: 1.65; }
+.experiment-history button[aria-pressed="true"] { background: var(--surface); border-left-color: var(--accent); }
+.experiment-history progress { display: block; width: 100%; height: var(--s2); margin-block: var(--s3); accent-color: var(--accent); }
+.query-output > h2 { margin-bottom: var(--s3); }
+.query-output > [role="status"], .query-output > p { color: var(--muted); }
+.query-output .query-result > :is(p, div) { margin-top: var(--s3); }
+.workbench-footer a:hover { color: var(--positive); }
+@media (max-width: 1200px) and (min-width: 601px) {
+  .masthead { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+  .workspace-links { flex-wrap: wrap; gap: var(--s3) var(--s5); }
+}
+@media (max-width: 800px) {
+  .query-workspace { gap: var(--s5); }
+  .query-output { margin-top: var(--s2); }
+  .ledger-metadata > div { grid-template-columns: minmax(0, 1fr); gap: var(--s1); }
+}
+@media (max-width: 600px) {
+  .query-heading { padding-bottom: var(--s4); }
+  .query-lab .query-actions { gap: var(--s3); }
+  .query-lab .query-actions > button { flex: 1 1 180px; }
+  .experiment-detail .query-actions { align-items: stretch; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .query-lab :is(input, select, textarea, button), .workspace-links a, .workbench-footer a, summary { transition: none; }
+}

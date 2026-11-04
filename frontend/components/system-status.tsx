@@ -36,7 +36,7 @@ export function SystemStatus() {
         void check();
       }}>{state.phase === "loading" ? "Checking\u2026" : "Check backend"}</button>
     </div>
-    <StatusView key={state.phase} state={state} />
+    <StatusView state={state} />
     <div className="panel-footnote"><code>GET /api/v1/health</code><span>{"Read-only \u00b7 no provider call"}</span></div>
   </section>;
 }

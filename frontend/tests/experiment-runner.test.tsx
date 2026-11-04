@@ -16,6 +16,7 @@ import {
   type Results,
 } from "../lib/experiment-api";
 import { ApiClientError } from "../lib/api";
+import { createMutationGate, downloadJson } from "../lib/workspace-actions";
 import { ExperimentRunner, ExperimentResults, ExperimentHistory, ExperimentDetail, nextExperimentSelection } from "../components/experiment-runner";
 
 const fixturePath = resolve(process.cwd(), "tests/fixture_job_result.json");
@@ -413,4 +414,74 @@ test("aborted old result requests cannot win over a newer selection", async () =
   assert.equal((await client.results(nextId)).id, nextId);
   release?.();
   await oldRequest;
+});
+
+test("mutation gate rejects same-tick reentry and releases after a failure", async () => {
+  const gate = createMutationGate();
+  assert.equal(gate.enter(), true);
+  assert.equal(gate.enter(), false);
+  assert.equal(gate.enter(), false);
+  try { throw new Error("simulated failure"); } catch { /* caller shows safe error */ }
+  finally { gate.leave(); }
+  assert.equal(gate.enter(), true);
+  gate.leave();
+});
+
+test("JSON export preserves data and releases the URL after browser handoff", async t => {
+  const oldDocument = Object.getOwnPropertyDescriptor(globalThis, "document");
+  let blob: Blob | undefined;
+  let clicked = 0;
+  const revoked: string[] = [];
+  const link = { href: "", download: "", click: () => { clicked++; } };
+  t.mock.method(URL, "createObjectURL", (value: Blob) => { blob = value; return "blob:export-test"; });
+  t.mock.method(URL, "revokeObjectURL", (url: string) => { revoked.push(url); });
+  Object.defineProperty(globalThis, "document", { configurable: true, value: { createElement: (tag: string) => { assert.equal(tag, "a"); return link; } } });
+  try {
+    downloadJson({ label: "evidence 😀", score: null }, "synthetic-result.json");
+    assert.equal(clicked, 1);
+    assert.equal(link.download, "synthetic-result.json");
+    assert.equal(link.href, "blob:export-test");
+    assert.deepEqual(JSON.parse(await blob!.text()), { label: "evidence 😀", score: null });
+    await new Promise(resolve => setTimeout(resolve, 10));
+    assert.deepEqual(revoked, ["blob:export-test"]);
+  } finally {
+    if (oldDocument) Object.defineProperty(globalThis, "document", oldDocument);
+    else Reflect.deleteProperty(globalThis, "document");
+  }
+});
+
+test("failed download handoff still releases its temporary resource", async t => {
+  const oldDocument = Object.getOwnPropertyDescriptor(globalThis, "document");
+  const revoked: string[] = [];
+  t.mock.method(URL, "createObjectURL", () => "blob:failed-export");
+  t.mock.method(URL, "revokeObjectURL", (url: string) => { revoked.push(url); });
+  Object.defineProperty(globalThis, "document", { configurable: true, value: { createElement: () => ({ click() { throw new Error("blocked"); } }) } });
+  try {
+    assert.throws(() => downloadJson({}, "synthetic.json"));
+    await new Promise(resolve => setTimeout(resolve, 10));
+    assert.deepEqual(revoked, ["blob:failed-export"]);
+  } finally {
+    if (oldDocument) Object.defineProperty(globalThis, "document", oldDocument);
+    else Reflect.deleteProperty(globalThis, "document");
+  }
+});
+
+test("history progress, scroll regions and export feedback use actual saved state", () => {
+  const history = renderToStaticMarkup(<ExperimentHistory jobs={[validJob]} selected={validJob.id} busy={false} onSelect={() => {}} />);
+  assert.match(history, /<progress value="3" max="3"/);
+  assert.match(history, /aria-label="3 of 3 observations saved"/);
+  const detail = renderToStaticMarkup(<ExperimentDetail result={validResults} loading={false} error="" busy freezing freeze={null} exportFeedback={{ message: "JSON export prepared. Check your browser downloads.", failed: false }} onRetry={() => {}} onFreeze={() => {}} onExport={() => {}} />);
+  assert.match(detail, /Freezing Dev configuration…/);
+  assert.match(detail, /role="status">JSON export prepared/);
+  assert.match(detail, /role="region" aria-label="Synthetic per-question results" tabindex="0"/);
+});
+
+test("shared research controls remain visible, responsive and reduced-motion safe", () => {
+  const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
+  assert.match(css, /Shared application controls and research-ledger rhythm/);
+  assert.match(css, /\.query-lab button:not\(\.check-button\)[^}]*min-height: 44px/);
+  assert.match(css, /\.query-lab :is\(input, select, textarea, button\):focus-visible[^}]*outline: 2px solid var\(--accent\)/);
+  assert.match(css, /@media \(max-width: 1200px\) and \(min-width: 601px\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition: none/);
+  assert.match(css, /experiment-history progress[^}]*accent-color: var\(--accent\)/);
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { downloadJson } from "../lib/workspace-actions";
 import { analysisFailure, createAnalysisClient, createAnalysisTask, metrics, type AnalysisReport, type Interval } from "../lib/analysis-api";
 
 const value = (n: number | null) => n === null ? "Undefined" : n.toFixed(3);
@@ -41,9 +42,10 @@ export function RiskPlot({ report }: { report: AnalysisReport }) {
   </figure>;
 }
 
-export function AnalysisView({ report, loading = false, error = "", cancelled = false, onExport }: {
+export function AnalysisView({ report, loading = false, error = "", cancelled = false, exportFeedback, onExport }: {
   report: AnalysisReport | null; loading?: boolean; error?: string; cancelled?: boolean;
   onExport?: () => void;
+  exportFeedback?: { message: string; failed: boolean } | null;
 }) {
   if (loading) return <p className="analysis-status" role="status">Analyzing saved synthetic observations…</p>;
   if (error) return <p className="analysis-error" id="analysis-error" role="alert">{error}</p>;
@@ -54,7 +56,7 @@ export function AnalysisView({ report, loading = false, error = "", cancelled = 
     <p>{report.matched_questions} matched questions; {report.resampling_units} resampling units ({report.grouping}). {report.resamples} paired resamples; seed {report.seed}. Retrieval: {report.retrieval_method}.</p>
     <p>{report.loss_basis === "unknown" ? "Answer judgments are unknown. Risk remains undefined." : "Risk uses a synthetic normalized lexical exact-match proxy, not verified semantic correctness."} Failures remain failures; ABSTAIN and CLARIFY are uncovered.</p>
     <RiskPlot report={report} />
-    <div className="ledger-scroll"><table className="evidence-table"><caption>Matched-policy operating points</caption><thead><tr><th scope="col">Policy / experiment</th><th scope="col">End-to-end coverage A/N</th><th scope="col">Successful-execution coverage A/(A+B+C)</th><th scope="col">Selective risk</th><th scope="col">Failures E/N</th><th scope="col">Judgment completeness</th></tr></thead>
+    <div className="ledger-scroll" role="region" aria-label="Matched-policy operating points" tabIndex={0}><table className="evidence-table"><caption>Matched-policy operating points</caption><thead><tr><th scope="col">Policy / experiment</th><th scope="col">End-to-end coverage A/N</th><th scope="col">Successful-execution coverage A/(A+B+C)</th><th scope="col">Selective risk</th><th scope="col">Failures E/N</th><th scope="col">Judgment completeness</th></tr></thead>
       <tbody>{report.rows.map(row => <tr key={row.id}><th scope="row">{row.policy}<br /><code>{row.experiment_id}</code>{row.threshold !== null && <p>{row.direction} τ={row.threshold}</p>}</th>
         <td>{value(row.end_to_end_coverage.value)} ({row.end_to_end_coverage.numerator}/{row.end_to_end_coverage.denominator})</td>
         <td>{value(row.successful_execution_coverage.value)} ({row.successful_execution_coverage.numerator}/{row.successful_execution_coverage.denominator})</td>
@@ -62,12 +64,13 @@ export function AnalysisView({ report, loading = false, error = "", cancelled = 
         <td>{value(row.failure_rate.value)} ({row.failure_rate.numerator}/{row.failure_rate.denominator})</td><td>{value(row.judgment_completeness.value)} ({row.judgment_completeness.numerator}/{row.judgment_completeness.denominator})</td></tr>)}</tbody></table></div>
     <details><summary>Operating-point uncertainty</summary>{report.rows.map(row => <div key={row.id}><h5>{row.policy} / <code>{row.experiment_id}</code></h5><ul>{metrics.map(metric => <li key={metric}>{names[metric]}: <IntervalText interval={row.uncertainty[metric]} /></li>)}</ul></div>)}</details>
     <h5>Paired policy differences</h5>
-    {report.comparisons.length ? <div className="ledger-scroll"><table className="evidence-table"><caption>Left minus right on matched questions, never pooled observations</caption><thead><tr><th scope="col">Pair</th><th scope="col">Metric</th><th scope="col">Difference</th><th scope="col">Uncertainty</th></tr></thead><tbody>{report.comparisons.flatMap((pair, i) => metrics.map(metric => <tr key={`${i}:${metric}`}><th scope="row"><code>{pair.left}</code><br />minus <code>{pair.right}</code></th><td>{names[metric]}</td><td>{value(pair.uncertainty[metric].estimate)}</td><td><IntervalText interval={pair.uncertainty[metric]} /></td></tr>))}</tbody></table></div> : <p>Only one policy configuration is available. No paired comparison.</p>}
+    {report.comparisons.length ? <div className="ledger-scroll" role="region" aria-label="Paired policy differences" tabIndex={0}><table className="evidence-table"><caption>Left minus right on matched questions, never pooled observations</caption><thead><tr><th scope="col">Pair</th><th scope="col">Metric</th><th scope="col">Difference</th><th scope="col">Uncertainty</th></tr></thead><tbody>{report.comparisons.flatMap((pair, i) => metrics.map(metric => <tr key={`${i}:${metric}`}><th scope="row"><code>{pair.left}</code><br />minus <code>{pair.right}</code></th><td>{names[metric]}</td><td>{value(pair.uncertainty[metric].estimate)}</td><td><IntervalText interval={pair.uncertainty[metric]} /></td></tr>))}</tbody></table></div> : <p>Only one policy configuration is available. No paired comparison.</p>}
     <h5>Right-step AURC / coverage domain</h5>
     {report.curves.length ? report.curves.map(curve => <div key={curve.id}><p>Threshold series <code>{curve.id}</code>: {curve.area.full_aurc !== null ? `Full AURC ${value(curve.area.full_aurc)}` : curve.area.partial_aurc !== null ? `Partial area ${value(curve.area.partial_aurc)}` : `Area undefined: ${curve.area.undefined_reason}`}. Coverage domain: {curve.area.coverage_bounds ? `[${curve.area.coverage_bounds.map(value).join(", ")}]` : "unavailable"}.</p><p><IntervalText interval={curve.uncertainty} /></p></div>) : <p>No native threshold trials available. An operating point is not an AURC curve.</p>}
     {report.curve_comparisons.map(pair => <p key={`${pair.left}:${pair.right}`}>AURC difference {pair.left} minus {pair.right}: {value(pair.uncertainty.estimate)}. <IntervalText interval={pair.uncertainty} /></p>)}
     <details><summary>Methodology, provenance and limitations</summary><p>Compatibility fingerprint: <code>{report.provenance_sha256}</code></p><ul>{report.limitations.map(text => <li key={text}>{text}</li>)}</ul><p>Unknown judgments and incomplete cohorts cannot become zero-risk results. Thresholds are uncalibrated ranking scores and are never compared across score families.</p></details>
     <button type="button" onClick={onExport} disabled={!onExport}>Export analysis JSON</button>
+    {exportFeedback && <p className="workspace-feedback" role={exportFeedback.failed ? "alert" : "status"}>{exportFeedback.message}</p>}
   </div>;
 }
 
@@ -86,6 +89,7 @@ export function AnalysisAction({ loading, error, onCancel }: {
 
 export function RiskAnalysis({ experimentId }: { experimentId: string }) {
   const [compare, setCompare] = useState("");
+  const [exportFeedback, setExportFeedback] = useState<{ message: string; failed: boolean } | null>(null);
   const [proxy, setProxy] = useState(true);
   const [thresholdOnly, setThresholdOnly] = useState(false);
   const [report, setReport] = useState<AnalysisReport | null>(null);
@@ -97,7 +101,7 @@ export function RiskAnalysis({ experimentId }: { experimentId: string }) {
   async function submit(event: FormEvent) {
     event.preventDefault();
     const controller = task.current.begin();
-    setLoading(true); setCancelled(false); setError(""); setReport(null);
+    setLoading(true); setCancelled(false); setError(""); setReport(null); setExportFeedback(null);
     try {
       const result = await createAnalysisClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL).analyze(experimentId, compare.split(",").map(s => s.trim()).filter(Boolean), proxy, controller.signal, thresholdOnly);
       if (task.current.accepts(controller)) setReport(result);
@@ -106,9 +110,8 @@ export function RiskAnalysis({ experimentId }: { experimentId: string }) {
   }
   function exportJson() {
     if (!report) return;
-    const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }));
-    const link = document.createElement("a"); link.href = url; link.download = `synthetic-analysis-${experimentId}.json`; link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
+    try { downloadJson(report, `synthetic-analysis-${experimentId}.json`); setExportFeedback({ message: "Analysis JSON export prepared. Check your browser downloads.", failed: false }); }
+    catch { setExportFeedback({ message: "Could not prepare analysis export. Please try again.", failed: true }); }
   }
   return <section className="risk-analysis" aria-labelledby="risk-analysis-heading">
     <header className="analysis-heading">
@@ -138,7 +141,7 @@ export function RiskAnalysis({ experimentId }: { experimentId: string }) {
     </form>
     <section className="analysis-results" aria-labelledby="analysis-results-heading">
       <h4 id="analysis-results-heading">Analysis results</h4>
-      <AnalysisView report={report} loading={loading} error={error} cancelled={cancelled} onExport={exportJson} />
+      <AnalysisView report={report} loading={loading} error={error} cancelled={cancelled} exportFeedback={exportFeedback} onExport={exportJson} />
     </section>
   </section>;
 }
