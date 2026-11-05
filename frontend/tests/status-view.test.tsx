@@ -71,7 +71,7 @@ test("workbench establishes the research workflow without making planned workspa
   for (const step of ["Question", "Retrieval", "Evidence", "Decision", "Evaluation"]) {
     assert.match(html, new RegExp(`<h3[^>]*>${step}</h3>`));
   }
-  assert.equal((html.match(/aria-disabled="true"/g) ?? []).length, 1);
+  assert.equal((html.match(/aria-disabled="true"/g) ?? []).length, 0);
   assert.match(html, /href="#system-status"/);
   assert.match(html, /id="system-status"[^>]*tabindex="-1"/);
   assert.match(html, /href="#main-content"/);
@@ -89,7 +89,7 @@ for (const expanded of [false, true]) {
     assert.match(html, /type="button"/);
     assert.match(html, /aria-controls="workspace-links"/);
     assert.match(html, new RegExp(`class="workspace-links${expanded ? " is-open" : ""}"`));
-    assert.match(html, /aria-disabled="true" tabindex="0" title="Planned:/);
+    assert.match(html, /href="\/evaluation"/);
   });
 }
 
@@ -193,7 +193,8 @@ test("review refinements remain conceptual and preserve planned navigation", () 
   assert.match(html, /Concept, not data/);
   assert.match(html, /not measurements or a decision rule/);
   assert.match(html, /class="concept-marker"/);
-  assert.equal((html.match(/<sup>soon<\/sup>/g) ?? []).length, 1);
+  assert.equal((html.match(/<sup>soon<\/sup>/g) ?? []).length, 0);
+  assert.match(html, /href="\/evaluation"/);
   assert.match(html, /Answer<\/span> \u2013 evidence is enough/);
   assert.match(html, /the question is unclear/);
   assert.equal((html.match(/class="workflow-dot"/g) ?? []).length, 5);
@@ -281,7 +282,7 @@ test("header groups the wordmark and navigation; footer is a compact page landma
   assert.ok(header);
   assert.match(header, /class="wordmark"/);
   assert.match(header, /aria-label="Main navigation"/);
-  assert.equal((header.match(/aria-disabled="true"/g) ?? []).length, 1);
+  assert.equal((header.match(/aria-disabled="true"/g) ?? []).length, 0);
   assert.doesNotMatch(header, /active-underline/);
   assert.ok(html.indexOf("</main>") < html.indexOf('<footer class="workbench-footer">'));
   const footer = html.slice(html.indexOf('<footer class="workbench-footer">'));

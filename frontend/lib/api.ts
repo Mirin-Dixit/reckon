@@ -137,11 +137,13 @@ async function readJson(response: Response, signal: AbortSignal, maxBytes: numbe
 export interface HealthClient { getHealth(signal?: AbortSignal): Promise<HealthResponse> }
 
 export function createJsonRequest<T>(
-  path: "/api/v1/health" | "/api/v1/query" | `/api/v1/experiments${string}`, parse: (value: unknown) => T,
+  path: "/api/v1/health" | "/api/v1/query" | `/api/v1/experiments${string}` | `/api/v1/analysis/experiments${string}`, parse: (value: unknown) => T,
   origin?: string, options: { fetch?: typeof fetch; timeoutMs?: number; method?: "GET" | "POST" } = {},
 ): (signal?: AbortSignal, body?: unknown) => Promise<T> {
   return async (signal, requestBody) => {
     const base = backendOrigin(origin);
+    if (path.startsWith("/api/v1/analysis/experiments") &&
+        !/^\/api\/v1\/analysis\/experiments(?:\?limit=20&offset=\d+|\/[0-9a-f-]{36})$/.test(path)) throw new ApiClientError("configuration");
     if (path.startsWith("/api/v1/experiments") &&
         !/^\/api\/v1\/experiments(?:\?limit=50&offset=\d+|\/[0-9a-f-]{36}(?:\/results|\/freeze)?)?$/.test(path) &&
         !/^\/api\/v1\/experiments\/[0-9a-f-]{36}\/analysis\?resamples=2000&seed=0&lexical_proxy=(?:true|false)(?:&threshold_only=true)?(?:&compare=[0-9a-f-]{36}){0,7}$/.test(path)) throw new ApiClientError("configuration");

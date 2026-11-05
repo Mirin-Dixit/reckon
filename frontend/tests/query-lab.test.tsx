@@ -111,7 +111,7 @@ test("SSR starts idle with accessible controls and stable markup", () => {
   const html = renderToStaticMarkup(<WorkbenchShell workspace="query-lab"><QueryLab /></WorkbenchShell>);
   assert.match(html, /<label for="question">Question/); assert.match(html, /No query has been submitted/);
   assert.match(html, /href="\/query-lab" aria-current="page"/);
-  assert.equal((html.match(/aria-disabled="true"/g) ?? []).length, 1);
+  assert.equal((html.match(/aria-disabled="true"/g) ?? []).length, 0);
   assert.doesNotMatch(html, /particle-wave|expected_answer|expected_safe_behavior|<script/);
   assert.match(html, /href="\/#system-status"/);
 });

@@ -156,6 +156,10 @@ with tempfile.TemporaryDirectory(
         job_id = started["id"]
         packets["completed"] = dict(status=200, body=wait_job(base, job_id))
         http(base, "history", "/api/v1/experiments?limit=50&offset=0")
+        http(
+            base, "dashboard-history", "/api/v1/analysis/experiments?limit=20&offset=0"
+        )
+        http(base, "dashboard-results", f"/api/v1/analysis/experiments/{job_id}")
         http(base, "metadata", f"/api/v1/experiments/{job_id}")
         http(base, "freeze", f"/api/v1/experiments/{job_id}/freeze", {})
         http(base, "freeze-again", f"/api/v1/experiments/{job_id}/freeze", {})

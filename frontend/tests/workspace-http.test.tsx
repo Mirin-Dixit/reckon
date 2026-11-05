@@ -51,6 +51,16 @@ test("real HTTP analysis validates in frontend, repeats deterministically and ho
   assert.equal(parseAnalysis(packets["analysis-threshold"].body).rows.length, 1);
   assert.equal(packets["analysis-invalid"].status, 422);
 });
+
+test("read-only dashboard routes preserve actual frontend result contracts", () => {
+  assert.equal(packets["dashboard-history"].status, 200);
+  assert.equal(packets["dashboard-results"].status, 200);
+  const history = packets["dashboard-history"].body as { jobs: unknown[] };
+  const result = parseResults(packets["dashboard-results"].body);
+  assert.ok(history.jobs.map(parseJob).some(job => job.id === result.id));
+  assert.equal(result.observations.length, 12);
+  assert.deepEqual(result, parseResults(packets.completed.body));
+});
 test("real HTTP recorded execution errors stay failures and cannot freeze Dev configuration", () => {
   const result = parseResults(packets.failed.body);
   assert.ok(result.observations.every(row => row.observed.decision === null && row.observed.execution_status !== "succeeded"));

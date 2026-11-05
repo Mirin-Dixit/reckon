@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 interface NavigationProps {
-  workspace?: "workbench" | "query-lab" | "experiments";
+  workspace?: "workbench" | "query-lab" | "experiments" | "evaluation";
   expanded: boolean;
   onToggle: () => void;
   onNavigate: () => void;
@@ -25,14 +25,14 @@ export function WorkbenchNavigationView({ expanded, onToggle, onNavigate, worksp
         <li><a href={workspace === "workbench" ? "#main-content" : "/#main-content"} aria-current={workspace === "workbench" ? "page" : undefined} onClick={onNavigate}>Workbench</a></li>
         <li><a href="/query-lab" aria-current={workspace === "query-lab" ? "page" : undefined} onClick={onNavigate}>Query Lab</a></li>
         <li><a href="/experiments" aria-current={workspace === "experiments" ? "page" : undefined} onClick={onNavigate}>Experiments</a></li>
-        <li><span className="planned-workspace" aria-disabled="true" tabIndex={0} title="Planned: observed results and comparisons" data-description="Planned: observed results and comparisons">Evaluation Results <sup>soon</sup></span></li>
+        <li><a href="/evaluation" aria-current={workspace === "evaluation" ? "page" : undefined} onClick={onNavigate}>Evaluation Results</a></li>
         <li className="status-navigation"><a href={workspace === "workbench" ? "#system-status" : "/#system-status"} onClick={onNavigate}>System status</a></li>
       </ul>
     </nav>
   );
 }
 
-export function WorkbenchNavigation({ workspace = "workbench" }: { workspace?: "workbench" | "query-lab" | "experiments" }) {
+export function WorkbenchNavigation({ workspace = "workbench" }: { workspace?: "workbench" | "query-lab" | "experiments" | "evaluation" }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <WorkbenchNavigationView

@@ -5,19 +5,15 @@ from __future__ import annotations
 import json
 import sqlite3
 import time
+from contextlib import contextmanager
 from pathlib import Path
 from uuid import UUID
 
 MAX_PAYLOAD_BYTES = 2 * 1024 * 1024
 
 
-def read_analysis_jobs(path: Path, job_ids: tuple[str, ...]) -> tuple[dict, ...]:
-    """Read up to eight saved jobs in one read transaction; never create a database."""
-    if not 1 <= len(job_ids) <= 8 or len(set(job_ids)) != len(job_ids):
-        raise ValueError("Select 1..8 distinct experiments")
-    for job_id in job_ids:
-        if str(UUID(job_id)) != job_id:
-            raise ValueError("Invalid experiment identity")
+@contextmanager
+def _read_connection(path: Path):
     if not path.is_file():
         raise FileNotFoundError("Experiment database unavailable")
     # P4 uses rollback journals. Refuse WAL instead of ignoring uncheckpointed
@@ -33,6 +29,19 @@ def read_analysis_jobs(path: Path, job_ids: tuple[str, ...]) -> tuple[dict, ...]
         deadline = time.monotonic() + 2
         db.set_progress_handler(lambda: int(time.monotonic() > deadline), 1000)
         db.execute("BEGIN")
+        yield db
+    finally:
+        db.close()  # rolls back the read transaction; no recovery/checkpoint writes
+
+
+def read_analysis_jobs(path: Path, job_ids: tuple[str, ...]) -> tuple[dict, ...]:
+    """Read up to eight saved jobs in one read transaction; never create a database."""
+    if not 1 <= len(job_ids) <= 8 or len(set(job_ids)) != len(job_ids):
+        raise ValueError("Select 1..8 distinct experiments")
+    for job_id in job_ids:
+        if str(UUID(job_id)) != job_id:
+            raise ValueError("Invalid experiment identity")
+    with _read_connection(path) as db:
         results = []
         for job_id in job_ids:
             row = db.execute(
@@ -49,5 +58,29 @@ def read_analysis_jobs(path: Path, job_ids: tuple[str, ...]) -> tuple[dict, ...]
                 raise ValueError("Invalid saved experiment")
             results.append(job)
         return tuple(results)
-    finally:
-        db.close()  # rolls back the read transaction; no recovery/checkpoint writes
+
+
+def read_analysis_history(path: Path, limit: int, offset: int) -> tuple[dict, ...]:
+    """Project saved metadata without loading gold observations into the list."""
+    if type(limit) is not int or not 1 <= limit <= 50:
+        raise ValueError("History limit must be in 1..50")
+    if type(offset) is not int or not 0 <= offset <= 100000:
+        raise ValueError("History offset must be in 0..100000")
+    if not path.exists():
+        return ()  # An unprovisioned store is empty; never create it on a GET.
+    with _read_connection(path) as db:
+        rows = db.execute(
+            "SELECT id, CASE WHEN length(CAST(payload AS BLOB)) <= ? "
+            "THEN json_remove(payload, '$.observations', '$.result') "
+            "ELSE NULL END FROM jobs ORDER BY rowid DESC LIMIT ? OFFSET ?",
+            (MAX_PAYLOAD_BYTES, limit, offset),
+        )
+        result = []
+        for job_id, payload in rows:
+            if payload is None:
+                raise ValueError("Stored result exceeds analysis limit")
+            job = json.loads(payload)
+            if not isinstance(job, dict) or job.get("id") != job_id:
+                raise ValueError("Invalid saved experiment identity")
+            result.append(job)
+        return tuple(result)

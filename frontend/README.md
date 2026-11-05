@@ -14,8 +14,10 @@ separately gated; a synthetic Dev freeze does not satisfy those gates.
 The Workbench has a near-black hero with a wide green particle mesh. The research
 workflow and decision notation sit below it, followed by real System Status
 controls. Health fields and the conceptual sketch use closed disclosures.
-Experiments is an active workspace; Evaluation Results remains planned and
-non-interactive. The System Status link jumps to the working panel. Empirical
+Evaluation Results opens `/evaluation`: read-only saved synthetic experiments,
+R1 policy metrics, risk-coverage plots, uncertainty and provenance. See the
+[dashboard guide](../docs/evaluation/dashboard.md) for safeguards and manual QA.
+The System Status link jumps to the working panel. Empirical
 benchmark gold labels and review records are not requested by these workspaces.
 
 ## Requirements

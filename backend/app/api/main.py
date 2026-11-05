@@ -17,6 +17,7 @@ from app.api.middleware import RequestBodyLimitMiddleware, SafeErrorMiddleware
 from app.api.models import ErrorResponse
 from app.api.routes import (
     analysis,
+    dashboard,
     evaluation,
     experiment_jobs,
     experiments,
@@ -136,6 +137,7 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
     )
     application.include_router(evaluation.router, prefix=prefix, tags=["evaluations"])
     application.include_router(analysis.router, prefix=prefix, tags=["analysis"])
+    application.include_router(dashboard.router, prefix=prefix, tags=["analysis"])
     return application
 
 

@@ -287,6 +287,21 @@ h2 { font: 700 var(--type-section)/1.1 var(--font-plex-sans), Arial, sans-serif;
 .query-output .evidence-warning { border-left: 2px solid var(--accent); padding-left: var(--s3); color: var(--ink); }
 
 /* Shared application controls and research-ledger rhythm. */
+.evaluation-browser { display: grid; grid-template-columns: minmax(240px, .7fr) minmax(0, 1.5fr); gap: var(--s6); align-items: start; }
+.evaluation-browser h2 { margin-bottom: var(--s4); }
+.evaluation-browser > section > :is(p, .query-actions) { margin-block: var(--s3); }
+.evaluation-selected { border-left: 1px solid var(--stone); padding-left: var(--s6); min-width: 0; }
+.evaluation-identity, .evaluation-candidates code { overflow-wrap: anywhere; }
+.evaluation-section { border-top: 1px solid var(--stone); margin-top: var(--s6); padding-top: var(--s5); }
+.evaluation-section :is(p, ul, details) { margin-block: var(--s3); }
+.evaluation-section h3 { font-size: var(--type-lead); margin-block: var(--s4) var(--s2); }
+.evaluation-area { border-left: 1px solid var(--stone); padding-left: var(--s4); margin-block: var(--s4); }
+.evaluation-candidates { margin-block: var(--s5) !important; }
+.evaluation-dashboard a { color: var(--accent); }
+@media (max-width: 1000px) {
+  .evaluation-browser { grid-template-columns: minmax(0, 1fr); }
+  .evaluation-selected { border-left: 0; border-top: 1px solid var(--stone); padding-left: 0; padding-top: var(--s5); }
+}
 .query-lab { padding-block: var(--s6) var(--s7); }
 .query-lab :is(form, fieldset, section) { min-width: 0; }
 .query-heading p { margin-top: var(--s3); color: var(--muted); }

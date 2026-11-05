@@ -16,6 +16,8 @@ interface Observation { question_id: string; policy_name: string; error: unknown
 export interface Results extends Job {
   observations: Observation[];
   result: { experiment_id: string; runs: Observation[]; dataset_fingerprint: Record<string, string>;
+    selected_question_ids: string[]; benchmark_split: "train" | "dev" | "test";
+    random_seed: number | null; stopped_early: boolean;
     retrieval_configuration: Record<string, unknown>; policy_configurations: Record<string, unknown>[];
     generation_configuration: Record<string, unknown>; environment_metadata: Record<string, unknown>;
     software_metadata: Record<string, unknown>; metrics: Record<string, unknown> } | null;
