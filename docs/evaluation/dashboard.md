@@ -1,9 +1,10 @@
-# Evaluation Dashboard foundation (P5.1)
+# Evaluation Dashboard (P5)
 
 Open `http://127.0.0.1:3000/evaluation` after starting the local frontend and
 backend with the existing setup commands. The Evaluation Results navigation item
 opens this dashboard; Experiments retains submission, observation inspection and
-existing JSON exports. Dashboard reporting/export enhancements belong to P5.2.
+existing raw JSON exports. The dashboard adds a provenance-bound research report
+without duplicating the raw experiment/freeze exports.
 
 ## Read-only integration
 
@@ -46,6 +47,40 @@ splits, fingerprints, retrieval settings or repeated controls are not silently
 compared. Threshold-only mode can exclude repeated controls in native trials.
 Refreshing, switching experiments or changing settings clears stale analysis.
 Cancelling stops browser waiting; it does not claim server computation stopped.
+
+## Reporting and exploration
+
+The selected experiment has a saved-observation ledger with policy and question
+category filters, recorded outcome counts and execution error kinds. These are
+descriptive counts of observations, never independent question samples. Filters
+affect only that ledger; they do not change the matched cohort, risk calculations,
+uncertainty or exported R1 response. No semantic failure taxonomy is inferred
+from execution errors. Unsupported-claim/contradiction judgments remain unavailable
+unless independently verified in the underlying evaluation.
+
+The retrieval disclosure displays the stored gold-span retrieval-recall aggregate
+when valid, alongside its strategy and source experiment. It does not recompute
+recall, invent missing MRR/NDCG, or compare incompatible retrieval configurations.
+Risk chart legends identify policies, experiments and thresholds, and show native
+curve areas and their existing uncertainty. Point coordinates, areas, intervals
+and matched-policy differences all remain R1 outputs.
+
+After successful analysis, **Export research report JSON** uses the existing
+browser download helper. `ragbench.evaluation-report.v1` contains the validated
+R1 response, exact analysis options, bootstrap seed/resamples, metric definitions,
+experiment seeds, dataset/runtime fingerprints and source-record hashes. The
+projection omits reference answers, gold evidence, arbitrary configuration and
+environment fields. It has no changing export timestamp: identical inputs produce
+identical JSON. Source records are still needed to independently reproduce the
+original experiments; this report does not regenerate model outputs or certify
+their correctness. Browser handoff is reported as prepared, not proof of a saved
+file. Export failure is visible and cannot imply successful saving.
+
+Reports are cleared on refresh, selection changes and setting changes. The exact
+successful request is bound to the displayed analysis, so later selections cannot
+silently alter an export. All functionality remains synthetic-only. The full
+target's empirical dashboard acceptance remains subject to benchmark review,
+authorized experiments and validated semantic judgments; P6 is not implemented.
 
 ## Manual acceptance
 

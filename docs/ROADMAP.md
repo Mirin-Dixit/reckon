@@ -181,7 +181,10 @@ See [R1 methodology and acceptance](evaluation/risk_coverage.md).
 
 Acceptance is limited to local synthetic development infrastructure. It does not
 establish semantic correctness, empirical performance, held-out Test completion
-or production readiness. P5 has not begun.
+or production readiness. The accepted dashboard integration is implemented; P5
+now adds saved-outcome exploration and provenance-bound research reporting. See
+[dashboard scope and limitations](evaluation/dashboard.md). This does not unlock
+empirical evaluation or P6.
 
 - [x] Implement genuine threshold-sweep risk-coverage analysis and AURC.
 - [x] Keep execution failures separate and define consistent denominators,

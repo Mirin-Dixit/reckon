@@ -1,6 +1,7 @@
 import { ApiClientError, createJsonRequest } from "./api";
 import { createAnalysisClient, analysisFailure, type AnalysisReport } from "./analysis-api";
 import { parseJob, parseResults, type Job, type Results } from "./experiment-api";
+import type { AnalysisSelection } from "./evaluation-report";
 
 const object = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 const uuid = (id: string) => {
@@ -72,8 +73,9 @@ export interface EvaluationState {
   jobs: Job[]; offset: number; listPhase: "loading" | "ready" | "error"; listError: string;
   selectedId: string; detail: Results | null; detailPhase: "idle" | "loading" | "ready" | "error"; detailError: string;
   analysis: AnalysisReport | null; analysisPhase: "idle" | "loading" | "ready" | "error" | "cancelled"; analysisError: string;
+  analysisSelection: AnalysisSelection | null;
 }
-export const initialEvaluationState: EvaluationState = { jobs: [], offset: 0, listPhase: "loading", listError: "", selectedId: "", detail: null, detailPhase: "idle", detailError: "", analysis: null, analysisPhase: "idle", analysisError: "" };
+export const initialEvaluationState: EvaluationState = { jobs: [], offset: 0, listPhase: "loading", listError: "", selectedId: "", detail: null, detailPhase: "idle", detailError: "", analysis: null, analysisPhase: "idle", analysisError: "", analysisSelection: null };
 export function canAnalyze(detail: Results): boolean {
   return ["done", "partial", "failed"].includes(detail.status) && detail.result !== null && !detail.result.stopped_early && detail.observed_run_count === detail.expected_run_count;
 }
@@ -84,7 +86,7 @@ export function evaluationSession(api: EvaluationClient, publish: (state: Evalua
   let disposed = false;
   let list: AbortController | null = null, detail: AbortController | null = null, analysis: AbortController | null = null;
   const update = (value: Partial<EvaluationState>) => { state = { ...state, ...value }; if (!disposed) publish(state); };
-  const clearAnalysis = () => { analysis?.abort(); analysis = null; update({ analysis: null, analysisPhase: "idle", analysisError: "" }); };
+  const clearAnalysis = () => { analysis?.abort(); analysis = null; update({ analysis: null, analysisSelection: null, analysisPhase: "idle", analysisError: "" }); };
   const select = async (id: string, force = false) => {
     if (disposed || (!force && state.selectedId === id && (detail || state.detail))) return;
     if (!state.jobs.some(j => j.id === id)) return;
@@ -121,15 +123,16 @@ export function evaluationSession(api: EvaluationClient, publish: (state: Evalua
     async analyze(compare: string[], proxy: boolean, thresholdOnly: boolean) {
       if (disposed || analysis || state.listPhase !== "ready" || state.detailPhase !== "ready" || !state.detail || !canAnalyze(state.detail)) return;
       const controller = new AbortController(); analysis = controller;
-      update({ analysis: null, analysisPhase: "loading", analysisError: "" });
+      const selection: AnalysisSelection = { experiment_id: state.selectedId, compare: [...compare], lexical_proxy: proxy, threshold_only: thresholdOnly };
+      update({ analysis: null, analysisSelection: null, analysisPhase: "loading", analysisError: "" });
       try {
         const report = await api.analyze(state.selectedId, compare, proxy, controller.signal, thresholdOnly);
-        if (!disposed && analysis === controller && !controller.signal.aborted) update({ analysis: report, analysisPhase: "ready" });
+        if (!disposed && analysis === controller && !controller.signal.aborted) update({ analysis: report, analysisSelection: selection, analysisPhase: "ready" });
       } catch (e) {
         if (!disposed && analysis === controller && !controller.signal.aborted) update({ analysisPhase: "error", analysisError: analysisFailure(e) });
       } finally { if (analysis === controller) analysis = null; }
     },
-    cancelAnalysis() { analysis?.abort(); analysis = null; update({ analysis: null, analysisPhase: "cancelled", analysisError: "" }); },
+    cancelAnalysis() { analysis?.abort(); analysis = null; update({ analysis: null, analysisSelection: null, analysisPhase: "cancelled", analysisError: "" }); },
     dispose() { disposed = true; list?.abort(); detail?.abort(); analysis?.abort(); },
   };
 }

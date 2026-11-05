@@ -6,6 +6,7 @@ import { parseQuery } from "../lib/query-api";
 import { parseHealth } from "../lib/api";
 import { parseJob, parseResults, type Freeze } from "../lib/experiment-api";
 import { parseAnalysis } from "../lib/analysis-api";
+import { buildEvaluationReport } from "../lib/evaluation-report";
 
 const packets = JSON.parse(execFileSync(resolve(process.platform === "win32" ? "../.venv/Scripts/python.exe" : "../.venv/bin/python"), ["tests/workspace_http_bridge.py"], {
   cwd: process.cwd(), encoding: "utf8", timeout: 90_000,
@@ -60,6 +61,17 @@ test("read-only dashboard routes preserve actual frontend result contracts", () 
   assert.ok(history.jobs.map(parseJob).some(job => job.id === result.id));
   assert.equal(result.observations.length, 12);
   assert.deepEqual(result, parseResults(packets.completed.body));
+});
+
+test("research report exports genuine HTTP analysis deterministically with unknown risk retained", () => {
+  assert.equal(packets["analysis-unknown"].status, 200);
+  const detail = parseResults(packets["dashboard-results"].body);
+  const analysis = parseAnalysis(packets["analysis-unknown"].body);
+  const request = { experiment_id: detail.id, compare: [], lexical_proxy: false, threshold_only: false };
+  const bundle = buildEvaluationReport(detail, analysis, request, []);
+  assert.ok(bundle.analysis.rows.every(row => row.selective_risk === null));
+  assert.equal(JSON.stringify(bundle), JSON.stringify(buildEvaluationReport(detail, analysis, request, [])));
+  assert.doesNotMatch(JSON.stringify(bundle), /expected_answer|expected_safe_behavior|evidence_spans/);
 });
 test("real HTTP recorded execution errors stay failures and cannot freeze Dev configuration", () => {
   const result = parseResults(packets.failed.body);

@@ -8,6 +8,10 @@ import { createEvaluationClient, comparisonBlocker, canAnalyze, evaluationFailur
 import { parseAnalysis } from "../lib/analysis-api";
 import { parseResults, type Job, type Results } from "../lib/experiment-api";
 import { ApiClientError } from "../lib/api";
+import { buildEvaluationReport, exportEvaluationReport, filterObservations, observationOutcome, savedRetrievalRecall, type AnalysisSelection } from "../lib/evaluation-report";
+import { EvaluationObservations } from "../components/evaluation-observations";
+import { EvaluationReport } from "../components/evaluation-report";
+import { RiskPlot } from "../components/risk-analysis";
 
 const result = (): Results => parseResults(JSON.parse(readFileSync("tests/fixture_job_result.json", "utf8")));
 const report = () => parseAnalysis(JSON.parse(readFileSync("tests/fixture_analysis.json", "utf8")));
@@ -179,4 +183,117 @@ test("comparison selection limit has its own accessible explanation", () => {
   (b.configuration.policies as Record<string, unknown>[]).find(p => p.name === "threshold")!.threshold = 100;
   const html = renderToStaticMarkup(<ComparisonCandidate selected={a} job={b} thresholdOnly checked={false} limitReached validated={false} onChange={() => {}} />);
   assert.match(html, /disabled=""/); assert.match(html, /Uncheck another candidate/);
+});
+
+const selection = (): AnalysisSelection => ({ experiment_id: result().id, compare: [], lexical_proxy: true, threshold_only: false });
+test("research report deterministically preserves the exact validated analysis and request", () => {
+  const data = result(), analysis = report();
+  const first = buildEvaluationReport(data, analysis, selection(), [job()]);
+  assert.equal(JSON.stringify(first), JSON.stringify(buildEvaluationReport(data, analysis, selection(), [job()])));
+  assert.deepEqual(first.analysis, analysis);
+  assert.equal(first.schema_version, "ragbench.evaluation-report.v1");
+  assert.equal(first.request.resamples, analysis.resamples); assert.equal(first.request.seed, analysis.seed);
+  assert.equal(first.experiments[0].experiment_seed, 0);
+  assert.equal(first.experiments[0].runtime_source_sha256, data.runtime_source_sha256);
+  assert.ok(first.experiments[0].source_record_sha256.includes(analysis.rows[0].source_record_sha256));
+  assert.match(first.metric_definitions.aurc, /Partial domains are not extrapolated/);
+});
+test("report projection excludes gold, arbitrary configuration and environment secrets", () => {
+  const data = result(); data.configuration.api_key = "private-value";
+  data.result!.environment_metadata.secret = "private-environment";
+  const payload = JSON.stringify(buildEvaluationReport(data, report(), selection(), [job()]));
+  assert.doesNotMatch(payload, /private-value|private-environment|expected_answer|expected_safe_behavior|evidence_spans|environment_metadata/);
+});
+for (const change of ["primary", "duplicate", "proxy", "threshold", "missing-source"]) test(`report refuses mismatched export ${change}`, () => {
+  const request = selection();
+  if (change === "primary") request.experiment_id = second;
+  if (change === "duplicate") request.compare = [request.experiment_id];
+  if (change === "proxy") request.lexical_proxy = false;
+  if (change === "threshold") request.threshold_only = true;
+  if (change === "missing-source") request.compare = [second];
+  assert.throws(() => buildEvaluationReport(result(), report(), request, []));
+});
+test("report preserves unavailable intervals and zero values exactly", () => {
+  const analysis = report();
+  const bundle = buildEvaluationReport(result(), analysis, selection(), [job()]);
+  assert.deepEqual(bundle.analysis.rows.map(row => row.uncertainty), analysis.rows.map(row => row.uncertainty));
+  assert.ok(bundle.analysis.rows.some(row => row.selective_risk === 0));
+  assert.ok(bundle.analysis.rows.some(row => row.uncertainty.selective_risk.lower === null));
+});
+test("export uses existing download handoff and safe error feedback", () => {
+  let captured: unknown, filename = "";
+  const feedback = exportEvaluationReport(result(), report(), selection(), [job()], (payload, name) => { captured = payload; filename = name; });
+  assert.equal(feedback.failed, false); assert.match(feedback.message, /prepared/);
+  assert.deepEqual(captured, buildEvaluationReport(result(), report(), selection(), [job()]));
+  assert.equal(filename, `synthetic-evaluation-${result().id}.json`);
+  const failed = exportEvaluationReport(result(), report(), selection(), [job()], () => { throw Error("internal-secret"); });
+  assert.equal(failed.failed, true); assert.doesNotMatch(failed.message, /internal-secret/);
+});
+test("report control explains scope, definitions, cohort and synthetic basis accessibly", () => {
+  const html = renderToStaticMarkup(<EvaluationReport detail={result()} report={report()} selection={selection()} jobs={[job()]} />);
+  assert.match(html, /type="button">Export research report JSON/);
+  assert.match(html, /no reference answers/); assert.match(html, /Metric definitions and interpretation/);
+  assert.match(html, /A\/N/); assert.match(html, /A\/\(A\+B\+C\)/); assert.match(html, /not confidence intervals/);
+});
+test("analysis records successful request provenance and clears it with stale reports", async () => {
+  const { session, state } = setup(); await session.refresh(); await session.analyze([], true, false);
+  assert.deepEqual(state().analysisSelection, selection());
+  session.invalidateAnalysis(); assert.equal(state().analysisSelection, null);
+  await session.analyze([], false, true); assert.equal(state().analysisSelection!.threshold_only, true);
+  session.cancelAnalysis(); assert.equal(state().analysisSelection, null);
+});
+test("observation filters operate on saved rows without changing the analysis cohort", () => {
+  const data = result(); const before = JSON.stringify(data);
+  const filtered = filterObservations(data.observations, "threshold", "synthetic fixture");
+  assert.equal(filtered.length, 1); assert.equal(filtered[0].policy_name, "threshold");
+  assert.equal(filterObservations(data.observations, "threshold", "not present").length, 0);
+  assert.equal(JSON.stringify(data), before);
+});
+test("execution failure, abstention, clarification and unknown outcome remain distinct", () => {
+  const row = structuredClone(result().observations[0]);
+  for (const decision of ["ANSWER", "ABSTAIN", "CLARIFY"]) { row.observed.decision = decision; assert.equal(observationOutcome(row), decision); }
+  row.observed.execution_status = "failed"; assert.equal(observationOutcome(row), "EXECUTION_FAILURE");
+  row.observed.execution_status = "succeeded"; row.error = { kind: "provider_error", message: "private", retryable: false };
+  assert.equal(observationOutcome(row), "EXECUTION_FAILURE");
+  row.error = null; row.observed.decision = null; assert.equal(observationOutcome(row), "UNCLASSIFIED");
+});
+test("outcome ledger exposes actual counts, category filters, experiment IDs and missing semantic judgments", () => {
+  const html = renderToStaticMarkup(<EvaluationObservations detail={result()} />);
+  assert.match(html, /for="outcome-policy"/); assert.match(html, /for="outcome-category"/);
+  assert.match(html, /filters affect/i); assert.match(html, /do not|not independent/);
+  assert.match(html, /recorded policy observations/); assert.match(html, /no reference answers/i);
+  assert.match(html, /aria-label="ANSWER: 3 of 3 observations"/);
+  assert.match(html, /<caption>/); assert.match(html, /tabindex="0"/);
+  assert.doesNotMatch(html, /The red bin limit/);
+});
+test("empty observations have no invented chart or failure rate", () => {
+  const data = result(); data.observations = [];
+  const html = renderToStaticMarkup(<EvaluationObservations detail={data} />);
+  assert.match(html, /No observations match/); assert.doesNotMatch(html, /<meter/);
+});
+test("stored retrieval recall preserves zero and reports invalid or absent metrics honestly", () => {
+  const data = result(); assert.equal(savedRetrievalRecall(data).value, 1);
+  for (const value of [0, null, 2, "0.5"]) {
+    data.result!.metrics.evidence_quality = { gold_evidence_retrieval_recall: { value, status: "available" } };
+    assert.equal(savedRetrievalRecall(data).value, value === 0 ? 0 : null);
+  }
+  data.result!.metrics = {}; assert.equal(savedRetrievalRecall(data).value, null);
+});
+
+test("chart legends identify source experiments and expose real AURC uncertainty", () => {
+  const curve = parseAnalysis(JSON.parse(readFileSync("tests/fixture_analysis_curve.json", "utf8")));
+  const html = renderToStaticMarkup(<RiskPlot report={curve} />);
+  assert.match(html, /Policy and experiment legend/); assert.match(html, /Threshold area and uncertainty legend/);
+  assert.match(html, /Full AURC/); assert.match(html, /percentile interval|Interval unavailable/);
+  assert.ok(html.includes(curve.rows[0].experiment_id));
+});
+test("report rejects metadata for a different question cohort", () => {
+  const detail = result(); detail.configuration.question_ids = ["synthetic_dev_04"];
+  assert.throws(() => buildEvaluationReport(detail, report(), selection(), []));
+});
+test("recorded-error visualization displays counts without exposing raw exception details", () => {
+  const detail = result(); detail.observations[0].error = { kind: "provider_error", message: "internal-private-path", retryable: false };
+  const html = renderToStaticMarkup(<EvaluationObservations detail={detail} />);
+  assert.match(html, /provider_error: 1 of 3 observations/); assert.doesNotMatch(html, /internal-private-path/);
+  assert.match(html, /EXECUTION_FAILURE: 1 of 3 observations/);
 });

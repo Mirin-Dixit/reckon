@@ -11,7 +11,8 @@ export interface Job {
   configuration: Record<string, unknown>; dataset_fingerprint: Record<string, string>;
   runtime_source_sha256: string; error: string | null;
 }
-interface Observation { question_id: string; policy_name: string; error: unknown;
+export interface Observation { question_id: string; policy_name: string; error: { kind: string; message: string; retryable: boolean | null } | null;
+  gold: { question_type: string | null; unanswerable_category: string | null; split: "train" | "dev" | "test" };
   observed: { decision: string | null; answer: string | null; clarification_question: string | null; execution_status: string } }
 export interface Results extends Job {
   observations: Observation[];

@@ -6,6 +6,7 @@ import { analysisFailure, createAnalysisClient, createAnalysisTask, metrics, typ
 
 const value = (n: number | null) => n === null ? "Undefined" : n.toFixed(3);
 const names = { end_to_end_coverage: "End-to-end coverage A/N", successful_execution_coverage: "Successful-execution coverage A/(A+B+C)", selective_risk: "Selective lexical-proxy risk", failure_rate: "Execution failure rate E/N" };
+const policyColors = { always_answer: "var(--ink)", threshold: "var(--accent)", prompt_abstention: "var(--highlight)" };
 
 export function IntervalText({ interval }: { interval: Interval }) {
   return <span>{interval.lower === null ? `Interval unavailable: ${interval.unavailable_reason}` : `95% paired percentile interval [${value(interval.lower)}, ${value(interval.upper)}]`}
@@ -36,9 +37,11 @@ export function RiskPlot({ report }: { report: AnalysisReport }) {
         }
         return <path key={curve.id} d={path} stroke="var(--accent)" fill="none" strokeWidth="1.5" />;
       })}
-      {visible.map(row => <circle key={row.id} cx={x(row.end_to_end_coverage.value!)} cy={y(row.selective_risk!)} r="5" fill="var(--accent)" stroke="var(--ink)"><title>{`${row.policy}: coverage ${value(row.end_to_end_coverage.value)}, risk ${value(row.selective_risk)}`}</title></circle>)}
+      {visible.map(row => <circle key={row.id} cx={x(row.end_to_end_coverage.value!)} cy={y(row.selective_risk!)} r="5" fill={policyColors[row.policy]} stroke="var(--ink)"><title>{`${row.experiment_id} / ${row.policy}${row.threshold === null ? "" : ` / threshold ${row.threshold}`}: coverage ${value(row.end_to_end_coverage.value)}, risk ${value(row.selective_risk)}`}</title></circle>)}
     </svg>
-    <figcaption>Saved operating points, not a fitted confidence curve. Exact values and uncertainty are in the tables below. No zero-risk point is invented.</figcaption>
+    <figcaption>Saved operating points, not a fitted confidence curve. Exact values and uncertainty are in the accompanying tables. No zero-risk point is invented.</figcaption>
+    <ul className="risk-legend" aria-label="Policy and experiment legend">{report.rows.map(row => <li key={row.id}><span aria-hidden="true" className="risk-swatch" style={{ backgroundColor: policyColors[row.policy] }} />{row.policy}{row.threshold !== null && ` / threshold ${row.threshold}`} / <code>{row.experiment_id}</code>{row.selective_risk === null && " / risk undefined, no point plotted"}</li>)}</ul>
+    <ul className="risk-legend" aria-label="Threshold area and uncertainty legend">{report.curves.map(curve => <li key={curve.id}><code>{curve.id}</code>: {curve.area.full_aurc !== null ? `Full AURC ${value(curve.area.full_aurc)}` : curve.area.partial_aurc !== null ? `Partial area ${value(curve.area.partial_aurc)}` : "AURC undefined"}. <IntervalText interval={curve.uncertainty} /></li>)}</ul>
   </figure>;
 }
 

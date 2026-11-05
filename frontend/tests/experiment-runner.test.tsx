@@ -153,7 +153,7 @@ test("parseResults validates observations consistency", () => {
   // Done with observation failure
   const badObservation = {
     ...validResults.observations[0],
-    error: { kind: "execution_failure", message: "fail" },
+    error: { kind: "execution_failure", message: "fail", retryable: false },
   };
   const doneWithFailure: Results = {
     ...validResults,
@@ -374,7 +374,7 @@ test("freeze receipts only appear for their matching result and failures remain 
 });
 
 test("recorded execution errors are text and remain distinct from abstentions", () => {
-  const error = { code: "fixture_failure", message: "<script>not HTML</script>" };
+  const error = { kind: "fixture_failure", message: "<script>not HTML</script>", retryable: false };
   const value: Results = { ...validResults, status: "partial", observations: [{ ...validResults.observations[0], error,
     observed: { ...validResults.observations[0].observed, decision: null, answer: null, execution_status: "failed" } }] };
   const html = renderToStaticMarkup(<ExperimentResults value={value} />);

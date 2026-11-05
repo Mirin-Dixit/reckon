@@ -173,6 +173,7 @@ with tempfile.TemporaryDirectory(
             "analysis-again",
             f"/api/v1/experiments/{job_id}/analysis?lexical_proxy=true",
         )
+        http(base, "analysis-unknown", f"/api/v1/experiments/{job_id}/analysis")
         http(
             base,
             "analysis-threshold",
