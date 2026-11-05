@@ -698,3 +698,22 @@ so its startup regression runs in a normal test installation. Run it with:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest backend/tests/test_api_hardening.py -k documented_uvicorn_startup
 ```
+## P6 local transport and deployment additions
+
+All query, legacy evaluation, synthetic experiment and analysis routes now enforce
+the existing loopback-peer and exact-origin guard. Health remains public. This is
+a local trust boundary, not authentication for an Internet service. Remote or
+foreign-origin execution is rejected with a safe 403 before runtime initialization.
+
+Request bodies retain the 1 MiB byte limit and now have a cumulative receive
+deadline, including chunked transfers. `RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS`
+defaults to 15 and accepts finite values in (0,60]. Expiry returns HTTP 408 with
+`request_body_timeout` and closes the HTTP connection; it is not an abstention.
+
+`RAGBENCH_EXPERIMENT_STORE_PATH` is an optional absolute server-controlled SQLite
+path for deployment. It is not a request parameter. An unset value preserves the
+native path; selecting a path does not provision a store or recover jobs on
+dashboard GETs. See [local deployment and recovery](../deployment/local.md) for
+the separate Docker-owned volume, verified four-container local deployment,
+safe startup/shutdown, and its synthetic-only limitations. [AWS readiness](../deployment/aws-readiness.md) is optional
+planning only; no cloud resources or model calls were made.

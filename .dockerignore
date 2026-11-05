@@ -1,0 +1,25 @@
+# Allowlisted build context: never send the repository wholesale to the builder.
+**
+!backend/
+!backend/app/
+!backend/app/**
+!backend/Dockerfile
+!frontend/
+!frontend/**
+!deploy/
+!deploy/**
+**/node_modules
+**/.next
+**/.test-build
+**/__pycache__
+**/*.pyc
+**/.env*
+**/.git
+**/*.sqlite*
+**/*.db
+backend/app/evaluation/benchmark_queue.py
+backend/app/evaluation/benchmark_review.py
+backend/app/evaluation/benchmark_v2.py
+backend/app/evaluation/pilot30.py
+backend/app/evaluation/review_app.py
+backend/app/evaluation/review_ui

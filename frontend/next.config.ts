@@ -6,6 +6,7 @@ const apiOrigin = localBackendOrigin(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_U
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  output: process.env.RAGBENCH_STANDALONE === "1" ? "standalone" : undefined,
   env: { NEXT_PUBLIC_RAGBENCH_API_BASE_URL: apiOrigin },
   /* config options here */
   experimental: {

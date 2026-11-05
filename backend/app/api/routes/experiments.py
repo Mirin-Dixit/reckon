@@ -9,12 +9,13 @@ from fastapi import APIRouter, Depends, Request
 from app.api.dependencies import get_runtime_service, model_settings
 from app.api.errors import ApiProblem
 from app.api.models import EvaluationAccepted, EvaluationMetadata, EvaluationRequest
+from app.api.routes.experiment_jobs import local_access
 from app.evaluation.runner import ErrorHandlingMode, PolicyRunConfig
 from app.generation.contracts import ProviderError, ProviderErrorKind
 from app.retrieval.runtime import RetrievalFailure
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(local_access)])
 
 
 def authorized_runtime(request: Request):

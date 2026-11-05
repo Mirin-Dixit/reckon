@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -54,19 +56,27 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
         redoc_url=None,
         responses={
             status: {"model": ErrorResponse}
-            for status in (400, 404, 405, 413, 422, 500, 502, 503, 504)
+            for status in (400, 403, 404, 405, 408, 413, 422, 500, 502, 503, 504)
         },
     )
     application.state.settings = config
     application.state.runtime_manager = RuntimeManager(runtime_factory)
     application.state.experiment_registry = ExperimentRegistry()
+    storage_path = experiment_store_path
+    if storage_path is None:
+        configured_path = os.environ.get("RAGBENCH_EXPERIMENT_STORE_PATH")
+        if configured_path:
+            storage_path = Path(configured_path)
+            if not storage_path.is_absolute():
+                raise ValueError("Configured experiment store path must be absolute")
     application.state.experiment_store_path = (
-        experiment_store_path or experiment_jobs.DEFAULT_STORE
+        storage_path or experiment_jobs.DEFAULT_STORE
     )
     application.state.evaluation_authorizer = evaluation_authorizer
 
     application.add_middleware(
-        RequestBodyLimitMiddleware, max_bytes=config.max_request_bytes
+        RequestBodyLimitMiddleware, max_bytes=config.max_request_bytes,
+        timeout_seconds=config.request_body_timeout_seconds,
     )
     application.add_middleware(SafeErrorMiddleware)
 

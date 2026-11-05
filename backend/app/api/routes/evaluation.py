@@ -1,11 +1,12 @@
 """Explicitly gold-bearing evaluation result endpoint."""
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 
 from app.api.errors import ApiProblem
 from app.api.models import EvaluationResults
+from app.api.routes.experiment_jobs import local_access
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(local_access)])
 
 
 @router.get("/evaluations/{experiment_id}/results", response_model=EvaluationResults)

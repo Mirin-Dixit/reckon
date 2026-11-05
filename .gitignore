@@ -13,6 +13,12 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .ragbench-cache/
+# Local runtime databases and consistent-backup artifacts
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.db
 .coverage
 htmlcov/
 

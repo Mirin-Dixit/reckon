@@ -1,0 +1,150 @@
+{
+  "name": "ragbench-local",
+  "services": {
+    "backend": {
+      "build": {
+        "context": ".",
+        "dockerfile": "backend/Dockerfile"
+      },
+      "init": true,
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "mem_limit": "768m",
+      "cpus": 2,
+      "pids_limit": 128,
+      "stop_grace_period": "45s",
+      "networks": [
+        "local"
+      ],
+      "environment": {
+        "RAGBENCH_ENV": "production",
+        "RAGBENCH_CORS_ORIGINS": "http://127.0.0.1:3000",
+        "RAGBENCH_EXPERIMENT_STORE_PATH": "/state/experiments.sqlite3",
+        "RAGBENCH_DENSE_CACHE_DIR": "/state/dense",
+        "RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS": "15",
+        "RAGBENCH_PROVIDER": "ollama",
+        "RAGBENCH_OLLAMA_URL": "http://127.0.0.1:11434",
+        "RAGBENCH_MODEL": "qwen3:4b-q4_K_M",
+        "RAGBENCH_CONTEXT_SIZE": "8192",
+        "RAGBENCH_MAX_OUTPUT_TOKENS": "1024",
+        "RAGBENCH_RETRY_COUNT": "0",
+        "OLLAMA_NO_CLOUD": "1"
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,size=64m,uid=10001,gid=10001"
+      ],
+      "volumes": [
+        "state:/state",
+        "./data/benchmark/documents.jsonl:/opt/ragbench/data/benchmark/documents.jsonl:ro",
+        "./data/fixtures/p4_synthetic_v1:/opt/ragbench/data/fixtures/p4_synthetic_v1:ro"
+      ]
+    },
+    "frontend": {
+      "build": {
+        "context": ".",
+        "dockerfile": "frontend/Dockerfile"
+      },
+      "network_mode": "service:backend",
+      "depends_on": {
+        "backend": {
+          "condition": "service_healthy"
+        }
+      },
+      "init": true,
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "mem_limit": "768m",
+      "cpus": 2,
+      "pids_limit": 128,
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,size=64m,uid=1000,gid=1000",
+        "/app/.next/cache:rw,nosuid,size=64m,uid=1000,gid=1000"
+      ]
+    },
+    "gateway": {
+      "build": {
+        "context": ".",
+        "dockerfile": "deploy/gateway.Dockerfile"
+      },
+      "depends_on": {
+        "app-proxy": {
+          "condition": "service_healthy"
+        }
+      },
+      "init": true,
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "mem_limit": "128m",
+      "cpus": 0.5,
+      "pids_limit": 64,
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,size=32m,uid=10001,gid=10001"
+      ],
+      "image": "ragbench-nginx:p6-local",
+      "networks": [
+        "ingress",
+        "local"
+      ],
+      "ports": [
+        "127.0.0.1:3000:8080"
+      ],
+      "command": [
+        "-c",
+        "/etc/nginx/ingress.conf",
+        "-g",
+        "daemon off;"
+      ]
+    },
+    "app-proxy": {
+      "build": {
+        "context": ".",
+        "dockerfile": "deploy/gateway.Dockerfile"
+      },
+      "network_mode": "service:backend",
+      "depends_on": {
+        "frontend": {
+          "condition": "service_healthy"
+        }
+      },
+      "init": true,
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "mem_limit": "128m",
+      "cpus": 0.5,
+      "pids_limit": 64,
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,size=32m,uid=10001,gid=10001"
+      ],
+      "image": "ragbench-nginx:p6-local"
+    }
+  },
+  "networks": {
+    "local": {
+      "internal": true
+    },
+    "ingress": {}
+  },
+  "volumes": {
+    "state": {}
+  }
+}

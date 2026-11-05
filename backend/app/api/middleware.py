@@ -1,5 +1,6 @@
 """Bound request bytes and contain unexpected errors before server logging."""
 
+import asyncio
 import logging
 
 from starlette.responses import JSONResponse
@@ -48,9 +49,12 @@ class SafeErrorMiddleware:
 
 
 class RequestBodyLimitMiddleware:
-    def __init__(self, app: ASGIApp, max_bytes: int) -> None:
+    def __init__(
+        self, app: ASGIApp, max_bytes: int, timeout_seconds: float = 15.0
+    ) -> None:
         self.app = app
         self.max_bytes = max_bytes
+        self.timeout_seconds = timeout_seconds
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
@@ -86,8 +90,23 @@ class RequestBodyLimitMiddleware:
                 )
                 return
         body = bytearray()
+        deadline = asyncio.get_running_loop().time() + self.timeout_seconds
         while True:
-            message = await receive()
+            try:
+                remaining = deadline - asyncio.get_running_loop().time()
+                if remaining <= 0:
+                    raise TimeoutError
+                message = await asyncio.wait_for(receive(), timeout=remaining)
+            except TimeoutError:
+                await self.reject(
+                    scope,
+                    receive,
+                    send,
+                    408,
+                    "request_body_timeout",
+                    "The request body was not received within the deadline.",
+                )
+                return
             if message["type"] == "http.disconnect":
                 return
             chunk = message.get("body", b"")
@@ -119,6 +138,7 @@ class RequestBodyLimitMiddleware:
     async def reject(scope, receive, send, status, code, message):
         response = JSONResponse(
             status_code=status,
+            headers={"Connection": "close"},
             content={
                 "error": {"code": code, "message": message, "execution_status": None}
             },

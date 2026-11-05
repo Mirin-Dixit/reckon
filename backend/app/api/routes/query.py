@@ -9,12 +9,13 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies import get_runtime_service
 from app.api.errors import ApiProblem
 from app.api.models import QueryRequest, QueryResponse
+from app.api.routes.experiment_jobs import local_access
 from app.evaluation.serialization import sanitize_serialized
 from app.generation.contracts import ExecutionStatus, ProviderError, ProviderErrorKind
 from app.retrieval.runtime import RetrievalFailure
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(local_access)])
 
 
 @router.post("/query", response_model=QueryResponse)

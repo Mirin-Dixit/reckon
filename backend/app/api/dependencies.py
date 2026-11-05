@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import logging
+import math
 import os
 import threading
 import time
@@ -83,12 +84,18 @@ class ApiSettings:
     cors_origins: tuple[str, ...] = ()
     environment: str = "development"
     max_request_bytes: int = 1_048_576
+    request_body_timeout_seconds: float = 15.0
 
     def __post_init__(self) -> None:
         if self.max_request_bytes <= 0:
             raise ValueError("max_request_bytes must be positive")
         if "*" in self.cors_origins:
             raise ValueError("Wildcard CORS origins are not allowed")
+        if (
+            not math.isfinite(self.request_body_timeout_seconds)
+            or not 0 < self.request_body_timeout_seconds <= 60
+        ):
+            raise ValueError("Request body deadline must be in (0, 60] seconds")
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> ApiSettings:
@@ -103,6 +110,9 @@ class ApiSettings:
         return cls(
             cors_origins=origins,
             environment=values.get("RAGBENCH_ENV", "development").strip().lower(),
+            request_body_timeout_seconds=float(
+                values.get("RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS", "15")
+            ),
         )
 
 
