@@ -1,4 +1,4 @@
-# RAGBench Evaluation Protocol
+# Reckon Evaluation Protocol
 
 > **Pilot limitation:** this benchmark has 54 questions total, with only 3 Dev
 > questions and 1 Test question. These splits do not support generalization or

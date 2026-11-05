@@ -151,10 +151,10 @@ def request(text="Question", *, output=128):
 def test_provider_selection_is_local_by_default_and_openai_is_explicit():
     assert isinstance(load_provider_config({}), OllamaProviderConfig)
     assert isinstance(
-        load_provider_config({"RAGBENCH_PROVIDER": "openai"}), OpenAIProviderConfig
+        load_provider_config({"RECKON_PROVIDER": "openai"}), OpenAIProviderConfig
     )
     with pytest.raises(ValueError):
-        load_provider_config({"RAGBENCH_PROVIDER": "other"})
+        load_provider_config({"RECKON_PROVIDER": "other"})
 
 
 @pytest.mark.parametrize(
@@ -331,8 +331,8 @@ def local_app(tmp_path, monkeypatch):
     monkeypatch.setattr(
         dependencies, "QUESTIONS_PATH", tmp_path / "DO_NOT_READ_GOLD.jsonl"
     )
-    monkeypatch.setenv("RAGBENCH_PROVIDER", "ollama")
-    monkeypatch.setenv("RAGBENCH_MODEL", "qwen3:4b")
+    monkeypatch.setenv("RECKON_PROVIDER", "ollama")
+    monkeypatch.setenv("RECKON_MODEL", "qwen3:4b")
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
     def make(mode):

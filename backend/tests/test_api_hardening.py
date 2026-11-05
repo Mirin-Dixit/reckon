@@ -83,20 +83,20 @@ def test_documented_uvicorn_startup_serves_health_without_provider_calls():
 
 def test_local_frontend_cors_configuration_is_exact():
     settings = ApiSettings.from_env(
-        {"RAGBENCH_CORS_ORIGINS": "http://127.0.0.1:3000,http://127.0.0.1:3001"}
+        {"RECKON_CORS_ORIGINS": "http://127.0.0.1:3000,http://127.0.0.1:3001"}
     )
     assert settings.cors_origins == (
         "http://127.0.0.1:3000", "http://127.0.0.1:3001"
     )
     assert ApiSettings.from_env({}).cors_origins == ()
     with pytest.raises(ValueError, match="Wildcard CORS"):
-        ApiSettings.from_env({"RAGBENCH_CORS_ORIGINS": "http://127.0.0.1:3001,*"})
+        ApiSettings.from_env({"RECKON_CORS_ORIGINS": "http://127.0.0.1:3001,*"})
 
 
 def test_local_frontend_cors_over_real_loopback_http():
     origin = "http://127.0.0.1:3001"
     application = create_app(
-        settings=ApiSettings.from_env({"RAGBENCH_CORS_ORIGINS": origin}),
+        settings=ApiSettings.from_env({"RECKON_CORS_ORIGINS": origin}),
         runtime_factory=FakeRuntime,
     )
 
@@ -591,11 +591,11 @@ class AdversarialSDK:
 
 
 def adversarial_application(monkeypatch, sdk):
-    monkeypatch.setenv("RAGBENCH_PROVIDER", "openai")
-    monkeypatch.setenv("RAGBENCH_MODEL", "audit-model")
-    monkeypatch.setenv("RAGBENCH_API_KEY_ENV", "RAGBENCH_TEST_KEY")
-    monkeypatch.setenv("RAGBENCH_TEST_KEY", "server-only-credential-do-not-leak")
-    monkeypatch.setenv("RAGBENCH_RETRY_COUNT", "0")
+    monkeypatch.setenv("RECKON_PROVIDER", "openai")
+    monkeypatch.setenv("RECKON_MODEL", "audit-model")
+    monkeypatch.setenv("RECKON_API_KEY_ENV", "RECKON_TEST_KEY")
+    monkeypatch.setenv("RECKON_TEST_KEY", "server-only-credential-do-not-leak")
+    monkeypatch.setenv("RECKON_RETRY_COUNT", "0")
     monkeypatch.setattr("app.api.dependencies.openai_sdk_available", lambda: True)
     monkeypatch.setattr(
         "app.api.dependencies.OpenAIResponsesProvider",
@@ -744,7 +744,7 @@ def test_response_validation_errors_hide_values_from_clients_and_server_logs(cap
 
 @pytest.mark.parametrize("method", ["dense", "hybrid"])
 def test_unconfigured_retrieval_never_falls_back_to_bm25(monkeypatch, method):
-    monkeypatch.delenv("RAGBENCH_EMBEDDING_MODEL", raising=False)
+    monkeypatch.delenv("RECKON_EMBEDDING_MODEL", raising=False)
     sdk = AdversarialSDK()
     with TestClient(adversarial_application(monkeypatch, sdk)) as c:
         reply = c.post(

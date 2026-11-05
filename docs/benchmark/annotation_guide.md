@@ -1,4 +1,4 @@
-# RAGBench Studio — Annotation Guide
+# Reckon — Annotation Guide
 
 **Version:** 0.1.0-draft
 **Target Milestone:** Stage 2C Pilot Benchmark Dataset (~100 Questions)

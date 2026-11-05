@@ -97,13 +97,13 @@ def request(structured=False):
 def test_config_loads_typed_env_values_without_loading_secret_value():
     config = OpenAIProviderConfig.from_env(
         {
-            "RAGBENCH_PROVIDER": "OpenAI",
-            "RAGBENCH_MODEL": "account-configured-model",
-            "RAGBENCH_API_KEY_ENV": "CUSTOM_OPENAI_KEY",
-            "RAGBENCH_TIMEOUT_SECONDS": "12.5",
-            "RAGBENCH_RETRY_COUNT": "3",
-            "RAGBENCH_TEMPERATURE": "0",
-            "RAGBENCH_MAX_OUTPUT_TOKENS": "400",
+            "RECKON_PROVIDER": "OpenAI",
+            "RECKON_MODEL": "account-configured-model",
+            "RECKON_API_KEY_ENV": "CUSTOM_OPENAI_KEY",
+            "RECKON_TIMEOUT_SECONDS": "12.5",
+            "RECKON_RETRY_COUNT": "3",
+            "RECKON_TEMPERATURE": "0",
+            "RECKON_MAX_OUTPUT_TOKENS": "400",
             "CUSTOM_OPENAI_KEY": "must-not-be-stored",
         }
     )
@@ -118,10 +118,10 @@ def test_config_loads_typed_env_values_without_loading_secret_value():
 
 
 def test_config_rejects_invalid_and_unbounded_retry_values():
-    with pytest.raises(ValueError, match="Invalid RAGBench"):
-        OpenAIProviderConfig.from_env({"RAGBENCH_RETRY_COUNT": "100"})
-    with pytest.raises(ValueError, match="Invalid RAGBench"):
-        OpenAIProviderConfig.from_env({"RAGBENCH_TIMEOUT_SECONDS": "not-a-number"})
+    with pytest.raises(ValueError, match="Invalid Reckon"):
+        OpenAIProviderConfig.from_env({"RECKON_RETRY_COUNT": "100"})
+    with pytest.raises(ValueError, match="Invalid Reckon"):
+        OpenAIProviderConfig.from_env({"RECKON_TIMEOUT_SECONDS": "not-a-number"})
 
 
 def test_missing_api_key_fails_without_import_or_network_call(monkeypatch):

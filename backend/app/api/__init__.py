@@ -1,1 +1,1 @@
-"""HTTP transport layer for RAGBench."""
+"""HTTP transport layer for Reckon."""

@@ -98,7 +98,7 @@ export function ExperimentRunner() {
   useEffect(() => () => mutation.current?.abort(), []);
   useEffect(() => {
     const controller = new AbortController();
-    const client = createExperimentClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL);
+    const client = createExperimentClient(process.env.NEXT_PUBLIC_RECKON_API_BASE_URL);
     let timer: ReturnType<typeof setTimeout> | undefined;
     async function poll() {
       try {
@@ -140,7 +140,7 @@ export function ExperimentRunner() {
     mutation.current?.abort(); const controller = new AbortController(); mutation.current = controller;
     setBusy(true); setSubmissionError(""); setFreezeError("");
     try {
-      const job = await createExperimentClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL).start(body, controller.signal);
+      const job = await createExperimentClient(process.env.NEXT_PUBLIC_RECKON_API_BASE_URL).start(body, controller.signal);
       if (!controller.signal.aborted) { selectJob(job.id); setOffset(0); setRefresh(v => v + 1); }
     } catch (e) { if (!controller.signal.aborted) setSubmissionError(experimentFailure(e)); }
     finally { mutationGate.current.leave(); if (!controller.signal.aborted) setBusy(false); }
@@ -150,7 +150,7 @@ export function ExperimentRunner() {
     mutation.current?.abort(); const controller = new AbortController(); mutation.current = controller;
     setBusy(true); setFreezing(true); setFreezeError("");
     try {
-      const saved = await createExperimentClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL).freeze(result.id, controller.signal);
+      const saved = await createExperimentClient(process.env.NEXT_PUBLIC_RECKON_API_BASE_URL).freeze(result.id, controller.signal);
       if (!controller.signal.aborted) setFreeze(saved);
     } catch (e) { if (!controller.signal.aborted) setFreezeError(experimentFailure(e)); }
     finally { mutationGate.current.leave(); if (!controller.signal.aborted) { setBusy(false); setFreezing(false); } }

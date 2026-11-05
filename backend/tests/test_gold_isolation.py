@@ -49,7 +49,7 @@ def corpus(tmp_path, monkeypatch):
     questions.write_text(json.dumps(question) + "\n", encoding="utf-8")
     monkeypatch.setattr(dependencies, "DOCUMENTS_PATH", documents)
     monkeypatch.setattr(dependencies, "QUESTIONS_PATH", questions)
-    monkeypatch.delenv("RAGBENCH_MODEL", raising=False)
+    monkeypatch.delenv("RECKON_MODEL", raising=False)
     return documents, questions
 
 

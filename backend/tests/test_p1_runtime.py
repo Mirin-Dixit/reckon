@@ -27,13 +27,13 @@ from test_openai_provider import FakeClient, response
 @pytest.mark.parametrize(
     "values",
     [
-        {"RAGBENCH_MAX_OUTPUT_TOKENS": "0"},
-        {"RAGBENCH_MAX_OUTPUT_TOKENS": "32769"},
-        {"RAGBENCH_MAX_OUTPUT_TOKENS": ""},
-        {"RAGBENCH_TIMEOUT_SECONDS": "121"},
-        {"RAGBENCH_MAX_PROVIDER_REQUESTS": "-1"},
-        {"RAGBENCH_MAX_PROVIDER_REQUESTS": "101"},
-        {"RAGBENCH_RETRY_COUNT": "6"},
+        {"RECKON_MAX_OUTPUT_TOKENS": "0"},
+        {"RECKON_MAX_OUTPUT_TOKENS": "32769"},
+        {"RECKON_MAX_OUTPUT_TOKENS": ""},
+        {"RECKON_TIMEOUT_SECONDS": "121"},
+        {"RECKON_MAX_PROVIDER_REQUESTS": "-1"},
+        {"RECKON_MAX_PROVIDER_REQUESTS": "101"},
+        {"RECKON_RETRY_COUNT": "6"},
     ],
 )
 def test_invalid_runtime_controls_fail_closed(values):
@@ -179,7 +179,7 @@ def test_prompt_answer_accounts_for_both_successful_provider_calls(monkeypatch):
 
 def test_exhausted_budget_through_http_is_failure(monkeypatch):
     sdk = AdversarialSDK("ANSWER")
-    monkeypatch.setenv("RAGBENCH_MAX_PROVIDER_REQUESTS", "1")
+    monkeypatch.setenv("RECKON_MAX_PROVIDER_REQUESTS", "1")
     with TestClient(adversarial_application(monkeypatch, sdk)) as client:
         reply = client.post("/api/v1/query", json={
             "question": "procurement approval",
@@ -266,10 +266,10 @@ def test_installed_sdk_via_loopback_openai_endpoint(monkeypatch):
                 base_url=f"http://127.0.0.1:{server.server_port}/v1",
             ),
         )
-        monkeypatch.setenv("RAGBENCH_TEST_KEY", "offline-only-canary")
+        monkeypatch.setenv("RECKON_TEST_KEY", "offline-only-canary")
         config = OpenAIProviderConfig(
             model="offline-sdk-model",
-            api_key_env_var="RAGBENCH_TEST_KEY",
+            api_key_env_var="RECKON_TEST_KEY",
             retry_count=0,
         )
         provider = OpenAIResponsesProvider(config)

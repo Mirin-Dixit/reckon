@@ -3,7 +3,7 @@ import { localBackendOrigin } from "./configuration";
 
 export interface HealthResponse {
   status: "ok" | "degraded";
-  application: "RAGBench Studio";
+  application: "Reckon";
   api_version: string;
   runtime_initialized: boolean;
   generation_configured: boolean;
@@ -22,7 +22,7 @@ export interface PublicFailure { kind: FailureKind; httpStatus?: number }
 export function failureMessage(failure: PublicFailure): string {
   switch (failure.kind) {
     case "configuration":
-      return "Invalid backend address. Set NEXT_PUBLIC_RAGBENCH_API_BASE_URL to an HTTP(S) loopback origin without credentials, a path, query, or fragment, then restart the frontend.";
+      return "Invalid backend address. Set NEXT_PUBLIC_RECKON_API_BASE_URL to an HTTP(S) loopback origin without credentials, a path, query, or fragment, then restart the frontend.";
     case "timeout":
       return "The backend status check timed out. Check the local backend and try again.";
     case "cancelled":
@@ -68,7 +68,7 @@ export function parseHealth(value: unknown): HealthResponse {
   if (!object(value) || !exactKeys(value, ["status", "application", "api_version",
     "runtime_initialized", "generation_configured", "provider_connection_tested"]) ||
     (value.status !== "ok" && value.status !== "degraded") ||
-    value.application !== "RAGBench Studio" ||
+    (value.application !== "Reckon" && value.application !== "RAGBench Studio") ||
     typeof value.api_version !== "string" || value.api_version.length > 64 ||
     !/^\d{1,4}\.\d{1,4}\.\d{1,4}$/.test(value.api_version) ||
     typeof value.runtime_initialized !== "boolean" ||
@@ -78,7 +78,7 @@ export function parseHealth(value: unknown): HealthResponse {
     throw new ApiClientError("malformed");
   }
   return {
-    status: value.status, application: value.application, api_version: value.api_version,
+    status: value.status, application: "Reckon", api_version: value.api_version,
     runtime_initialized: value.runtime_initialized,
     generation_configured: value.generation_configured, provider_connection_tested: false,
   };

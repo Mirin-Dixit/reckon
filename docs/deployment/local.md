@@ -11,8 +11,8 @@ origins. Health is public but does not prove a provider connection or model qual
 From the repository root, using the existing environments:
 
 ```powershell
-$env:RAGBENCH_CORS_ORIGINS = 'http://127.0.0.1:3000,http://127.0.0.1:3001'
-$env:RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS = '15'
+$env:RECKON_CORS_ORIGINS = 'http://127.0.0.1:3000,http://127.0.0.1:3001'
+$env:RECKON_REQUEST_BODY_TIMEOUT_SECONDS = '15'
 .\.venv\Scripts\python.exe -m uvicorn app.api.main:app --app-dir backend --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --no-access-log --timeout-graceful-shutdown 30
 ```
 
@@ -20,7 +20,7 @@ In the frontend terminal:
 
 ```powershell
 Set-Location frontend
-$env:NEXT_PUBLIC_RAGBENCH_API_BASE_URL = 'http://127.0.0.1:8000'
+$env:NEXT_PUBLIC_RECKON_API_BASE_URL = 'http://127.0.0.1:8000'
 npm.cmd run build
 npm.cmd run start
 ```
@@ -38,7 +38,7 @@ failures according to its existing recovery semantics. It never fabricates
 completed results. Dashboard/analysis GETs do not initialize or recover workers.
 Only start recovery against a backed-up store that you intend to operate.
 
-`RAGBENCH_EXPERIMENT_STORE_PATH` optionally selects an absolute, trusted server-side
+`RECKON_EXPERIMENT_STORE_PATH` optionally selects an absolute, trusted server-side
 SQLite path. It is never accepted from HTTP. Leaving it unset preserves the native
 store location. A missing store yields empty dashboard history without creating a
 database; only the experiment worker provisions storage. Do not point verification
@@ -55,6 +55,9 @@ unchanged. Cancellation stops waiting; it does not promise backend inference or
 CPU work was terminated.
 
 ## Docker: local synthetic workbench
+
+**Existing installations:** first use [the external-volume mapping](../rebranding.md#existing-docker-state-explicit-compatibility-mapping). Fresh-install commands below create new state and must not replace access to the accepted existing store.
+
 
 Requires an existing Docker Engine with Compose v2 and enough disk/RAM for builds.
 On Windows, use Linux containers (an open-source Engine/Compose installation in
@@ -94,7 +97,7 @@ mounts. Real benchmark questions, review files, models, databases and environmen
 files are excluded from image builds. Do not mount the native database writable.
 Base images are pinned to official registry digests, server dependency versions
 are locked, and frontend installation uses `npm ci` and its existing lockfile.
-Only the Docker builder sets `RAGBENCH_STANDALONE=1`; native builds retain the
+Only the Docker builder sets `RECKON_STANDALONE=1`; native builds retain the
 existing `next start` workflow. The Docker runner copies standalone output,
 static assets and public files explicitly.
 Digest pinning is reproducibility, not evidence of a vulnerability scan: deliberately
@@ -177,20 +180,20 @@ WSL2/Linux containers, hardware virtualization, sufficient free disk for image a
 build caches (plan at least 20 GiB free), and RAM for Docker plus the host's 1.5 GiB
 reserve. Consult the [Windows prerequisites](https://docs.docker.com/desktop/setup/install/windows-install/).
 Do not install or change Windows features automatically. Stop only identified native
-RAGBench servers using port 3000, or run the check later. No model server is needed.
+Reckon servers using port 3000, or run the check later. No model server is needed.
 
-Run from the repository root in PowerShell. `-p ragbench-p6-check` creates a separate
+Run from the repository root in PowerShell. `-p reckon-p6-check` creates a separate
 project/volume; it does not reuse the protected native SQLite database.
 
 ```powershell
 docker --version
 docker compose version
 docker info --format '{{.OSType}}'
-docker compose -p ragbench-p6-check config --quiet
-docker compose -p ragbench-p6-check build
-docker compose -p ragbench-p6-check up -d --wait
-docker compose -p ragbench-p6-check ps
-docker compose -p ragbench-p6-check port gateway 8080
+docker compose -p reckon-p6-check config --quiet
+docker compose -p reckon-p6-check build
+docker compose -p reckon-p6-check up -d --wait
+docker compose -p reckon-p6-check ps
+docker compose -p reckon-p6-check port gateway 8080
 $base = 'http://127.0.0.1:3000'
 Invoke-RestMethod "$base/api/v1/health"
 curl.exe --fail "$base/evaluation"
@@ -221,13 +224,13 @@ if ($saved.status -ne 'done' -or $saved.observed_run_count -ne 3) { throw 'Recor
 $analysis = Invoke-RestMethod "$base/api/v1/experiments/$($job.id)/analysis?lexical_proxy=true"
 if ($analysis.empirical_evaluation -ne $false) { throw 'Unexpected evaluation profile' }
 $freeze = Invoke-RestMethod -Method Post "$base/api/v1/experiments/$($job.id)/freeze" -ContentType 'application/json' -Body '{}'
-docker compose -p ragbench-p6-check stop -t 45
-docker compose -p ragbench-p6-check up -d --wait
+docker compose -p reckon-p6-check stop -t 45
+docker compose -p reckon-p6-check up -d --wait
 $restored = Invoke-RestMethod "$base/api/v1/analysis/experiments/$($job.id)"
 if ($restored.observed_run_count -ne 3) { throw 'Persistence failed' }
 $sameFreeze = Invoke-RestMethod -Method Post "$base/api/v1/experiments/$($job.id)/freeze" -ContentType 'application/json' -Body '{}'
 if ($sameFreeze.sha256 -ne $freeze.sha256) { throw 'Idempotent persisted receipt changed' }
-docker compose -p ragbench-p6-check logs --tail 100 backend frontend app-proxy gateway
+docker compose -p reckon-p6-check logs --tail 100 backend frontend app-proxy gateway
 ```
 
 The receipt has POST-only access; the second POST checks its supported idempotent
@@ -249,7 +252,7 @@ providers or use held-out questions to exercise errors.
 | Stop/up | Tests retained state across shutdown. Confirm the same job and receipt. On failure, preserve the volume/logs for diagnosis. |
 | Logs/export | Reads local logs or downloads a local JSON file; review for secrets/gold leakage. Access logs are disabled to avoid recording arbitrary URL query strings. Do not publish logs or reports automatically. |
 
-Finish with `docker compose -p ragbench-p6-check down`. This stops/removes the
+Finish with `docker compose -p reckon-p6-check down`. This stops/removes the
 isolated containers/network, retaining its named volume for inspection. Do not
 remove volumes or run broad pruning commands. These local commands allocate no
 AWS resources; Internet access and Docker Desktop licensing are separate concerns.

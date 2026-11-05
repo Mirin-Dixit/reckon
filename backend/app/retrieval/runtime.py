@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import threading
 from collections import OrderedDict
 from collections.abc import Mapping
 from dataclasses import asdict
 from pathlib import Path
 
+from app.configuration import environment
 from app.generation.contracts import ProviderError, ProviderErrorKind
 from app.ingestion.chunking import chunk_documents
 from app.ingestion.schema import Document
@@ -73,14 +73,14 @@ class RetrievalRuntime:
         try:
             with self._lock:
                 if self.embedder is None:
-                    model = os.environ.get("RAGBENCH_EMBEDDING_MODEL")
+                    model = environment().get("RECKON_EMBEDDING_MODEL")
                     if model is None:
                         raise RetrievalFailure("embedding_not_configured")
                     try:
                         self.embedder = OllamaEmbedder(
                             model=model,
-                            base_url=os.environ.get(
-                                "RAGBENCH_OLLAMA_URL", "http://127.0.0.1:11434",
+                            base_url=environment().get(
+                                "RECKON_OLLAMA_URL", "http://127.0.0.1:11434",
                             ),
                         )
                     except (ValueError, TypeError):
@@ -121,8 +121,8 @@ class RetrievalRuntime:
             with self._lock:
                 if method != "bm25":
                     if self.cache is None:
-                        self.cache = DenseIndexCache(Path(os.environ.get(
-                            "RAGBENCH_DENSE_CACHE_DIR", ".ragbench-cache/dense",
+                        self.cache = DenseIndexCache(Path(environment().get(
+                            "RECKON_DENSE_CACHE_DIR", ".ragbench-cache/dense",
                         )))
                     try:
                         self.cache._check_memory()

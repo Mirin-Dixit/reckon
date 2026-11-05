@@ -292,7 +292,7 @@ def test_direct_snapshot_configuration_validates_fusion(environment, rrf, candid
 def test_unavailable_configuration_has_safe_http_error(environment, monkeypatch):
     runtime, app, _, provider = environment
     runtime.retrieval_runtime = RetrievalRuntime()
-    monkeypatch.setenv("RAGBENCH_EMBEDDING_MODEL", "remote:cloud")
+    monkeypatch.setenv("RECKON_EMBEDDING_MODEL", "remote:cloud")
     with TestClient(app) as client:
         reply = client.post("/api/v1/query", json=request("dense"))
     assert reply.status_code == 503
@@ -337,7 +337,7 @@ def test_runtime_index_lru_bounded(environment):
 def test_unconfigured_evaluation_never_falls_back(environment, monkeypatch):
     runtime, app, _, provider = environment
     runtime.retrieval_runtime = RetrievalRuntime()
-    monkeypatch.delenv("RAGBENCH_EMBEDDING_MODEL", raising=False)
+    monkeypatch.delenv("RECKON_EMBEDDING_MODEL", raising=False)
     with TestClient(app) as client:
         reply = client.post("/api/v1/evaluations", json={
             "split": "train", "question_ids": ["q_pilot_020"],

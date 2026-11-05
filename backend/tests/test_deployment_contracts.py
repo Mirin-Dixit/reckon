@@ -34,9 +34,9 @@ def test_compose_is_local_nonroot_bounded_and_preserves_loopback_guards():
             assert service["network_mode"] == "service:backend"
             assert "ports" not in service
     backend = services["backend"]
-    assert backend["environment"]["RAGBENCH_PROVIDER"] == "ollama"
-    assert backend["environment"]["RAGBENCH_RETRY_COUNT"] == "0"
-    assert backend["environment"]["RAGBENCH_EXPERIMENT_STORE_PATH"].startswith(
+    assert backend["environment"]["RECKON_PROVIDER"] == "ollama"
+    assert backend["environment"]["RECKON_RETRY_COUNT"] == "0"
+    assert backend["environment"]["RECKON_EXPERIMENT_STORE_PATH"].startswith(
         "/state/"
     )
     assert backend["volumes"][0] == "state:/state"
@@ -63,8 +63,8 @@ def test_build_context_and_runtime_lock_exclude_sensitive_and_unrelated_files():
     frontend = (ROOT / "frontend/Dockerfile").read_text()
     assert "npm ci" in frontend and ".next/standalone" in frontend
     assert "NEXT_TELEMETRY_DISABLED=1" in frontend
-    assert "RAGBENCH_STANDALONE=1" in frontend
-    assert 'process.env.RAGBENCH_STANDALONE === "1"' in (
+    assert "RECKON_STANDALONE=1" in frontend
+    assert 'process.env.RECKON_STANDALONE ?? process.env.RAGBENCH_STANDALONE' in (
         ROOT / "frontend/next.config.ts"
     ).read_text()
 

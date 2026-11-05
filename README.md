@@ -1,4 +1,8 @@
-# RAGBench Studio
+# Reckon
+
+**Reckon | Evidence-Aware RAG Evaluation & Selective Prediction Platform**
+
+An evidence-aware RAG evaluation workbench that studies when retrieval-augmented generation systems should answer, abstain, or request clarification.
 
 **An experimental workbench investigating retrieval strategies and selective prediction (answer vs. abstain) in Retrieval-Augmented Generation.**
 
@@ -8,12 +12,14 @@
 
 A fundamental failure mode of Retrieval-Augmented Generation (RAG) systems is generating fluent, confident responses when retrieved context is irrelevant, contradictory, or absent. Evaluating RAG solely on final text generation conflates retrieval quality with generation behavior, making it difficult to diagnose why a system failed.
 
-**RAGBench Studio** is designed to address this problem. The project investigates:
+**Reckon** is designed to address this problem. The project investigates:
 1. How different retrieval strategies—lexical (BM25), dense vector, and hybrid rank fusion—affect the quality of evidence provided to the generator.
 2. How a system should decide whether to **answer or abstain** when evidence is insufficient, comparing always-answer baselines, prompt-based refusal, and score/confidence thresholding.
 3. How to evaluate selective prediction rigorously using risk–coverage curves, selective classification metrics, and statistical confidence intervals.
 
 ---
+
+See [identity and storage compatibility](docs/rebranding.md) before restarting an existing Docker installation.
 
 ## Current Backend Status
 
@@ -98,8 +104,8 @@ Trusted injected Python transports/callbacks are not sandboxed.
 Batch 1 introduced no API wiring, model download or real embedding verification.
 Batch 2 now supports `bm25`, `dense` and `hybrid` through query and evaluation
 HTTP requests. BM25 remains the default and needs no embedding configuration.
-Dense/hybrid require server-side `RAGBENCH_EMBEDDING_MODEL=all-minilm:22m` and
-use `RAGBENCH_DENSE_CACHE_DIR` (default `.ragbench-cache/dense`). There is no
+Dense/hybrid require server-side `RECKON_EMBEDDING_MODEL=all-minilm:22m` and
+use `RECKON_DENSE_CACHE_DIR` (default `.ragbench-cache/dense`). There is no
 automatic download or fallback. Runtime indexes reuse an eight-entry LRU keyed
 by the supplied document snapshot and effective settings. Evaluation snapshots
 remain separate from ordinary runtime documents. See the API reference for
@@ -261,7 +267,7 @@ the configured BM25 runtime and in-memory evaluation registry.
 ## Repository Layout
 
 ```text
-ragbench/
+reckon/
 ├── backend/
 │   ├── app/
 │   │   ├── api/            # Versioned FastAPI endpoints

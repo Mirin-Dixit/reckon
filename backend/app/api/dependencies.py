@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any
 from fastapi import Request
 
 from app.api.errors import ApiProblem
+from app.configuration import environment
 from app.evaluation.runner import EvaluationRunner
 from app.generation.answering import ProviderAnswerGenerator
 from app.generation.config import (
@@ -99,19 +100,19 @@ class ApiSettings:
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> ApiSettings:
-        values = os.environ if environ is None else environ
+        values = environment(environ)
         origins = tuple(
             origin.strip()
-            for origin in values.get("RAGBENCH_CORS_ORIGINS", "").split(",")
+            for origin in values.get("RECKON_CORS_ORIGINS", "").split(",")
             if origin.strip()
         )
         if "*" in origins:
             raise ValueError("Wildcard CORS origins are not allowed")
         return cls(
             cors_origins=origins,
-            environment=values.get("RAGBENCH_ENV", "development").strip().lower(),
+            environment=values.get("RECKON_ENV", "development").strip().lower(),
             request_body_timeout_seconds=float(
-                values.get("RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS", "15")
+                values.get("RECKON_REQUEST_BODY_TIMEOUT_SECONDS", "15")
             ),
         )
 
@@ -495,7 +496,7 @@ def _require_model(model: str | None) -> str:
     if not model:
         raise ProviderError(
             ProviderErrorKind.CONFIGURATION,
-            "A model must be configured with RAGBENCH_MODEL or the request.",
+            "A model must be configured with RECKON_MODEL or the request.",
         )
     return model
 

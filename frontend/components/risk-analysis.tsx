@@ -106,7 +106,7 @@ export function RiskAnalysis({ experimentId }: { experimentId: string }) {
     const controller = task.current.begin();
     setLoading(true); setCancelled(false); setError(""); setReport(null); setExportFeedback(null);
     try {
-      const result = await createAnalysisClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL).analyze(experimentId, compare.split(",").map(s => s.trim()).filter(Boolean), proxy, controller.signal, thresholdOnly);
+      const result = await createAnalysisClient(process.env.NEXT_PUBLIC_RECKON_API_BASE_URL).analyze(experimentId, compare.split(",").map(s => s.trim()).filter(Boolean), proxy, controller.signal, thresholdOnly);
       if (task.current.accepts(controller)) setReport(result);
     } catch (e) { if (task.current.accepts(controller)) setError(analysisFailure(e)); }
     finally { if (task.current.accepts(controller)) setLoading(false); }

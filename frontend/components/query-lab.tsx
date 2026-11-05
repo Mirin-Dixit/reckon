@@ -40,7 +40,7 @@ export function QueryLab() {
   useEffect(() => { if (validation) validationMessage.current?.focus(); }, [validation]);
   const session = useRef<ReturnType<typeof querySession> | null>(null);
   useEffect(() => {
-    const client = createQueryClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL);
+    const client = createQueryClient(process.env.NEXT_PUBLIC_RECKON_API_BASE_URL);
     const current = querySession(client.query, setState); session.current = current;
     return () => { current.dispose(); session.current = null; };
   }, []);

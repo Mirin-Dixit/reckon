@@ -74,7 +74,7 @@ def test_environment_storage_path_does_not_initialize_or_create_store(
     tmp_path, monkeypatch
 ):
     path = tmp_path / "new-state" / "jobs.sqlite"
-    monkeypatch.setenv("RAGBENCH_EXPERIMENT_STORE_PATH", str(path))
+    monkeypatch.setenv("RECKON_EXPERIMENT_STORE_PATH", str(path))
     app = create_app()
     assert app.state.experiment_store_path == path
     with TestClient(app) as client:
@@ -86,6 +86,6 @@ def test_environment_storage_path_does_not_initialize_or_create_store(
             ]["responses"]
         )
     assert not path.parent.exists()
-    monkeypatch.setenv("RAGBENCH_EXPERIMENT_STORE_PATH", "relative.sqlite")
+    monkeypatch.setenv("RECKON_EXPERIMENT_STORE_PATH", "relative.sqlite")
     with pytest.raises(ValueError, match="absolute"):
         create_app()

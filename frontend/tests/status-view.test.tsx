@@ -11,7 +11,7 @@ import type { HealthResponse, PublicFailure } from "../lib/api";
 import { checkSystemStatus } from "../lib/system-status";
 
 const health: HealthResponse = {
-  status: "ok", application: "RAGBench Studio", api_version: "0.1.0",
+  status: "ok", application: "Reckon", api_version: "0.1.0",
   runtime_initialized: true, generation_configured: true, provider_connection_tested: false,
 };
 
@@ -127,7 +127,7 @@ test("unknown values keep the operational table stable without invented health d
     const html = renderToStaticMarkup(<StatusView state={state} />);
     assert.equal((html.match(/scope="row"/g) ?? []).length, 6);
     assert.equal((html.match(/class="missing-value"/g) ?? []).length, 6);
-    assert.doesNotMatch(html, /<td>Yes|<td>Not tested|<td>RAGBench Studio/);
+    assert.doesNotMatch(html, /<td>Yes|<td>Not tested|<td>Reckon/);
   }
 });
 
@@ -286,7 +286,7 @@ test("header groups the wordmark and navigation; footer is a compact page landma
   assert.doesNotMatch(header, /active-underline/);
   assert.ok(html.indexOf("</main>") < html.indexOf('<footer class="workbench-footer">'));
   const footer = html.slice(html.indexOf('<footer class="workbench-footer">'));
-  assert.match(footer, /RAGBench Studio/);
+  assert.match(footer, /Reckon/);
   assert.match(footer, /A workbench for evaluating evidence-grounded AI decisions/);
   assert.match(footer, /Local prototype/);
   assert.match(footer, /API has no authentication/);

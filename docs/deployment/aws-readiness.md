@@ -111,8 +111,8 @@ No cost estimate or account eligibility was verified using credentials here.
 Create a dedicated passphrase-protected SSH key on the laptop, outside the repository:
 
 ```powershell
-if (Test-Path "$env:USERPROFILE\.ssh\ragbench-ec2") { throw 'Key already exists; do not overwrite it' }
-ssh-keygen -t ed25519 -a 64 -f "$env:USERPROFILE\.ssh\ragbench-ec2"
+if (Test-Path "$env:USERPROFILE\.ssh\reckon-ec2") { throw 'Key already exists; do not overwrite it' }
+ssh-keygen -t ed25519 -a 64 -f "$env:USERPROFILE\.ssh\reckon-ec2"
 ```
 
 This creates a local private key and `.pub` public key; it allocates no AWS resource.
@@ -146,7 +146,7 @@ from the user's login key. If it changes, stop and investigate; never bypass wit
 `StrictHostKeyChecking=no`. On the laptop:
 
 ```powershell
-ssh -i "$env:USERPROFILE\.ssh\ragbench-ec2" ubuntu@<INSTANCE_PUBLIC_IP>
+ssh -i "$env:USERPROFILE\.ssh\reckon-ec2" ubuntu@<INSTANCE_PUBLIC_IP>
 ```
 
 This opens an encrypted remote shell, not an app deployment. Existing EC2/traffic
@@ -190,9 +190,9 @@ substitute its reviewed SHA below. Until then, this preparation step is blocked;
 do not treat the P5 commit as a deployable P6 release.
 
 ```powershell
-git archive --format=tar -o "$env:TEMP\ragbench-release.tar" <REVIEWED_P6_SHA> -- compose.yaml .dockerignore backend/Dockerfile backend/app frontend deploy data/benchmark/documents.jsonl data/fixtures/p4_synthetic_v1 docs/deployment
-tar -tf "$env:TEMP\ragbench-release.tar"
-scp -i "$env:USERPROFILE\.ssh\ragbench-ec2" "$env:TEMP\ragbench-release.tar" ubuntu@<INSTANCE_PUBLIC_IP>:~/ragbench-release.tar
+git archive --format=tar -o "$env:TEMP\reckon-release.tar" <REVIEWED_P6_SHA> -- compose.yaml .dockerignore backend/Dockerfile backend/app frontend deploy data/benchmark/documents.jsonl data/fixtures/p4_synthetic_v1 docs/deployment
+tar -tf "$env:TEMP\reckon-release.tar"
+scp -i "$env:USERPROFILE\.ssh\reckon-ec2" "$env:TEMP\reckon-release.tar" ubuntu@<INSTANCE_PUBLIC_IP>:~/reckon-release.tar
 ```
 
 Archive creates an allowlisted local bundle from one commit, excluding untracked
@@ -210,21 +210,21 @@ another option only if publishing its contents was already authorized.
 On the host, choose a new release directory, never overwrite an existing release:
 
 ```bash
-mkdir -p ~/ragbench/releases/<REVIEWED_P6_SHA>
-tar -tf ~/ragbench-release.tar
-tar -xf ~/ragbench-release.tar -C ~/ragbench/releases/<REVIEWED_P6_SHA>
-cd ~/ragbench/releases/<REVIEWED_P6_SHA>
-sudo docker compose -p ragbench-private config --quiet
-sudo docker compose -p ragbench-private build
-sudo docker compose -p ragbench-private up -d --wait
-sudo docker compose -p ragbench-private ps
+mkdir -p ~/reckon/releases/<REVIEWED_P6_SHA>
+tar -tf ~/reckon-release.tar
+tar -xf ~/reckon-release.tar -C ~/reckon/releases/<REVIEWED_P6_SHA>
+cd ~/reckon/releases/<REVIEWED_P6_SHA>
+sudo docker compose -p reckon-private config --quiet
+sudo docker compose -p reckon-private build
+sudo docker compose -p reckon-private up -d --wait
+sudo docker compose -p reckon-private ps
 curl --fail http://127.0.0.1:3000/api/v1/health
 ```
 
 Extraction writes only the new release directory; inspect trusted archive paths
 for traversal before extraction. Build downloads pinned images/dependencies and
 uses disk/CPU credits; inspect failures without changing security guards. `up`
-starts services and creates the separate `ragbench-private` state volume. Use that
+starts services and creates the separate `reckon-private` state volume. Use that
 same project name from every release so updates retain state. No native records
 are imported. Only existing corpus/fixture paths are read-only bind mounts.
 
@@ -238,7 +238,7 @@ history, image layers or Git. Enabling cloud services requires fresh authorizati
 For private browser access, run on the laptop in a separate terminal:
 
 ```powershell
-ssh -N -L 3000:127.0.0.1:3000 -i "$env:USERPROFILE\.ssh\ragbench-ec2" ubuntu@<INSTANCE_PUBLIC_IP>
+ssh -N -L 3000:127.0.0.1:3000 -i "$env:USERPROFILE\.ssh\reckon-ec2" ubuntu@<INSTANCE_PUBLIC_IP>
 ```
 
 Open `http://127.0.0.1:3000`. This is an SSH-encrypted private connection, **not**
@@ -273,14 +273,14 @@ This runbook intentionally supplies no unsafe "public override" Compose file.
 
 ## Operations, update/rollback and cleanup
 
-Use `sudo docker compose -p ragbench-private logs --tail 100` for bounded logs,
+Use `sudo docker compose -p reckon-private logs --tail 100` for bounded logs,
 `ps` for health, and `sudo ss -lntp` for host listeners. Do not send raw logs to a
 third party; review even sanitized logs before sharing. Access logs being disabled
 reduces leakage but is not a complete public audit trail. Container liveness does
 not prove model readiness, scientific validity or persisted data correctness.
 
 Use the consistent SQLite backup commands in [local recovery](local.md), adding
-`sudo` and `-p ragbench-private` on EC2. Download backups only with approved access
+`sudo` and `-p reckon-private` on EC2. Download backups only with approved access
 and encryption. Verify integrity on a disposable copy and rehearse restoration
 outside the live volume. Use one process owner; never solve a lock error by deleting
 the database or lock. Restore only while stopped, with UID 10001 ownership. EBS
@@ -293,12 +293,12 @@ under distinct local tags, from the current release directory:
 ```bash
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 for service in backend frontend app-proxy gateway; do
-  image_id=$(sudo docker compose -p ragbench-private images -q "$service")
+  image_id=$(sudo docker compose -p reckon-private images -q "$service")
   test -n "$image_id" || exit 1
-  sudo docker image tag "$image_id" "ragbench-rollback-$service:$stamp"
+  sudo docker image tag "$image_id" "reckon-rollback-$service:$stamp"
 done
 cat > "$HOME/rollback-$stamp.json" <<EOF
-{"services":{"backend":{"image":"ragbench-rollback-backend:$stamp","pull_policy":"never"},"frontend":{"image":"ragbench-rollback-frontend:$stamp","pull_policy":"never"},"app-proxy":{"image":"ragbench-rollback-app-proxy:$stamp","pull_policy":"never"},"gateway":{"image":"ragbench-rollback-gateway:$stamp","pull_policy":"never"}}}
+{"services":{"backend":{"image":"reckon-rollback-backend:$stamp","pull_policy":"never"},"frontend":{"image":"reckon-rollback-frontend:$stamp","pull_policy":"never"},"app-proxy":{"image":"reckon-rollback-app-proxy:$stamp","pull_policy":"never"},"gateway":{"image":"reckon-rollback-gateway:$stamp","pull_policy":"never"}}}
 EOF
 chmod 600 "$HOME/rollback-$stamp.json"
 ```
@@ -308,7 +308,7 @@ override file changes only image selection and refuses pulling a missing rollbac
 image. Verify all four tags with `sudo docker image ls`; record the stamp and old
 release directory outside Git. It consumes retained image disk space/paid EBS.
 If tagging fails, do not proceed. Inspect/build the next approved release in a new directory;
-stop the whole namespace-sharing stack with `sudo docker compose -p ragbench-private stop -t 45`;
+stop the whole namespace-sharing stack with `sudo docker compose -p reckon-private stop -t 45`;
 start the new release with the same project name/volume and run the checks below.
 Keep old tagged images and release files until acceptance. Do not run image pruning.
 If validation fails, stop the stack and start the old approved images/configuration
@@ -316,7 +316,7 @@ from the old release with the recorded stamp:
 
 ```bash
 # Run in the OLD release directory, replacing RECORDED_STAMP with the saved value.
-sudo docker compose -p ragbench-private -f compose.yaml -f "$HOME/rollback-RECORDED_STAMP.json" up -d --no-build --wait
+sudo docker compose -p reckon-private -f compose.yaml -f "$HOME/rollback-RECORDED_STAMP.json" up -d --no-build --wait
 ```
 
 The preceding stop must finish first. This recreates containers using the saved

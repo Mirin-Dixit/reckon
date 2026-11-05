@@ -116,7 +116,7 @@ Right-step area: `(1/2)*(1/3)+(1/4)*(1/2) = 7/24`.
 ## Validation and limits
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest backend/tests/test_risk_coverage.py backend/tests/test_threshold_sweep.py -q --basetemp "$env:TEMP\ragbench-r1"
+.\.venv\Scripts\python.exe -m pytest backend/tests/test_risk_coverage.py backend/tests/test_threshold_sweep.py -q --basetemp "$env:TEMP\reckon-r1"
 .\.venv\Scripts\python.exe -m ruff check backend
 git diff --check
 ```
@@ -237,7 +237,7 @@ alter saved experiments. No new dependencies or model calls are needed.
 R1.2 validation commands:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest backend/tests/test_matched_analysis.py backend/tests/test_analysis_api.py backend/tests/test_risk_coverage.py backend/tests/test_threshold_sweep.py backend/tests/test_experiment_jobs.py backend/tests/test_experiment_cors.py backend/tests/test_evaluation.py backend/tests/test_gold_isolation.py backend/tests/test_scores.py backend/tests/test_decision_policies.py -q --basetemp "$env:TEMP\ragbench-r12"
+.\.venv\Scripts\python.exe -m pytest backend/tests/test_matched_analysis.py backend/tests/test_analysis_api.py backend/tests/test_risk_coverage.py backend/tests/test_threshold_sweep.py backend/tests/test_experiment_jobs.py backend/tests/test_experiment_cors.py backend/tests/test_evaluation.py backend/tests/test_gold_isolation.py backend/tests/test_scores.py backend/tests/test_decision_policies.py -q --basetemp "$env:TEMP\reckon-r12"
 .\.venv\Scripts\python.exe -m ruff check backend
 git diff --check
 cd frontend

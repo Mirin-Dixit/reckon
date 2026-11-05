@@ -161,7 +161,7 @@ def test_health_success_reports_initialization_without_claiming_connection_test(
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ok"
-    assert body["application"] == "RAGBench Studio"
+    assert body["application"] == "Reckon"
     assert body["runtime_initialized"] is True
     assert body["generation_configured"] is True
     assert body["provider_connection_tested"] is False
@@ -191,16 +191,16 @@ def test_health_initialization_failure_is_safe_and_does_not_reveal_exception():
 def test_builtin_runtime_initializes_offline_without_testing_provider(
     monkeypatch, sdk_available, key_present, expected
 ):
-    monkeypatch.setenv("RAGBENCH_PROVIDER", "openai")
-    monkeypatch.setenv("RAGBENCH_API_KEY_ENV", "RAGBENCH_TEST_ONLY_KEY")
-    monkeypatch.setenv("RAGBENCH_MODEL", "offline-test-model")
+    monkeypatch.setenv("RECKON_PROVIDER", "openai")
+    monkeypatch.setenv("RECKON_API_KEY_ENV", "RECKON_TEST_ONLY_KEY")
+    monkeypatch.setenv("RECKON_MODEL", "offline-test-model")
     monkeypatch.setattr(
         "app.api.dependencies.openai_sdk_available", lambda: sdk_available
     )
     if key_present:
-        monkeypatch.setenv("RAGBENCH_TEST_ONLY_KEY", "sensitive-api-key-value")
+        monkeypatch.setenv("RECKON_TEST_ONLY_KEY", "sensitive-api-key-value")
     else:
-        monkeypatch.delenv("RAGBENCH_TEST_ONLY_KEY", raising=False)
+        monkeypatch.delenv("RECKON_TEST_ONLY_KEY", raising=False)
     app_client = TestClient(create_app())
     response = app_client.get("/api/v1/health")
     assert response.status_code == 200
@@ -211,10 +211,10 @@ def test_builtin_runtime_initializes_offline_without_testing_provider(
 
 
 def test_builtin_bm25_threshold_query_can_abstain_offline(monkeypatch):
-    monkeypatch.setenv("RAGBENCH_PROVIDER", "openai")
-    monkeypatch.setenv("RAGBENCH_API_KEY_ENV", "RAGBENCH_TEST_ONLY_KEY")
-    monkeypatch.setenv("RAGBENCH_MODEL", "offline-test-model")
-    monkeypatch.delenv("RAGBENCH_TEST_ONLY_KEY", raising=False)
+    monkeypatch.setenv("RECKON_PROVIDER", "openai")
+    monkeypatch.setenv("RECKON_API_KEY_ENV", "RECKON_TEST_ONLY_KEY")
+    monkeypatch.setenv("RECKON_MODEL", "offline-test-model")
+    monkeypatch.delenv("RECKON_TEST_ONLY_KEY", raising=False)
     app_client = TestClient(create_app())
     response = app_client.post(
         "/api/v1/query",

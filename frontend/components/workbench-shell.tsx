@@ -11,7 +11,7 @@ export function WorkbenchShell({ children, workspace = "workbench" }: { children
   return <div className="workbench-frame">
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className="masthead">
-      <Link className="wordmark" href="/#main-content" aria-label="RAGBench Studio workbench">RAGBench <span>Studio</span></Link>
+      <Link className="wordmark" href="/#main-content" aria-label="Reckon workbench">Reckon</Link>
       <WorkbenchNavigation workspace={workspace} />
     </header>
     <main id="main-content" tabIndex={-1}>
@@ -41,7 +41,7 @@ export function WorkbenchShell({ children, workspace = "workbench" }: { children
       </section></> : children}
     </main>
     <footer className="workbench-footer">
-      <div className="footer-identity"><p className="footer-wordmark">RAGBench Studio</p>
+      <div className="footer-identity"><p className="footer-wordmark">Reckon</p>
         <p>A workbench for evaluating evidence-grounded AI decisions.</p>
         <p className="footer-request-note">{workspace === "workbench" ? "No questions, experiments, or benchmark labels are requested here." : workspace === "evaluation" ? "Saved synthetic results only. No model inference is requested." : workspace === "experiments" ? "Synthetic experiments only. Empirical evaluation is deferred." : "Queries run only when submitted. Benchmark gold labels are not requested."}</p>
       </div>

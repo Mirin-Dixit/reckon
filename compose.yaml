@@ -1,5 +1,5 @@
 {
-  "name": "ragbench-local",
+  "name": "reckon",
   "services": {
     "backend": {
       "build": {
@@ -22,17 +22,17 @@
         "local"
       ],
       "environment": {
-        "RAGBENCH_ENV": "production",
-        "RAGBENCH_CORS_ORIGINS": "http://127.0.0.1:3000",
-        "RAGBENCH_EXPERIMENT_STORE_PATH": "/state/experiments.sqlite3",
-        "RAGBENCH_DENSE_CACHE_DIR": "/state/dense",
-        "RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS": "15",
-        "RAGBENCH_PROVIDER": "ollama",
-        "RAGBENCH_OLLAMA_URL": "http://127.0.0.1:11434",
-        "RAGBENCH_MODEL": "qwen3:4b-q4_K_M",
-        "RAGBENCH_CONTEXT_SIZE": "8192",
-        "RAGBENCH_MAX_OUTPUT_TOKENS": "1024",
-        "RAGBENCH_RETRY_COUNT": "0",
+        "RECKON_ENV": "production",
+        "RECKON_CORS_ORIGINS": "http://127.0.0.1:3000",
+        "RECKON_EXPERIMENT_STORE_PATH": "/state/experiments.sqlite3",
+        "RECKON_DENSE_CACHE_DIR": "/state/dense",
+        "RECKON_REQUEST_BODY_TIMEOUT_SECONDS": "15",
+        "RECKON_PROVIDER": "ollama",
+        "RECKON_OLLAMA_URL": "http://127.0.0.1:11434",
+        "RECKON_MODEL": "qwen3:4b-q4_K_M",
+        "RECKON_CONTEXT_SIZE": "8192",
+        "RECKON_MAX_OUTPUT_TOKENS": "1024",
+        "RECKON_RETRY_COUNT": "0",
         "OLLAMA_NO_CLOUD": "1"
       },
       "tmpfs": [
@@ -40,8 +40,8 @@
       ],
       "volumes": [
         "state:/state",
-        "./data/benchmark/documents.jsonl:/opt/ragbench/data/benchmark/documents.jsonl:ro",
-        "./data/fixtures/p4_synthetic_v1:/opt/ragbench/data/fixtures/p4_synthetic_v1:ro"
+        "./data/benchmark/documents.jsonl:/opt/reckon/data/benchmark/documents.jsonl:ro",
+        "./data/fixtures/p4_synthetic_v1:/opt/reckon/data/fixtures/p4_synthetic_v1:ro"
       ]
     },
     "frontend": {
@@ -95,7 +95,7 @@
       "tmpfs": [
         "/tmp:rw,noexec,nosuid,size=32m,uid=10001,gid=10001"
       ],
-      "image": "ragbench-nginx:p6-local",
+      "image": "reckon-nginx:p6-local",
       "networks": [
         "ingress",
         "local"
@@ -135,7 +135,7 @@
       "tmpfs": [
         "/tmp:rw,noexec,nosuid,size=32m,uid=10001,gid=10001"
       ],
-      "image": "ragbench-nginx:p6-local"
+      "image": "reckon-nginx:p6-local"
     }
   },
   "networks": {

@@ -5,7 +5,7 @@ import { createApiClient } from "../lib/api";
 import { checkSystemStatus, type SystemStatusState } from "../lib/system-status";
 import { StatusView } from "./status-view";
 
-const client = createApiClient(process.env.NEXT_PUBLIC_RAGBENCH_API_BASE_URL);
+const client = createApiClient(process.env.NEXT_PUBLIC_RECKON_API_BASE_URL);
 
 export function SystemStatus() {
   const [state, setState] = useState<SystemStatusState>({ phase: "loading" });

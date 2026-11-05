@@ -1,5 +1,5 @@
 FROM nginx:stable-alpine@sha256:0e52bd054126cdc040b1276c0af347aeb02a41b9cfe305d6094767ac30e97949
-RUN addgroup -g 10001 ragbench && adduser -D -H -u 10001 -G ragbench ragbench
+RUN addgroup -g 10001 reckon && adduser -D -H -u 10001 -G reckon reckon
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
 COPY deploy/ingress.conf /etc/nginx/ingress.conf
 USER 10001:10001

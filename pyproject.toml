@@ -4,9 +4,9 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ragbench-studio"
+name = "reckon"
 version = "0.1.0"
-description = "A workbench for evaluating retrieval strategies in retrieval-augmented generation."
+description = "An evidence-aware RAG evaluation workbench for answer, abstain, and clarification decisions."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

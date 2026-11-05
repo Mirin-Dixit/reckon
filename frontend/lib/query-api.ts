@@ -88,7 +88,7 @@ export function queryFailure(error: unknown): string {
     case "timeout": return "Request timed out. Backend inference may still be running. No retry was made.";
     case "malformed": return "Unexpected query response. Check frontend and backend compatibility. No decision is available.";
     case "http": return `Backend execution failed (HTTP ${error.failure.httpStatus ?? "error"}). This is not an intentional abstention. Check local model availability, memory and provider-attempt limits.`;
-    case "configuration": return "Invalid local backend address. Check NEXT_PUBLIC_RAGBENCH_API_BASE_URL.";
+    case "configuration": return "Invalid local backend address. Check NEXT_PUBLIC_RECKON_API_BASE_URL.";
     case "connection": return "Cannot reach the local backend. Check its address and CORS configuration.";
   }
 }

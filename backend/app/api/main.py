@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -26,6 +25,7 @@ from app.api.routes import (
     health,
     query,
 )
+from app.configuration import environment
 
 
 def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
@@ -45,11 +45,11 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
             await run_in_threadpool(application.state.runtime_manager.close)
 
     application = FastAPI(
-        title="RAGBench Studio API",
+        title="Reckon",
         lifespan=lifespan,
         version="0.1.0",
         description=(
-            "Research API for retrieval, answer/abstain decisions, and evaluation."
+            "Reckon | Evidence-Aware RAG Evaluation & Selective Prediction Platform"
         ),
         openapi_url="/api/v1/openapi.json",
         docs_url="/api/v1/docs",
@@ -64,7 +64,7 @@ def create_app(*, settings: ApiSettings | None = None, runtime_factory=None,
     application.state.experiment_registry = ExperimentRegistry()
     storage_path = experiment_store_path
     if storage_path is None:
-        configured_path = os.environ.get("RAGBENCH_EXPERIMENT_STORE_PATH")
+        configured_path = environment().get("RECKON_EXPERIMENT_STORE_PATH")
         if configured_path:
             storage_path = Path(configured_path)
             if not storage_path.is_absolute():

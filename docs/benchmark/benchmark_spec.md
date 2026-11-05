@@ -1,4 +1,4 @@
-# RAGBench Studio — Benchmark Specification
+# Reckon — Benchmark Specification
 
 **Historical design status:** Proposed design. The detailed specification below
 preserves the intended benchmark and future research targets; it is not a claim

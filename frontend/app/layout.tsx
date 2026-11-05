@@ -11,8 +11,8 @@ const sans = localFont({ src: "./fonts/sans-latin.woff2", weight: "100 700", var
 const mono = localFont({ src: "./fonts/mono-latin.woff2", weight: "400", variable: "--font-plex-mono", display: "swap", fallback: ["Courier New"], preload: true });
 
 export const metadata: Metadata = {
-  title: "Workbench | RAGBench Studio",
-  description: "Local research workbench for inspecting RAG system readiness.",
+  title: "Reckon",
+  description: "An evidence-aware RAG evaluation workbench that studies when retrieval-augmented generation systems should answer, abstain, or request clarification.",
   icons: { icon: "/icon.svg" },
 };
 

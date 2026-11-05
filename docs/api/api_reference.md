@@ -1,4 +1,4 @@
-# RAGBench Studio API
+# Reckon API
 
 ## Scope and architecture
 
@@ -31,7 +31,7 @@ health does not make a live provider request.
 ```json
 {
   "status": "ok",
-  "application": "RAGBench Studio",
+  "application": "Reckon",
   "api_version": "0.1.0",
   "runtime_initialized": true,
   "generation_configured": false,
@@ -80,11 +80,11 @@ Retrieval methods and threshold score families are distinct:
 wrong score families and fusion settings on BM25/dense are rejected with 422.
 The same retrieval contract applies to `POST /api/v1/evaluations`.
 
-Dense/hybrid are opt-in: set `RAGBENCH_EMBEDDING_MODEL=all-minilm:22m` on the
+Dense/hybrid are opt-in: set `RECKON_EMBEDDING_MODEL=all-minilm:22m` on the
 server only after separate model-download approval. They reuse the numeric
-loopback `RAGBENCH_OLLAMA_URL`, with CPU embedding, no cloud aliases, zero retries
+loopback `RECKON_OLLAMA_URL`, with CPU embedding, no cloud aliases, zero retries
 and Batch 1 memory checks. The cache directory is server-side
-`RAGBENCH_DENSE_CACHE_DIR`, default `.ragbench-cache/dense`; clients cannot set
+`RECKON_DENSE_CACHE_DIR`, default `.ragbench-cache/dense`; clients cannot set
 model identities or paths. Cache and in-memory index keys include the exact
 supplied document snapshot and settings; evaluation uses its own loaded snapshot.
 The effective embedding identity is recorded in evaluation retrieval provenance.
@@ -361,18 +361,18 @@ Configuration is server-side only:
 
 | Environment variable | Default | Purpose |
 |---|---|---|
-| `RAGBENCH_PROVIDER` | `ollama` | Local Ollama by default; optional OpenAI code requires explicit selection and is inactive under the zero-spending constraint |
-| `RAGBENCH_MODEL` | unset | Default model; a request may specify the same model or supply one when no server default exists |
-| `RAGBENCH_API_KEY_ENV` | `OPENAI_API_KEY` | Name of the environment variable holding the provider key (the key value is never returned) |
-| `RAGBENCH_TIMEOUT_SECONDS` | `120` for Ollama; `30` for OpenAI | Provider attempt timeout, greater than 0 and at most 120 seconds |
-| `RAGBENCH_RETRY_COUNT` | `0` for Ollama; `2` for OpenAI | Ollama rejects nonzero retries |
-| `RAGBENCH_TEMPERATURE` | `0` for Ollama; unset for OpenAI | Provider sampling setting |
-| `RAGBENCH_MAX_OUTPUT_TOKENS` | `1024` | Explicit output-token ceiling, integer 1 through 32768; requests may lower but cannot exceed it |
-| `RAGBENCH_MAX_PROVIDER_REQUESTS` | `4` | Maximum SDK request attempts per adapter lifetime, including retries and failed attempts; integer 0 through 100 |
-| `RAGBENCH_OLLAMA_URL` | `http://127.0.0.1:11434` | Numeric loopback origin only |
-| `RAGBENCH_CONTEXT_SIZE` | `4096` | Local context size, integer 2048 through 32768 |
-| `RAGBENCH_CORS_ORIGINS` | empty | Comma-separated exact browser origins allowed by CORS |
-| `RAGBENCH_ENV` | `development` | Deployment environment label |
+| `RECKON_PROVIDER` | `ollama` | Local Ollama by default; optional OpenAI code requires explicit selection and is inactive under the zero-spending constraint |
+| `RECKON_MODEL` | unset | Default model; a request may specify the same model or supply one when no server default exists |
+| `RECKON_API_KEY_ENV` | `OPENAI_API_KEY` | Name of the environment variable holding the provider key (the key value is never returned) |
+| `RECKON_TIMEOUT_SECONDS` | `120` for Ollama; `30` for OpenAI | Provider attempt timeout, greater than 0 and at most 120 seconds |
+| `RECKON_RETRY_COUNT` | `0` for Ollama; `2` for OpenAI | Ollama rejects nonzero retries |
+| `RECKON_TEMPERATURE` | `0` for Ollama; unset for OpenAI | Provider sampling setting |
+| `RECKON_MAX_OUTPUT_TOKENS` | `1024` | Explicit output-token ceiling, integer 1 through 32768; requests may lower but cannot exceed it |
+| `RECKON_MAX_PROVIDER_REQUESTS` | `4` | Maximum SDK request attempts per adapter lifetime, including retries and failed attempts; integer 0 through 100 |
+| `RECKON_OLLAMA_URL` | `http://127.0.0.1:11434` | Numeric loopback origin only |
+| `RECKON_CONTEXT_SIZE` | `4096` | Local context size, integer 2048 through 32768 |
+| `RECKON_CORS_ORIGINS` | empty | Comma-separated exact browser origins allowed by CORS |
+| `RECKON_ENV` | `development` | Deployment environment label |
 
 No public request model contains an API key or arbitrary provider options. The
 adapter resolves credentials from the configured environment variable only
@@ -388,10 +388,10 @@ From the repository root in PowerShell:
 ```powershell
 # Only install project dependencies after authorization, if missing:
 # .\.venv\Scripts\python.exe -m pip install -e ".[server,dev]"
-$env:RAGBENCH_PROVIDER = "ollama"
-$env:RAGBENCH_MODEL = "qwen3:4b-q4_K_M"
-$env:RAGBENCH_CONTEXT_SIZE = "8192"
-$env:RAGBENCH_CORS_ORIGINS = "http://127.0.0.1:3000,http://127.0.0.1:3001"
+$env:RECKON_PROVIDER = "ollama"
+$env:RECKON_MODEL = "qwen3:4b-q4_K_M"
+$env:RECKON_CONTEXT_SIZE = "8192"
+$env:RECKON_CORS_ORIGINS = "http://127.0.0.1:3000,http://127.0.0.1:3001"
 .\.venv\Scripts\python.exe -m uvicorn app.api.main:app --app-dir backend --host 127.0.0.1 --port 8000
 ```
 
@@ -403,7 +403,7 @@ a configured provider and model.
 
 ## CORS, authentication, and deployment limits
 
-CORS is disabled when `RAGBENCH_CORS_ORIGINS` is empty. Configure exact
+CORS is disabled when `RECKON_CORS_ORIGINS` is empty. Configure exact
 comma-separated origins for browser clients. Wildcard origins are rejected;
 credentials are not enabled. CORS is not authentication.
 The local Workbench uses port 3001 when port 3000 is occupied. Configure its
@@ -606,20 +606,20 @@ Reserve at least 8-10 GB disk for binaries, weights and temporary files.
 4. Configure and start FastAPI separately:
 
 ```powershell
-$env:RAGBENCH_PROVIDER = 'ollama'
-$env:RAGBENCH_MODEL = 'qwen3:4b-q4_K_M'
-$env:RAGBENCH_OLLAMA_URL = 'http://127.0.0.1:11434'
-$env:RAGBENCH_CONTEXT_SIZE = '8192'
-$env:RAGBENCH_MAX_OUTPUT_TOKENS = '1024'
-$env:RAGBENCH_MAX_PROVIDER_REQUESTS = '4'
-$env:RAGBENCH_RETRY_COUNT = '0'
-$env:RAGBENCH_TIMEOUT_SECONDS = '120'
-$env:RAGBENCH_TEMPERATURE = '0'
-$env:RAGBENCH_CORS_ORIGINS = 'http://127.0.0.1:3000'
+$env:RECKON_PROVIDER = 'ollama'
+$env:RECKON_MODEL = 'qwen3:4b-q4_K_M'
+$env:RECKON_OLLAMA_URL = 'http://127.0.0.1:11434'
+$env:RECKON_CONTEXT_SIZE = '8192'
+$env:RECKON_MAX_OUTPUT_TOKENS = '1024'
+$env:RECKON_MAX_PROVIDER_REQUESTS = '4'
+$env:RECKON_RETRY_COUNT = '0'
+$env:RECKON_TIMEOUT_SECONDS = '120'
+$env:RECKON_TEMPERATURE = '0'
+$env:RECKON_CORS_ORIGINS = 'http://127.0.0.1:3000'
 .\.venv\Scripts\python.exe -m uvicorn app.api.main:app --app-dir backend --host 127.0.0.1 --port 8000
 ```
 
-No API key is required. Do not set `RAGBENCH_PROVIDER=openai`. Existing browser
+No API key is required. Do not set `RECKON_PROVIDER=openai`. Existing browser
 CORS configuration is exact-origin and is set in the backend terminal above.
 Restart Uvicorn after changing it. If the frontend uses another port, configure
 that exact origin explicitly; never use `*` or enable credentials. With an empty
@@ -706,11 +706,11 @@ a local trust boundary, not authentication for an Internet service. Remote or
 foreign-origin execution is rejected with a safe 403 before runtime initialization.
 
 Request bodies retain the 1 MiB byte limit and now have a cumulative receive
-deadline, including chunked transfers. `RAGBENCH_REQUEST_BODY_TIMEOUT_SECONDS`
+deadline, including chunked transfers. `RECKON_REQUEST_BODY_TIMEOUT_SECONDS`
 defaults to 15 and accepts finite values in (0,60]. Expiry returns HTTP 408 with
 `request_body_timeout` and closes the HTTP connection; it is not an abstention.
 
-`RAGBENCH_EXPERIMENT_STORE_PATH` is an optional absolute server-controlled SQLite
+`RECKON_EXPERIMENT_STORE_PATH` is an optional absolute server-controlled SQLite
 path for deployment. It is not a request parameter. An unset value preserves the
 native path; selecting a path does not provision a store or recover jobs on
 dashboard GETs. See [local deployment and recovery](../deployment/local.md) for

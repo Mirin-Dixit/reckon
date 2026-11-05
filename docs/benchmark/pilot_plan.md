@@ -1,4 +1,4 @@
-# RAGBench Studio — Expansion Phase Plan (~100 Questions)
+# Reckon — Expansion Phase Plan (~100 Questions)
 
 **Status:** Approved Architecture & Revised Phased Allocation Plan
 **Milestone:** Stage 2C — Pilot Benchmark Dataset Expansion

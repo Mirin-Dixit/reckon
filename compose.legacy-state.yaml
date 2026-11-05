@@ -1,0 +1,8 @@
+{
+  "volumes": {
+    "state": {
+      "external": true,
+      "name": "ragbench-p6-check_state"
+    }
+  }
+}

@@ -30,7 +30,7 @@ def local_server(tmp_path, *, configured=True):
 
     app = create_app(
         settings=ApiSettings.from_env(
-            {"RAGBENCH_CORS_ORIGINS": ORIGIN} if configured else {}
+            {"RECKON_CORS_ORIGINS": ORIGIN} if configured else {}
         ),
         runtime_factory=no_query_runtime,
         experiment_store_path=tmp_path / "cors.sqlite",

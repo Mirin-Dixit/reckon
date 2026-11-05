@@ -5,7 +5,7 @@ import { ApiClientError, backendOrigin, createApiClient, parseHealth, type Healt
 import { checkSystemStatus } from "../lib/system-status";
 
 const healthy: HealthResponse = {
-  status: "ok", application: "RAGBench Studio", api_version: "0.1.0",
+  status: "ok", application: "Reckon", api_version: "0.1.0",
   runtime_initialized: true, generation_configured: true, provider_connection_tested: false,
 };
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), {
@@ -242,9 +242,14 @@ test("Next config rejects credential-bearing public URLs before bundling without
   const result = spawnSync(process.execPath, ["node_modules/next/dist/bin/next", "build"], {
     encoding: "utf-8", timeout: 15_000,
     env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1",
-      NEXT_PUBLIC_RAGBENCH_API_BASE_URL: `http://user:${canary}@127.0.0.1:8000` },
+      NEXT_PUBLIC_RECKON_API_BASE_URL: `http://user:${canary}@127.0.0.1:8000` },
   });
   assert.equal(result.status, 1);
   assert.match(result.stdout + result.stderr, /Invalid backend origin/);
   assert.doesNotMatch(result.stdout + result.stderr, new RegExp(canary));
+});
+
+// Legacy transport identity is accepted, but never becomes active UI branding.
+test("legacy health identity is read compatibly and displayed as Reckon", () => {
+  assert.equal(parseHealth({ ...healthy, application: "RAGBench Studio" }).application, "Reckon");
 });

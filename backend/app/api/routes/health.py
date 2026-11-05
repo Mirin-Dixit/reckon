@@ -14,7 +14,7 @@ def health(request: Request):
     initialized = runtime is not None
     return HealthResponse(
         status="ok" if initialized else "degraded",
-        application="RAGBench Studio",
+        application="Reckon",
         api_version=request.app.version,
         runtime_initialized=initialized,
         generation_configured=(

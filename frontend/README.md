@@ -1,4 +1,4 @@
-# RAGBench Studio frontend
+# Reckon frontend
 
 The Workbench provides read-only System Status. `/query-lab` submits individual
 questions to `POST /api/v1/query` and displays retrieved evidence, exact citation
@@ -38,7 +38,7 @@ if needed, is `python -m pip install -e ".[server,dev]"` using the project virtu
 environment. The OpenAI extra and credentials are unnecessary for System Status.
 
 ```powershell
-$env:RAGBENCH_CORS_ORIGINS = "http://127.0.0.1:3000,http://127.0.0.1:3001"
+$env:RECKON_CORS_ORIGINS = "http://127.0.0.1:3000,http://127.0.0.1:3001"
 .\.venv\Scripts\python.exe -m uvicorn app.api.main:app --app-dir backend --host 127.0.0.1 --port 8000
 ```
 
@@ -47,7 +47,7 @@ In a second terminal, starting at the repository root:
 ```powershell
 Set-Location frontend
 npm.cmd ci
-$env:NEXT_PUBLIC_RAGBENCH_API_BASE_URL = "http://127.0.0.1:8000"
+$env:NEXT_PUBLIC_RECKON_API_BASE_URL = "http://127.0.0.1:8000"
 npm.cmd run dev
 ```
 
@@ -65,10 +65,10 @@ in that same terminal. Expect preflight 200 with the exact frontend origin and
 POST 202; an HTTP 200 history GET alone does not verify CORS for submissions.
 Use the same frontend origin in the browser and backend CORS settings. If using
 `http://localhost:3000`, explicitly add that exact origin to
-`RAGBENCH_CORS_ORIGINS`; it differs from `127.0.0.1`.
+`RECKON_CORS_ORIGINS`; it differs from `127.0.0.1`.
 
 The backend defaults to port 8000. The only public frontend variable is
-`NEXT_PUBLIC_RAGBENCH_API_BASE_URL`, defaulting to `http://127.0.0.1:8000` when
+`NEXT_PUBLIC_RECKON_API_BASE_URL`, defaulting to `http://127.0.0.1:8000` when
 unset. It must be an HTTP(S) loopback origin (`127.0.0.1`, `localhost`, or `[::1]`)
 without credentials, path, query, or fragment. Do not include `/api/v1`; the client
 appends the endpoint path. Invalid configuration fails safely at startup/build
@@ -201,7 +201,7 @@ It resets when retrieval changes. Thresholds outside a score range are allowed
 for deliberate always/never-answer experiments, as in the backend contract.
 
 Use the accepted local backend configuration from the root README/API reference:
-`RAGBENCH_PROVIDER=ollama`, `RAGBENCH_MODEL=qwen3:4b-q4_K_M`, local Ollama with
+`RECKON_PROVIDER=ollama`, `RECKON_MODEL=qwen3:4b-q4_K_M`, local Ollama with
 cloud disabled. Dense/hybrid additionally require installed `all-minilm:22m`.
 Keep the existing 1.5 GiB RAM reserve and concurrency-one limits. No model is
 downloaded or configured by the frontend. Do not enable paid providers.

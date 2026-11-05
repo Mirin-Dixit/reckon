@@ -1,1 +1,1 @@
-"""RAGBench Studio application package."""
+"""Reckon application package."""

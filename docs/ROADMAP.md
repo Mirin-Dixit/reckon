@@ -1,4 +1,4 @@
-# RAGBench implementation roadmap
+# Reckon implementation roadmap
 
 The finished product is defined by the local `TARGET_SPEC.md`; this roadmap
 orders implementation and acceptance work without redefining that target.
@@ -39,7 +39,7 @@ Later embeddings and judging must also run locally with reviewed licenses.
 Demonstration/deployment uses existing hardware; no paid cloud service is planned.
 Historical pre-flight findings above remain historical, not current readiness.
 
-## Pass 1 - Functional, research-backed RAGBench
+## Pass 1 - Functional, research-backed Reckon
 
 ### P1 - Live BM25 + local Ollama
 

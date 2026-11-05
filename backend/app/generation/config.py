@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import math
-import os
 from collections.abc import Mapping
 from dataclasses import dataclass
 
+from app.configuration import environment
 from app.generation.contracts import ModelSettings
 
 
@@ -40,26 +40,26 @@ class OpenAIProviderConfig:
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> OpenAIProviderConfig:
-        """Read RAGBench settings; never read or retain the API key itself."""
-        values = os.environ if environ is None else environ
+        """Read Reckon settings; never read or retain the API key itself."""
+        values = environment(environ)
         try:
             return cls(
-                provider=values.get("RAGBENCH_PROVIDER", "openai").strip().lower(),
-                model=_optional_str(values.get("RAGBENCH_MODEL")),
+                provider=values.get("RECKON_PROVIDER", "openai").strip().lower(),
+                model=_optional_str(values.get("RECKON_MODEL")),
                 api_key_env_var=values.get(
-                    "RAGBENCH_API_KEY_ENV", "OPENAI_API_KEY"
+                    "RECKON_API_KEY_ENV", "OPENAI_API_KEY"
                 ).strip(),
-                timeout_seconds=float(values.get("RAGBENCH_TIMEOUT_SECONDS", "30")),
-                retry_count=int(values.get("RAGBENCH_RETRY_COUNT", "2")),
-                temperature=_optional_float(values.get("RAGBENCH_TEMPERATURE")),
-                max_output_tokens=int(values.get("RAGBENCH_MAX_OUTPUT_TOKENS", "1024")),
+                timeout_seconds=float(values.get("RECKON_TIMEOUT_SECONDS", "30")),
+                retry_count=int(values.get("RECKON_RETRY_COUNT", "2")),
+                temperature=_optional_float(values.get("RECKON_TEMPERATURE")),
+                max_output_tokens=int(values.get("RECKON_MAX_OUTPUT_TOKENS", "1024")),
                 max_provider_requests=int(
-                    values.get("RAGBENCH_MAX_PROVIDER_REQUESTS", "4")
+                    values.get("RECKON_MAX_PROVIDER_REQUESTS", "4")
                 ),
             )
         except (TypeError, ValueError) as error:
             raise ValueError(
-                f"Invalid RAGBench provider configuration: {error}"
+                f"Invalid Reckon provider configuration: {error}"
             ) from error
 
     def model_settings(self) -> ModelSettings:
@@ -113,18 +113,18 @@ class OllamaProviderConfig:
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> OllamaProviderConfig:
-        values = os.environ if environ is None else environ
+        values = environment(environ)
         try:
             return cls(
-                model=_optional_str(values.get("RAGBENCH_MODEL")),
-                base_url=values.get("RAGBENCH_OLLAMA_URL", "http://127.0.0.1:11434"),
-                context_size=int(values.get("RAGBENCH_CONTEXT_SIZE", "4096")),
-                timeout_seconds=float(values.get("RAGBENCH_TIMEOUT_SECONDS", "120")),
-                retry_count=int(values.get("RAGBENCH_RETRY_COUNT", "0")),
-                temperature=_optional_float(values.get("RAGBENCH_TEMPERATURE", "0")),
-                max_output_tokens=int(values.get("RAGBENCH_MAX_OUTPUT_TOKENS", "1024")),
+                model=_optional_str(values.get("RECKON_MODEL")),
+                base_url=values.get("RECKON_OLLAMA_URL", "http://127.0.0.1:11434"),
+                context_size=int(values.get("RECKON_CONTEXT_SIZE", "4096")),
+                timeout_seconds=float(values.get("RECKON_TIMEOUT_SECONDS", "120")),
+                retry_count=int(values.get("RECKON_RETRY_COUNT", "0")),
+                temperature=_optional_float(values.get("RECKON_TEMPERATURE", "0")),
+                max_output_tokens=int(values.get("RECKON_MAX_OUTPUT_TOKENS", "1024")),
                 max_provider_requests=int(
-                    values.get("RAGBENCH_MAX_PROVIDER_REQUESTS", "4")
+                    values.get("RECKON_MAX_PROVIDER_REQUESTS", "4")
                 ),
             )
         except (TypeError, ValueError) as error:
@@ -181,8 +181,8 @@ def load_provider_config(
     environ: Mapping[str, str] | None = None,
 ) -> OllamaProviderConfig | OpenAIProviderConfig:
     """Ollama is the default; OpenAI remains explicit opt-in code, never fallback."""
-    values = os.environ if environ is None else environ
-    provider = values.get("RAGBENCH_PROVIDER", "ollama").strip().lower()
+    values = environment(environ)
+    provider = values.get("RECKON_PROVIDER", "ollama").strip().lower()
     if provider == "ollama":
         return OllamaProviderConfig.from_env(values)
     if provider == "openai":
