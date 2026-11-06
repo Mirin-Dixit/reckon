@@ -21,7 +21,7 @@ export function WorkbenchShell({ children, workspace = "workbench" }: { children
           <h1 id="workbench-title">Evaluating RAG<br />with <em>evidence.</em></h1>
           <p className="opening-copy">When should a RAG system <strong>answer, abstain,</strong> or ask for <strong>clarification?</strong></p>
         </div>
-        <p className="wave-caption">Conceptual field / not experimental data</p>
+        <p className="wave-caption">Conceptual illustration</p>
       </section>
       <div className="workbench-tools">
         <div className="concept-primary"><SufficiencyLine />
@@ -30,7 +30,7 @@ export function WorkbenchShell({ children, workspace = "workbench" }: { children
         <div className="operational-layout">{children}</div>
       </div>
       <section className="workflow-reference" aria-labelledby="workflow-heading">
-        <div className="workflow-heading"><h2 id="workflow-heading">From question to evaluation</h2><p><strong>Planned sequence.</strong> Not executed by this screen.</p></div>
+        <div className="workflow-heading"><h2 id="workflow-heading">Research workflow</h2><p>From question and retrieval to grounded evaluation.</p></div>
         <div className="workflow-with-notes"><WorkflowLine />
           <MarginNote><div className="notation-note" aria-label="Decision notation">
             <p><DecisionMark decision="answer" /> {"\u2013"} evidence is enough</p>
@@ -43,9 +43,9 @@ export function WorkbenchShell({ children, workspace = "workbench" }: { children
     <footer className="workbench-footer">
       <div className="footer-identity"><p className="footer-wordmark">Reckon</p>
         <p>A workbench for evaluating evidence-grounded AI decisions.</p>
-        <p className="footer-request-note">{workspace === "workbench" ? "No questions, experiments, or benchmark labels are requested here." : workspace === "evaluation" ? "Saved synthetic results only. No model inference is requested." : workspace === "experiments" ? "Synthetic experiments only. Empirical evaluation is deferred." : "Queries run only when submitted. Benchmark gold labels are not requested."}</p>
+        {workspace !== "workbench" && <p className="footer-request-note">{workspace === "evaluation" ? "Saved synthetic results only. No model inference is requested." : workspace === "experiments" ? "Synthetic experiments only. Empirical evaluation is deferred." : "Queries run only when submitted. Benchmark gold labels are not requested."}</p>}
       </div>
-      <div className="footer-local"><p><strong>Local prototype</strong><a href={workspace === "workbench" ? "#system-status" : "/#system-status"}>System status</a></p>
+      <div className="footer-local"><p><strong>Local workspace</strong><a href={workspace === "workbench" ? "#system-status" : "/#system-status"}>System status</a></p>
         <p>The API has no authentication. Keep this workspace on loopback.</p>
       </div>
     </footer>

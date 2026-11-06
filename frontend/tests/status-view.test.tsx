@@ -67,7 +67,7 @@ test("even unexpected injected failures never reach rendered output", async () =
 test("workbench establishes the research workflow without making planned workspaces functional", () => {
   const html = renderToStaticMarkup(<WorkbenchShell><SystemStatus /></WorkbenchShell>);
   assert.match(html, /Evaluating RAG/);
-  assert.match(html, /Planned sequence\.<\/strong> Not executed by this screen/);
+  assert.match(html, /Research workflow/);
   for (const step of ["Question", "Retrieval", "Evidence", "Decision", "Evaluation"]) {
     assert.match(html, new RegExp(`<h3[^>]*>${step}</h3>`));
   }
@@ -288,7 +288,7 @@ test("header groups the wordmark and navigation; footer is a compact page landma
   const footer = html.slice(html.indexOf('<footer class="workbench-footer">'));
   assert.match(footer, /Reckon/);
   assert.match(footer, /A workbench for evaluating evidence-grounded AI decisions/);
-  assert.match(footer, /Local prototype/);
+  assert.match(footer, /Local workspace/);
   assert.match(footer, /API has no authentication/);
   const links = [...footer.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
   assert.deepEqual(links, ["#system-status"]);

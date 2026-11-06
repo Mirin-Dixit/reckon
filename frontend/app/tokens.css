@@ -3,16 +3,23 @@
   color-scheme: dark;
   --canvas: #090d0c;
   --ink: #eaede7;
-  --muted: #aeb9b1;
-  --stone: #3b4941;
+  --muted: #8e9b93;
+  --stone: #1c2722;
+  --stone-hover: #293830;
+  --stone-subtle: #141c18;
   --accent: #70d99d;
   --positive: #8ee2ad;
   --surface: #131b18;
+  --surface-card: #0e1512;
+  --surface-subtle: #121a16;
+  --surface-hover: #16201b;
   --highlight: #70d99d;
   --wave-sage: #b5e5c6;
   --wave-green: #46dc8c;
   --wave-sea: #39bca2;
   --wave-deep: #168360;
+  --panel-radius: 14px;
+  --control-radius: 8px;
   --type-xs: 12px;
   --type-sm: 14px;
   --type-body: 16px;
@@ -29,8 +36,8 @@
   --s7: 48px;
   --s8: 72px;
   --s9: 96px;
-  --duration-fast: 150ms;
-  --duration-state: 240ms;
+  --duration-fast: 160ms;
+  --duration-state: 220ms;
   --duration-draw: 400ms;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }

@@ -6,22 +6,33 @@ import { buildQuery, initialDraft, querySession, type QueryDraft, type QueryStat
 import { DecisionDetails } from "./evidence-ledger";
 
 export function QueryResult({ state }: { state: QueryState }) {
-  if (state.phase === "idle") return <p>No query has been submitted. Results will appear here.</p>;
-  if (state.phase === "loading") return <p role="status">Running local retrieval and generation…</p>;
-  if (state.phase === "error") return <div role="alert"><h3>Request failed</h3><p>{state.message}</p></div>;
+  if (state.phase === "idle") return <div className="query-empty-state" role="status">
+    <p className="empty-title">No query has been submitted</p>
+    <p className="empty-help">Select a retrieval method and decision policy on the left, enter a question, then run the query to inspect evidence-grounded decisions and citations.</p>
+  </div>;
+  if (state.phase === "loading") return <div className="query-empty-state is-loading" role="status">
+    <p className="empty-title">Running local retrieval and generation…</p>
+    <p className="empty-help">Executing local index search and model generation with citations.</p>
+  </div>;
+  if (state.phase === "error") return <div className="query-empty-state is-error" role="alert">
+    <h3>Request failed</h3>
+    <p>{state.message}</p>
+  </div>;
   if (state.phase === "cancelled") return <p role="status">{state.message}</p>;
   const { result, request } = state;
   return <div className={`query-result decision-${result.decision.toLowerCase()}`}>
     <p className="page-eyebrow">Execution succeeded / {request.retrieval?.method} / {request.policy.name}</p>
-    <div className="decision-announcement" role="status"><h3>{result.decision}</h3></div>
-    {result.decision === "ABSTAIN" && <p>Intentional abstention: the policy withheld an answer.</p>}
-    {result.decision === "CLARIFY" && <p>Clarification requested: resolve the question before answering.</p>}
-    {result.decision === "ANSWER" && <p>Answer returned. Inspect its citations and source evidence below.</p>}
+    <div className="decision-announcement" role="status">
+      <h3>{result.decision}</h3>
+      {result.decision === "ABSTAIN" && <p className="decision-summary">Intentional abstention: the policy withheld an answer.</p>}
+      {result.decision === "CLARIFY" && <p className="decision-summary">Clarification requested: resolve the question before answering.</p>}
+      {result.decision === "ANSWER" && <p className="decision-summary">Answer returned. Inspect its citations and source evidence below.</p>}
+    </div>
     <p className="query-answer">{result.answer ?? result.clarification_question}</p>
-    {result.decision_reason ? <p><strong>Reason:</strong> <code>{result.decision_reason.code}</code> — {result.decision_reason.explanation}</p> : <p>No decision reason was supplied.</p>}
-    {result.unsupported_premises.map((text, i) => <p key={i}><strong>Unsupported premise:</strong> {text}</p>)}
-    {result.surfaced_contradictions.map((text, i) => <p key={i}><strong>Contradiction:</strong> {text}</p>)}
-    <p>{result.citations.length} citation references returned. Citation presence alone does not establish grounding.</p>
+    {result.decision_reason ? <p className="decision-reason"><strong>Reason:</strong> <code>{result.decision_reason.code}</code> — {result.decision_reason.explanation}</p> : <p className="decision-reason">No decision reason was supplied.</p>}
+    {result.unsupported_premises.map((text, i) => <p key={i} className="decision-flag"><strong>Unsupported premise:</strong> {text}</p>)}
+    {result.surfaced_contradictions.map((text, i) => <p key={i} className="decision-flag"><strong>Contradiction:</strong> {text}</p>)}
+    <p className="citations-count">{result.citations.length} citation references returned. Citation presence alone does not establish grounding.</p>
     <DecisionDetails result={result} />
   </div>;
 }
