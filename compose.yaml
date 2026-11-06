@@ -33,7 +33,8 @@
         "RECKON_CONTEXT_SIZE": "8192",
         "RECKON_MAX_OUTPUT_TOKENS": "1024",
         "RECKON_RETRY_COUNT": "0",
-        "OLLAMA_NO_CLOUD": "1"
+        "OLLAMA_NO_CLOUD": "1",
+        "RECKON_MAX_PROVIDER_REQUESTS": "100"
       },
       "tmpfs": [
         "/tmp:rw,noexec,nosuid,size=64m,uid=10001,gid=10001"
@@ -108,6 +109,9 @@
         "/etc/nginx/ingress.conf",
         "-g",
         "daemon off;"
+      ],
+      "extra_hosts": [
+        "host.docker.internal:host-gateway"
       ]
     },
     "app-proxy": {
