@@ -1,0 +1,193 @@
+{
+  "$defs": {
+    "ReviewEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "pattern": "^\\S+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "doc_id": {
+          "minLength": 1,
+          "pattern": "^\\S+$",
+          "title": "Doc Id",
+          "type": "string"
+        },
+        "start_char": {
+          "minimum": 0,
+          "title": "Start Char",
+          "type": "integer"
+        },
+        "end_char": {
+          "exclusiveMinimum": 0,
+          "title": "End Char",
+          "type": "integer"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "finding": {
+          "minLength": 1,
+          "title": "Finding",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "doc_id",
+        "start_char",
+        "end_char",
+        "text",
+        "finding"
+      ],
+      "title": "ReviewEvidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "ragbench.review-submission.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "candidate_id": {
+      "minLength": 1,
+      "pattern": "^\\S+$",
+      "title": "Candidate Id",
+      "type": "string"
+    },
+    "candidate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Candidate Sha256",
+      "type": "string"
+    },
+    "corpus_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Corpus Sha256",
+      "type": "string"
+    },
+    "reviewer_id": {
+      "minLength": 1,
+      "pattern": "^\\S+$",
+      "title": "Reviewer Id",
+      "type": "string"
+    },
+    "reviewed_at_utc": {
+      "format": "date-time",
+      "title": "Reviewed At Utc",
+      "type": "string"
+    },
+    "independent_first_pass": {
+      "const": true,
+      "title": "Independent First Pass",
+      "type": "boolean"
+    },
+    "first_pass_decision": {
+      "enum": [
+        "ANSWER",
+        "ABSTAIN",
+        "CLARIFY"
+      ],
+      "title": "First Pass Decision",
+      "type": "string"
+    },
+    "first_pass_category": {
+      "enum": [
+        "answerable",
+        "off_topic",
+        "temporal_near_miss",
+        "entity_near_miss",
+        "attribute_near_miss",
+        "false_premise",
+        "ambiguous_question"
+      ],
+      "title": "First Pass Category",
+      "type": "string"
+    },
+    "first_pass_findings": {
+      "minLength": 1,
+      "title": "First Pass Findings",
+      "type": "string"
+    },
+    "action": {
+      "enum": [
+        "accept",
+        "revise",
+        "reject",
+        "reclassify"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "checks": {
+      "items": {
+        "enum": [
+          "source",
+          "split",
+          "answerability",
+          "evidence",
+          "reference_answer",
+          "negative_absence",
+          "ambiguity",
+          "compound"
+        ],
+        "type": "string"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "rationale": {
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "corpus_search_notes": {
+      "title": "Corpus Search Notes",
+      "type": "string"
+    },
+    "evidence_records": {
+      "items": {
+        "$ref": "#/$defs/ReviewEvidence"
+      },
+      "title": "Evidence Records",
+      "type": "array"
+    },
+    "proposed_changes": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Proposed Changes"
+    }
+  },
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "candidate_sha256",
+    "corpus_sha256",
+    "reviewer_id",
+    "reviewed_at_utc",
+    "independent_first_pass",
+    "first_pass_decision",
+    "first_pass_category",
+    "first_pass_findings",
+    "action",
+    "checks",
+    "rationale",
+    "corpus_search_notes",
+    "evidence_records",
+    "proposed_changes"
+  ],
+  "title": "Submission",
+  "type": "object"
+}

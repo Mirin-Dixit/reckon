@@ -1,0 +1,626 @@
+{
+  "schema_version": "ragbench.leakage-screen.v1",
+  "status": "screen_only_not_semantic_verification",
+  "method": "version-neutral TF-IDF cosine/token Jaccard, lexical equivalences and exact answer-support reuse",
+  "thresholds": {
+    "tfidf_cosine": 0.72,
+    "token_jaccard": 0.65
+  },
+  "counts": {
+    "declared_related_pair": 16,
+    "within_split_possible_duplicate": 12
+  },
+  "pairs": [
+    {
+      "left": {
+        "id": "py311v2_train_002",
+        "split": "train",
+        "question": "In Python 3.11, how does collections.Counter represent objects and their counts?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_064",
+        "split": "train",
+        "question": "In Python 3.13, how does collections.Counter represent objects and their counts?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_003",
+        "split": "train",
+        "question": "In Python 3.11, how is a collections.deque initialized from an iterable?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_065",
+        "split": "train",
+        "question": "In Python 3.13, how is a collections.deque initialized from an iterable?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_007",
+        "split": "train",
+        "question": "In Python 3.11, what mapping does a named tuple's _asdict method return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_008",
+        "split": "train",
+        "question": "How do namedtuple._asdict and namedtuple._replace differ in what they return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.184023,
+      "token_jaccard": 0.181818,
+      "shared_answer_evidence_ids": [
+        "py3119.collections_s37063_37147"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_010",
+        "split": "train",
+        "question": "In Python 3.11, what is the purpose of collections.UserDict?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_012",
+        "split": "train",
+        "question": "In the collections module, how does a user wrapper hold its contents?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.124394,
+      "token_jaccard": 0.125,
+      "shared_answer_evidence_ids": [
+        "py3119.collections_s49739_50109"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_011",
+        "split": "train",
+        "question": "In Python 3.11, what is the purpose of collections.UserList?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_012",
+        "split": "train",
+        "question": "In the collections module, how does a user wrapper hold its contents?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.124394,
+      "token_jaccard": 0.125,
+      "shared_answer_evidence_ids": [
+        "py3119.collections_s50905_51277"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_013",
+        "split": "train",
+        "question": "In Python 3.11, what values does itertools.accumulate produce?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_066",
+        "split": "train",
+        "question": "In Python 3.13, what values does itertools.accumulate produce?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_014",
+        "split": "train",
+        "question": "In Python 3.11, in what order does itertools.chain consume its input iterables?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_067",
+        "split": "train",
+        "question": "In Python 3.13, in what order does itertools.chain consume its input iterables?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_021",
+        "split": "train",
+        "question": "In Python 3.11, what caching behavior does functools.lru_cache provide?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_068",
+        "split": "train",
+        "question": "In Python 3.13, what caching behavior does functools.lru_cache provide?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_025",
+        "split": "train",
+        "question": "In Python 3.11, what conversion does dataclasses.asdict perform on a dataclass instance?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_026",
+        "split": "train",
+        "question": "Compare the conversions performed by dataclasses.asdict and dataclasses.astuple.",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.308157,
+      "token_jaccard": 0.166667,
+      "shared_answer_evidence_ids": [
+        "py3119.dataclasses_s14907_15201"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_027",
+        "split": "train",
+        "question": "In Python 3.11, how does dataclasses.replace create its result?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_069",
+        "split": "train",
+        "question": "In Python 3.13, how does dataclasses.replace create its result?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_029",
+        "split": "train",
+        "question": "In Python 3.11, what kind of copy does copy.copy return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_030",
+        "split": "train",
+        "question": "In Python 3.11, what kind of copy does copy.deepcopy return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.878635,
+      "token_jaccard": 0.75,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_029",
+        "split": "train",
+        "question": "In Python 3.11, what kind of copy does copy.copy return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_036",
+        "split": "train",
+        "question": "For an object, what does copying return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.05663,
+      "token_jaccard": 0.2,
+      "shared_answer_evidence_ids": [
+        "py3119.copy_s597_626"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_030",
+        "split": "train",
+        "question": "In Python 3.11, what kind of copy does copy.deepcopy return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_036",
+        "split": "train",
+        "question": "For an object, what does copying return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.06997,
+      "token_jaccard": 0.166667,
+      "shared_answer_evidence_ids": [
+        "py3119.copy_s667_693"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_034",
+        "split": "train",
+        "question": "In Python 3.11, what value does typing.cast return, and does it check types at runtime?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_070",
+        "split": "train",
+        "question": "In Python 3.13, what value does typing.cast return, and does it check types at runtime?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_039",
+        "split": "train",
+        "question": "In Python 3.11, what does pathlib.Path.mkdir create?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_071",
+        "split": "train",
+        "question": "In Python 3.13, what does pathlib.Path.mkdir create?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_041",
+        "split": "train",
+        "question": "In Python 3.11, what does shutil.copyfile copy between its two paths?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_042",
+        "split": "train",
+        "question": "What does shutil.copyfile copy, and what extra preservation does copy2 attempt compared with copy?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.426205,
+      "token_jaccard": 0.25,
+      "shared_answer_evidence_ids": [
+        "py3119.shutil_s1824_2057"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_052",
+        "split": "train",
+        "question": "In Python 3.11, what result type does datetime.fromisoformat construct from a date string?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_072",
+        "split": "train",
+        "question": "In Python 3.13, what result type does datetime.fromisoformat construct from a date string?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_train_056",
+        "split": "train",
+        "question": "In Python 3.11, what clock behavior does time.monotonic guarantee?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_train_073",
+        "split": "train",
+        "question": "In Python 3.13, what clock behavior does time.monotonic guarantee?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_dev_001",
+        "split": "dev",
+        "question": "In Python 3.11, what boolean result does math.isclose return for close versus non-close values?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_dev_016",
+        "split": "dev",
+        "question": "In Python 3.13, what boolean result does math.isclose return for close versus non-close values?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_dev_007",
+        "split": "dev",
+        "question": "In Python 3.11, which median does statistics.median_low select?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_dev_008",
+        "split": "dev",
+        "question": "For numeric data, what does taking the low or high median return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.177088,
+      "token_jaccard": 0.1,
+      "shared_answer_evidence_ids": [
+        "py3119.statistics_s10422_10557"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_dev_010",
+        "split": "dev",
+        "question": "In Python 3.11, what input types can json.loads deserialize?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_dev_017",
+        "split": "dev",
+        "question": "In Python 3.13, what input types can json.loads deserialize?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_001",
+        "split": "test",
+        "question": "In Python 3.11, what does asyncio.create_task schedule and return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_027",
+        "split": "test",
+        "question": "In Python 3.13, what does asyncio.create_task schedule and return?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_007",
+        "split": "test",
+        "question": "In Python 3.11, what components does urllib.parse.urlparse return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_011",
+        "split": "test",
+        "question": "What does parsing a URL return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.0812,
+      "token_jaccard": 0.142857,
+      "shared_answer_evidence_ids": [
+        "py3119.urllib.parse_s1460_1997"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_007",
+        "split": "test",
+        "question": "In Python 3.11, what components does urllib.parse.urlparse return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_028",
+        "split": "test",
+        "question": "In Python 3.13, what components does urllib.parse.urlparse return?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_008",
+        "split": "test",
+        "question": "In Python 3.11, how does urllib.parse.urlsplit differ from urlparse?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_011",
+        "split": "test",
+        "question": "What does parsing a URL return?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.0,
+      "token_jaccard": 0.0,
+      "shared_answer_evidence_ids": [
+        "py3119.urllib.parse_s13045_13471"
+      ],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_013",
+        "split": "test",
+        "question": "In Python 3.11, what operation does sqlite3.connect perform?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_029",
+        "split": "test",
+        "question": "In Python 3.13, what operation does sqlite3.connect perform?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_019",
+        "split": "test",
+        "question": "In Python 3.11, when does subprocess.run return and what result object does it provide?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_030",
+        "split": "test",
+        "question": "In Python 3.13, when does subprocess.run return and what result object does it provide?",
+        "dataset": "v2"
+      },
+      "kind": "declared_related_pair",
+      "exact_normalized": false,
+      "version_neutral_equal": true,
+      "tfidf_cosine": 1.0,
+      "token_jaccard": 1.0,
+      "shared_answer_evidence_ids": [],
+      "status": "pending_human_pair_review"
+    },
+    {
+      "left": {
+        "id": "py311v2_test_023",
+        "split": "test",
+        "question": "In Python 3.11, what does subprocess.Popen.poll check and return?",
+        "dataset": "v2"
+      },
+      "right": {
+        "id": "py311v2_test_024",
+        "split": "test",
+        "question": "How do Popen.poll and Popen.wait differ when a child process is still running?",
+        "dataset": "v2"
+      },
+      "kind": "within_split_possible_duplicate",
+      "exact_normalized": false,
+      "version_neutral_equal": false,
+      "tfidf_cosine": 0.431644,
+      "token_jaccard": 0.166667,
+      "shared_answer_evidence_ids": [
+        "py3119.subprocess_s32713_32836"
+      ],
+      "status": "pending_human_pair_review"
+    }
+  ],
+  "limitation": "Can miss paraphrases and flag different facts. No pair is automatically accepted, rejected or reassigned."
+}

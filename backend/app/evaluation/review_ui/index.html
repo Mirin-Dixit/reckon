@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reckon · Human review</title>
+  <link rel="stylesheet" href="/assets/tokens.css">
+  <link rel="stylesheet" href="/assets/review.css">
+  <script type="module" src="/assets/review.js"></script>
+</head>
+<body>
+  <header><a href="/" class="wordmark">Reckon</a><span class="tag">B2.3 · LOCAL CURATION</span></header>
+  <main>
+    <div class="intro"><div><p class="eyebrow">PINNED EVIDENCE / HUMAN JUDGMENT</p><h1>One question. Read, decide, save.</h1><p id="identity">Connecting to the local review service…</p></div><div class="boundary">Draft ≠ validated submission ≠ accepted benchmark.<br>No model calls. No automatic import or Test freeze.</div></div>
+    <p id="message" role="status" aria-live="polite">Loading…</p>
+    <section class="toolbar" aria-label="Packet navigation">
+      <label>Packet<select id="packet" disabled></select></label>
+      <div><strong id="progress">First pass: 0/10</strong><p id="validation-progress" class="small"></p></div>
+      <button id="reveal" disabled>Lock first pass &amp; reveal annotations</button>
+      <button id="validate" disabled>Validate packet</button>
+      <a id="export" class="button" aria-disabled="true">Export JSON draft</a>
+    </section>
+    <details id="import-panel"><summary>Resume an existing assisted working copy</summary><p>Import a reviewer JSON file before starting an empty packet. Only its four first-pass fields are copied; originals stay untouched. Imported notes remain assisted and cannot count as independent reviews.</p><label>Working copy<input id="import-file" type="file" accept=".json,application/json"></label><button id="import">Import as assisted notes</button></details>
+    <div class="workspace">
+      <section class="question-panel" aria-labelledby="question-title">
+        <div class="question-nav"><button id="previous" disabled>← Previous</button><span id="position"></span><button id="next" disabled>Next →</button></div>
+        <p id="candidate" class="eyebrow"></p><h2 id="question-title" tabindex="-1"></h2>
+        <p id="phase" class="phase"></p>
+        <form id="first-form">
+          <p class="small">Derive your judgment from the full pinned corpus before viewing proposed labels. No answer or category is suggested here.</p>
+          <label>Your decision<select id="decision" required></select></label>
+          <label>Your category<select id="category" required></select></label>
+          <details><summary>What do the categories mean?</summary><div id="category-help"></div></details>
+          <label>What did you find?<textarea id="findings" required rows="4" maxlength="16000" placeholder="Explain in your own words what the evidence supports or leaves missing."></textarea></label>
+          <label>What sources and searches did you check?<textarea id="search-notes" required rows="3" maxlength="16000" placeholder="Record actual searches and sections read. Separate your work from any AI assistance."></textarea></label>
+          <fieldset><legend>How did you reach this first-pass judgment?</legend>
+            <label class="choice"><input type="radio" name="basis" value="independent" required> I personally derived it without AI judgments, proposed annotations, or another reviewer's decisions.</label>
+            <label class="choice"><input type="radio" name="basis" value="assisted"> I received AI suggestions or previously saw proposed annotations or another reviewer's decisions.</label>
+          </fieldset>
+          <p class="small">This is your attestation, not identity authentication. Assisted notes cannot satisfy the independent-review gate.</p>
+          <button class="primary" type="submit">Save first-pass judgment</button>
+        </form>
+        <section id="annotation-panel" hidden aria-label="Annotation review">
+          <details><summary>Your locked first-pass judgment</summary><pre id="locked-first"></pre></details>
+          <h3>Proposed annotation · not verified truth</h3><div id="annotation"></div>
+          <form id="final-form">
+            <fieldset><legend>Checks you personally completed</legend><div id="checks"></div></fieldset>
+            <label>Your action<select id="action" required></select></label>
+            <label>Why this action?<textarea id="rationale" required rows="3" maxlength="16000"></textarea></label>
+            <details><summary>Proposed annotation changes (revise / reclassify only)</summary><p class="small">Enter a JSON object containing only changed annotation fields. Reclassifying must change the category consistently. Proposals are never applied automatically.</p><label>Proposed changes<textarea id="proposal" rows="5" spellcheck="false" placeholder='{"question": "Your revised wording"}'></textarea></label></details>
+            <button type="submit" class="primary">Save annotation review &amp; check validity</button>
+          </form>
+          <p id="row-validation" class="small"></p>
+        </section>
+        <section aria-label="Your recorded evidence"><h3>Your source evidence <span id="evidence-count"></span></h3><p class="small">Select source text on the right and explain what it establishes. Exact coordinates do not prove semantic support.</p><div id="evidence-list"></div></section>
+      </section>
+      <section class="source-panel" aria-labelledby="source-title">
+        <p class="eyebrow">ALL 34 PINNED DOCUMENTS · PYTHON 3.11.9</p><h2 id="source-title">Read the source</h2>
+        <form id="search-form"><label>Search the entire corpus<input id="search" type="search" maxlength="200" required placeholder="API name, version, alternate wording…"></label><button type="submit">Search all 34</button></form>
+        <p class="small">Literal, case-insensitive search. For a negative judgment, inspect alternative wording, examples, and the whole corpus; no search proves absence by itself.</p>
+        <div id="search-results" aria-live="polite"></div>
+        <label>Full document<select id="source-select"></select></label>
+        <p id="source-info" class="small">Choose a source to read. RST markup is preserved.</p>
+        <label for="source-text" class="small">Pinned document text · select a passage to cite it</label><textarea id="source-text" class="source-text" readonly wrap="off" spellcheck="false" placeholder="Full source text appears here."></textarea>
+        <p id="coordinates" class="small">Coordinates use Unicode code points, [start, end).</p>
+        <label>What does the selected passage establish?<textarea id="passage-finding" rows="2" maxlength="8000" placeholder="Describe what you personally verified."></textarea></label>
+        <button id="add-passage">Add selected passage to my evidence</button>
+      </section>
+    </div>
+    <details id="validation-panel" hidden><summary>Packet validation results</summary><pre id="validation-results"></pre></details>
+    <footer>Reviewers work separately. This service shows one configured reviewer only. Local draft saves never edit candidates, pinned sources, generated templates, or the review ledger.</footer>
+  </main>
+</body>
+</html>

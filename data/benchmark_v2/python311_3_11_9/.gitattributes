@@ -1,0 +1,5 @@
+# Preserve the exact captured/hashed bytes on every checkout.
+*.json -text
+*.jsonl -text
+sources/* -text
+human_review/** -text

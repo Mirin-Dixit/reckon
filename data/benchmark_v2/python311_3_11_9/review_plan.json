@@ -1,0 +1,34 @@
+{
+  "schema_version": "ragbench.review-plan.v2",
+  "status": "pending_human_review",
+  "sample_method": "ascending SHA-256 of UTF-8 py311-v2-review-1:<candidate-id>, ceil(20% of ordinary answerable records)",
+  "ordinary_second_review_ids": [
+    "py311v2_train_005",
+    "py311v2_train_024",
+    "py311v2_test_021",
+    "py311v2_test_023",
+    "py311v2_train_054",
+    "py311v2_train_018",
+    "py311v2_train_031",
+    "py311v2_dev_009",
+    "py311v2_test_015",
+    "py311v2_train_028",
+    "py311v2_train_040",
+    "py311v2_train_002",
+    "py311v2_dev_006",
+    "py311v2_train_055",
+    "py311v2_train_046",
+    "py311v2_train_052",
+    "py311v2_train_034",
+    "py311v2_train_016"
+  ],
+  "all_negative_ambiguous_compound_require_two": true,
+  "human_reviews_completed": 0,
+  "release_gates": [
+    "independent semantic and corpus-wide absence review",
+    "cross-split and pilot/sample paraphrase review",
+    "third-party attribution review",
+    "pre-adjudication agreement and kappa >= 0.70",
+    "explicit Test freeze approval"
+  ]
+}

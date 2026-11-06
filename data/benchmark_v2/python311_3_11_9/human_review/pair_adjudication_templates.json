@@ -1,0 +1,590 @@
+[
+  {
+    "pair_sha256": "a31ac21d7e8823094175b080e860a3880f99d2d6e3108ecbf0dff8e3996b17e8",
+    "left": {
+      "id": "py311v2_train_002",
+      "split": "train",
+      "question": "In Python 3.11, how does collections.Counter represent objects and their counts?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_064",
+      "split": "train",
+      "question": "In Python 3.13, how does collections.Counter represent objects and their counts?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "63788a85afbc4c2b94da7513c93d80596ddc3ee264f62bd25fbcf543cc5f8f0f",
+    "left": {
+      "id": "py311v2_train_003",
+      "split": "train",
+      "question": "In Python 3.11, how is a collections.deque initialized from an iterable?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_065",
+      "split": "train",
+      "question": "In Python 3.13, how is a collections.deque initialized from an iterable?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "1e85039349118dad5865e1779be8dee512ada715a83f023098a6971c133a60d8",
+    "left": {
+      "id": "py311v2_train_007",
+      "split": "train",
+      "question": "In Python 3.11, what mapping does a named tuple's _asdict method return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_008",
+      "split": "train",
+      "question": "How do namedtuple._asdict and namedtuple._replace differ in what they return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "7809abb1ab12446f90550fcc1c2b5e44b602be3b4d331d561569bc85c3ee8b3a",
+    "left": {
+      "id": "py311v2_train_010",
+      "split": "train",
+      "question": "In Python 3.11, what is the purpose of collections.UserDict?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_012",
+      "split": "train",
+      "question": "In the collections module, how does a user wrapper hold its contents?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "3d49470c25534a2fc7304acb2f33aed780166f6852e34b81e1df0ffae5a14185",
+    "left": {
+      "id": "py311v2_train_011",
+      "split": "train",
+      "question": "In Python 3.11, what is the purpose of collections.UserList?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_012",
+      "split": "train",
+      "question": "In the collections module, how does a user wrapper hold its contents?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "e33cf8635b302df9b53c2182bb4291cd95995de16e035fe2102683bad00a8c59",
+    "left": {
+      "id": "py311v2_train_013",
+      "split": "train",
+      "question": "In Python 3.11, what values does itertools.accumulate produce?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_066",
+      "split": "train",
+      "question": "In Python 3.13, what values does itertools.accumulate produce?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "b9ca3568851003663eabc01524cde70367f27ef450921b40f11417777224cbd2",
+    "left": {
+      "id": "py311v2_train_014",
+      "split": "train",
+      "question": "In Python 3.11, in what order does itertools.chain consume its input iterables?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_067",
+      "split": "train",
+      "question": "In Python 3.13, in what order does itertools.chain consume its input iterables?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "a036f90b16b1f8db9ae19e93d751a3153a5e599182fc89d9180ee5d691bb0ef2",
+    "left": {
+      "id": "py311v2_train_021",
+      "split": "train",
+      "question": "In Python 3.11, what caching behavior does functools.lru_cache provide?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_068",
+      "split": "train",
+      "question": "In Python 3.13, what caching behavior does functools.lru_cache provide?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "be003daedeca77cf0c2c7f3f8ab34d2b6d52678b6566624d492a26c36c42de7c",
+    "left": {
+      "id": "py311v2_train_025",
+      "split": "train",
+      "question": "In Python 3.11, what conversion does dataclasses.asdict perform on a dataclass instance?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_026",
+      "split": "train",
+      "question": "Compare the conversions performed by dataclasses.asdict and dataclasses.astuple.",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "42aeec1c6d5765b1bd2d99b03eecf7bc1464e8d01be61b66b8b0f5360f0747e6",
+    "left": {
+      "id": "py311v2_train_027",
+      "split": "train",
+      "question": "In Python 3.11, how does dataclasses.replace create its result?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_069",
+      "split": "train",
+      "question": "In Python 3.13, how does dataclasses.replace create its result?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "dffd584629ea866b1e6e29aaa21dc9e3e33f6435b45e7b85d0442cd058248353",
+    "left": {
+      "id": "py311v2_train_029",
+      "split": "train",
+      "question": "In Python 3.11, what kind of copy does copy.copy return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_030",
+      "split": "train",
+      "question": "In Python 3.11, what kind of copy does copy.deepcopy return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "bb332c215e6ab12b9edbb60743715f9733cd5ae8f3980e79ae056015bcc21060",
+    "left": {
+      "id": "py311v2_train_029",
+      "split": "train",
+      "question": "In Python 3.11, what kind of copy does copy.copy return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_036",
+      "split": "train",
+      "question": "For an object, what does copying return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "29ab6ebebd1eada7560f055953fe4050cc12c26a6d57454c97145f7377659a7d",
+    "left": {
+      "id": "py311v2_train_030",
+      "split": "train",
+      "question": "In Python 3.11, what kind of copy does copy.deepcopy return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_036",
+      "split": "train",
+      "question": "For an object, what does copying return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "b08ef1712a852f1d5769060db97678df193d032297aa107ef891e3874b7cc911",
+    "left": {
+      "id": "py311v2_train_034",
+      "split": "train",
+      "question": "In Python 3.11, what value does typing.cast return, and does it check types at runtime?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_070",
+      "split": "train",
+      "question": "In Python 3.13, what value does typing.cast return, and does it check types at runtime?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "eab1e14fafa5e373441e268afd6e7d314f3bf2f68f3eeb079e5cd0d0e6399c46",
+    "left": {
+      "id": "py311v2_train_039",
+      "split": "train",
+      "question": "In Python 3.11, what does pathlib.Path.mkdir create?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_071",
+      "split": "train",
+      "question": "In Python 3.13, what does pathlib.Path.mkdir create?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "65d367b5f4fe40def670db8eb3298b593b4154365beb7f68c878f23ed440fee0",
+    "left": {
+      "id": "py311v2_train_041",
+      "split": "train",
+      "question": "In Python 3.11, what does shutil.copyfile copy between its two paths?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_042",
+      "split": "train",
+      "question": "What does shutil.copyfile copy, and what extra preservation does copy2 attempt compared with copy?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "269fa84530c82e8aa7d686614b185213a9df2270b7e0e45822a1ce6f9de46f4d",
+    "left": {
+      "id": "py311v2_train_052",
+      "split": "train",
+      "question": "In Python 3.11, what result type does datetime.fromisoformat construct from a date string?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_072",
+      "split": "train",
+      "question": "In Python 3.13, what result type does datetime.fromisoformat construct from a date string?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "a0df666c912576a947e05e9cbf474cc5687a25a246b2ec98c7c8746f1cc92915",
+    "left": {
+      "id": "py311v2_train_056",
+      "split": "train",
+      "question": "In Python 3.11, what clock behavior does time.monotonic guarantee?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_train_073",
+      "split": "train",
+      "question": "In Python 3.13, what clock behavior does time.monotonic guarantee?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "a1616fc23b848196d7eb9e944c82347d67a2a6533a1f804f958a56df3f0d7ab4",
+    "left": {
+      "id": "py311v2_dev_001",
+      "split": "dev",
+      "question": "In Python 3.11, what boolean result does math.isclose return for close versus non-close values?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_dev_016",
+      "split": "dev",
+      "question": "In Python 3.13, what boolean result does math.isclose return for close versus non-close values?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "c2bd52be76bc43c3067c7d2fb7da17bd09549087f353ab3e54470f55931aee2c",
+    "left": {
+      "id": "py311v2_dev_007",
+      "split": "dev",
+      "question": "In Python 3.11, which median does statistics.median_low select?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_dev_008",
+      "split": "dev",
+      "question": "For numeric data, what does taking the low or high median return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "7716e63bf9f194580a37a37862a062fda02c84e4e6ee82b51da0a6185cf2af4a",
+    "left": {
+      "id": "py311v2_dev_010",
+      "split": "dev",
+      "question": "In Python 3.11, what input types can json.loads deserialize?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_dev_017",
+      "split": "dev",
+      "question": "In Python 3.13, what input types can json.loads deserialize?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "8508ba68ba063eed685d09ab6ab56313f6ebcb0adb7b535c280099c41a868cb2",
+    "left": {
+      "id": "py311v2_test_001",
+      "split": "test",
+      "question": "In Python 3.11, what does asyncio.create_task schedule and return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_027",
+      "split": "test",
+      "question": "In Python 3.13, what does asyncio.create_task schedule and return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "a6b55d35dd2dd34d921e140e0cff99a49749c89f9af828a7216226cea314321b",
+    "left": {
+      "id": "py311v2_test_007",
+      "split": "test",
+      "question": "In Python 3.11, what components does urllib.parse.urlparse return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_011",
+      "split": "test",
+      "question": "What does parsing a URL return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "c2c7dfa23c6e72828461642117f96fdbbcac98e9cdb106542ce8136ecf1065c2",
+    "left": {
+      "id": "py311v2_test_007",
+      "split": "test",
+      "question": "In Python 3.11, what components does urllib.parse.urlparse return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_028",
+      "split": "test",
+      "question": "In Python 3.13, what components does urllib.parse.urlparse return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "ee2c5425c75726b8f78ca8c73f5cb567633819f0f5b7a303d8fc24984496de1d",
+    "left": {
+      "id": "py311v2_test_008",
+      "split": "test",
+      "question": "In Python 3.11, how does urllib.parse.urlsplit differ from urlparse?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_011",
+      "split": "test",
+      "question": "What does parsing a URL return?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "889c75384e9e85bf37789782dc19f427524bf7c5d5f565f1d9f1e1dd9e89552b",
+    "left": {
+      "id": "py311v2_test_013",
+      "split": "test",
+      "question": "In Python 3.11, what operation does sqlite3.connect perform?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_029",
+      "split": "test",
+      "question": "In Python 3.13, what operation does sqlite3.connect perform?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "b83974d7c86a99ed71587149ece0350e56eac7a8367cd3768c019de58c4679fa",
+    "left": {
+      "id": "py311v2_test_019",
+      "split": "test",
+      "question": "In Python 3.11, when does subprocess.run return and what result object does it provide?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_030",
+      "split": "test",
+      "question": "In Python 3.13, when does subprocess.run return and what result object does it provide?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  },
+  {
+    "pair_sha256": "31a09ff5cd681e31939ed9ee3bee4596b256ff88427f6a21090faa1d71ee5ce1",
+    "left": {
+      "id": "py311v2_test_023",
+      "split": "test",
+      "question": "In Python 3.11, what does subprocess.Popen.poll check and return?",
+      "dataset": "v2"
+    },
+    "right": {
+      "id": "py311v2_test_024",
+      "split": "test",
+      "question": "How do Popen.poll and Popen.wait differ when a child process is still running?",
+      "dataset": "v2"
+    },
+    "corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+    "reviewer_id": null,
+    "reviewed_at_utc": null,
+    "disposition": null,
+    "evidence_records": [],
+    "rationale": ""
+  }
+]

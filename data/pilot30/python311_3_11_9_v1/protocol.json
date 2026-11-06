@@ -1,0 +1,71 @@
+{
+  "schema_version": "ragbench.pilot-protocol.v1",
+  "pilot_id": "python311-pilot30.v1",
+  "status": "unaccepted",
+  "selection_seed": "ragbench-pilot30-v1",
+  "parent_dataset_version": "python311-3.11.9-candidates.1",
+  "parent_corpus_sha256": "688627f9ce959fd3ca00dbc9b63f577244c88a91a5633318992857f992b8756c",
+  "parent_integrity_sha256": "0bf9e931a9a2b0ddad6014cdcde2f33822f7e5bd4287f9a27f49e3f6d41d08b3",
+  "historical_questions_sha256": "f419b813ff166915a7b8e184ca55936124e2ad7c41e718bcbb9962fff2ec0639",
+  "exposure_seed_ids": [
+    "py311v2_test_027",
+    "py311v2_train_064",
+    "py311v2_train_065"
+  ],
+  "excluded_family_ids": [
+    "py311v2_test_001",
+    "py311v2_test_027",
+    "py311v2_train_002",
+    "py311v2_train_003",
+    "py311v2_train_059",
+    "py311v2_train_064",
+    "py311v2_train_065",
+    "py311v2_train_074",
+    "py311v2_train_075",
+    "py311v2_train_081",
+    "py311v2_train_091"
+  ],
+  "selection_rules": [
+    "Preserve original Dev/Test roles; no Train candidates",
+    "Lowest SHA-256(seed:ID), then ID, in each non-answerable stratum",
+    "Include all selected anchor IDs and one positive per topic cluster",
+    "Fill nine positives per split by the same hash rank",
+    "Order three blind packets by SHA-256(seed:review:ID), then ID",
+    "No model-performance inputs or automatic replacements"
+  ],
+  "split_composition": {
+    "dev": {
+      "answerable": 9,
+      "off_topic": 1,
+      "temporal_near_miss": 1,
+      "entity_near_miss": 1,
+      "attribute_near_miss": 1,
+      "false_premise": 1,
+      "ambiguous_question": 1
+    },
+    "test": {
+      "answerable": 9,
+      "off_topic": 1,
+      "temporal_near_miss": 1,
+      "entity_near_miss": 1,
+      "attribute_near_miss": 1,
+      "false_premise": 1,
+      "ambiguous_question": 1
+    }
+  },
+  "required_reviews": 60,
+  "reviewers_per_question": 2,
+  "reviewer_policy": "Same two independent humans each review all 30",
+  "answerability_kappa_minimum": 0.7,
+  "release_checks": [
+    "source_and_reference_semantics",
+    "corpus_wide_negative_checks",
+    "split_and_historical_overlap",
+    "duplicate_pair_review",
+    "licensing",
+    "held_out_protocol_and_exposure_log"
+  ],
+  "fixture_infrastructure_requires_human_acceptance": false,
+  "empirical_evaluation_requires_pilot_release": true,
+  "full_benchmark_gate_satisfied": false
+}
