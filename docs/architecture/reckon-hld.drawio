@@ -1,0 +1,189 @@
+<mxfile host="Electron" modified="2026-11-06T15:35:00.000Z" version="24.0.0" type="device">
+  <diagram id="reckon-hld" name="Reckon High-Level Design">
+    <mxGraphModel dx="1740" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1740" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title_block" value="&lt;b style=&quot;font-size:22px;color:#0f172a;&quot;&gt;RECKON &amp;#8212; High-Level System Architecture (HLD)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:13px;color:#475569;&quot;&gt;Selective RAG Decision Framework &amp;#8226; Multi-Layer Network Isolation &amp;#8226; Local Docker Compose Deployment&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="35" y="20" width="850" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="status_badge" value="&lt;b style=&quot;color:#166534;font-size:12px;&quot;&gt;VERIFIED LOCAL DOCKER ARCHITECTURE&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;color:#334155;font-size:11px;&quot;&gt;Loopback Bound (127.0.0.1) &amp;#8226; Air-Gapped Internal Bridge &amp;#8226; Non-Root Least Privilege&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#86efac;strokeWidth=1.5;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="20" width="560" height="46" as="geometry" />
+        </mxCell>
+    
+
+        <mxCell id="host_boundary" value="&lt;b style=&quot;font-size:13px;color:#475569;&quot;&gt;HOST ENVIRONMENT (Developer Laptop)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;strokeWidth=1.5;dashed=1;verticalAlign=top;align=center;spacingTop=10;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="35" y="85" width="220" height="870" as="geometry" />
+        </mxCell>
+
+        <!-- Block 1: User Web Browser -->
+        <mxCell id="user_client" value="&lt;b style=&quot;font-size:14px;color:#0f172a;&quot;&gt;User Web Browser&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#475569;&quot;&gt;Interactive Research UI&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #cbd5e1;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#334155;line-height:1.5;&quot;&gt;&amp;#8226; URL: &lt;b&gt;http://127.0.0.1:3000&lt;/b&gt;&lt;br/&gt;&amp;#8226; Query Lab &amp;amp; Ledger (&lt;i&gt;/&lt;/i&gt;)&lt;br/&gt;&amp;#8226; Evaluation Dashboard (&lt;i&gt;/evaluation&lt;/i&gt;)&lt;br/&gt;&amp;#8226; Experiment Runner (&lt;i&gt;/experiments&lt;/i&gt;)&lt;br/&gt;&amp;#8226; Corpus Explorer (&lt;i&gt;/corpus&lt;/i&gt;)&lt;br/&gt;&amp;#8226; Strict Loopback Access Only&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#64748b;strokeWidth=1.5;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="160" width="190" height="195" as="geometry" />
+        </mxCell>
+
+        <!-- Block 2: Host Ollama Runtime -->
+        <mxCell id="host_ollama" value="&lt;b style=&quot;font-size:14px;color:#b45309;&quot;&gt;Local Ollama Engine&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#78350f;&quot;&gt;Host Process (Bare-Metal)&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #fde68a;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#451a03;line-height:1.5;&quot;&gt;&amp;#8226; Binds: &lt;b&gt;127.0.0.1:11434&lt;/b&gt;&lt;br/&gt;&amp;#8226; LLM: &lt;b&gt;qwen3:4b-q4_K_M&lt;/b&gt;&lt;br/&gt;&amp;#8226; Embed: &lt;b&gt;all-minilm:22m&lt;/b&gt; (BERT-384)&lt;br/&gt;&amp;#8226; Isolated from containers&lt;br/&gt;&amp;#8226; Reached via internal relay&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;strokeWidth=1.5;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="630" width="190" height="190" as="geometry" />
+        </mxCell>
+    
+
+        <mxCell id="docker_boundary" value="&lt;b style=&quot;font-size:14px;color:#0369a1;&quot;&gt;DOCKER COMPOSE TOPOLOGY (compose.yaml)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:11px;color:#64748b;&quot;&gt;Non-root UIDs &amp;#8226; cap_drop: ALL &amp;#8226; read_only root filesystems &amp;#8226; no-new-privileges&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#0284c7;strokeWidth=2;dashed=1;verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="275" y="85" width="1425" height="870" as="geometry" />
+        </mxCell>
+    
+
+        <mxCell id="container_gateway" value="&lt;b style=&quot;font-size:13px;color:#0369a1;&quot;&gt;PERIMETER GATEWAY (reckon-gateway-1)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#64748b;&quot;&gt;Image: reckon-nginx:p6-local &amp;#8226; Bridge: ingress, local&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f9ff;strokeColor=#38bdf8;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="295" y="125" width="280" height="810" as="geometry" />
+        </mxCell>
+
+        <!-- Block 3: HTTP Ingress Proxy -->
+        <mxCell id="gateway_ingress_proxy" value="&lt;b style=&quot;font-size:13px;color:#0c4a6e;&quot;&gt;HTTP Ingress Proxy (:8080)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#0369a1;&quot;&gt;Host Port: 127.0.0.1:3000&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #bae6fd;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#0f172a;line-height:1.45;&quot;&gt;&amp;#8226; &lt;b&gt;Header Scrubbing:&lt;/b&gt; Drops X-Forwarded-*, Authorization, Cookie headers&lt;br/&gt;&amp;#8226; &lt;b&gt;Host Validation:&lt;/b&gt; Enforces 127.0.0.1&lt;br/&gt;&amp;#8226; &lt;b&gt;Payload Guard:&lt;/b&gt; Capped at 1MB&lt;br/&gt;&amp;#8226; &lt;b&gt;Routes / &amp;amp; /api/:&lt;/b&gt; Reverse proxies to internal pod &lt;b&gt;http://backend:8080&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7dd3fc;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="310" y="180" width="250" height="195" as="geometry" />
+        </mxCell>
+
+        <!-- Block 4: Ollama Whitelist Relay -->
+        <mxCell id="gateway_ollama_relay" value="&lt;b style=&quot;font-size:13px;color:#92400e;&quot;&gt;Ollama Whitelist Relay (:11434)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#b45309;&quot;&gt;Internal-Only Egress Relay&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #fde68a;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#451a03;line-height:1.45;&quot;&gt;&amp;#8226; Bound to air-gapped &lt;b&gt;local&lt;/b&gt; network&lt;br/&gt;&amp;#8226; &lt;b&gt;Strict Endpoint Whitelist:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;#8226; GET /api/tags, GET /api/version&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;#8226; POST /api/show&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;#8226; POST /api/chat (Generation)&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;#8226; POST /api/embed (Embeddings)&lt;br/&gt;&amp;#8226; &lt;b&gt;Other Paths:&lt;/b&gt; Immediate HTTP 404&lt;br/&gt;&amp;#8226; Target: &lt;b&gt;host.docker.internal:11434&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#f59e0b;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="310" y="610" width="250" height="215" as="geometry" />
+        </mxCell>
+    
+
+        <mxCell id="pod_boundary" value="&lt;b style=&quot;font-size:13.5px;color:#166534;&quot;&gt;SHARED APPLICATION POD (network_mode: service:backend)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:11px;color:#475569;&quot;&gt;Shared 127.0.0.1 Loopback &amp;#8226; Air-Gapped (internal: true)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;strokeWidth=2;dashed=1;verticalAlign=top;align=left;spacingLeft=15;spacingTop=8;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="605" y="125" width="745" height="810" as="geometry" />
+        </mxCell>
+
+        <!-- Block 5: Internal App Proxy -->
+        <mxCell id="container_app_proxy" value="&lt;b style=&quot;font-size:13px;color:#0f172a;&quot;&gt;Internal Dispatcher Proxy (reckon-app-proxy-1)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:11px;color:#64748b;&quot;&gt;Ports: 127.0.0.1:8080 &amp;amp; :11434&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #cbd5e1;margin:6px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#334155;line-height:1.4;&quot;&gt;&amp;#8226; &lt;b&gt;:8080/api/&lt;/b&gt; &amp;rarr; Routes to FastAPI Backend on &lt;b&gt;127.0.0.1:8000&lt;/b&gt;&lt;br/&gt;&amp;#8226; &lt;b&gt;:8080/&lt;/b&gt; &amp;rarr; Routes to Next.js Frontend on &lt;b&gt;127.0.0.1:3000&lt;/b&gt;&lt;br/&gt;&amp;#8226; &lt;b&gt;:11434/&lt;/b&gt; &amp;rarr; Forwards backend Ollama requests to &lt;b&gt;gateway:11434&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#94a3b8;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="625" y="165" width="705" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Block 6: Next.js Frontend -->
+        <mxCell id="container_frontend" value="&lt;b style=&quot;font-size:13px;color:#0e7490;&quot;&gt;Frontend Service (reckon-frontend-1)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:11px;color:#64748b;&quot;&gt;Next.js 16.4 / React 19 / Node 24 &amp;#8226; Listens: 127.0.0.1:3000&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #cffafe;margin:6px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#164e63;line-height:1.4;&quot;&gt;&amp;#8226; &lt;b&gt;Query Lab &amp;amp; Ledger:&lt;/b&gt; Interactive question execution, evidence citation inspector, and latency breakdown&lt;br/&gt;&amp;#8226; &lt;b&gt;Evaluation Dashboard:&lt;/b&gt; Visualizes Risk-Coverage curve, Policy comparisons, and Reliability diagrams&lt;br/&gt;&amp;#8226; &lt;b&gt;Typed API Client:&lt;/b&gt; Strict JSON contract validation, cancellation signals, bounded reads&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfeff;strokeColor=#06b6d4;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="625" y="270" width="705" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Block 7: Backend Service Container & Principal Subsystems -->
+        <mxCell id="container_backend" value="&lt;b style=&quot;font-size:13.5px;color:#166534;&quot;&gt;Backend Service (reckon-backend-1)&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style=&quot;font-size:11px;color:#475569;&quot;&gt;FastAPI / Python 3.13 / Uvicorn &amp;#8226; Listens: 127.0.0.1:8000&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#15803d;strokeWidth=1.5;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="625" y="385" width="705" height="530" as="geometry" />
+        </mxCell>
+
+        <!-- Subsystem 7A: API Layer -->
+        <mxCell id="subsys_api" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;FastAPI API Layer &amp;amp; Middleware (app.api)&lt;/b&gt;&lt;br/&gt;&lt;div style=&quot;font-size:10.5px;color:#334155;text-align:left;line-height:1.35;&quot;&gt;&amp;#8226; &lt;b&gt;POST /api/v1/query:&lt;/b&gt; Interactive single-query orchestration &amp;amp; citations&lt;br/&gt;&amp;#8226; &lt;b&gt;POST /api/v1/experiments/jobs:&lt;/b&gt; Asynchronous batch benchmark job execution&lt;br/&gt;&amp;#8226; &lt;b&gt;Strict Security:&lt;/b&gt; Local loopback enforcement, CORS origin lock, request size limits&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;strokeWidth=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="420" width="675" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Subsystem 7B: Retrieval Engine -->
+        <mxCell id="subsys_retrieval" value="&lt;b style=&quot;font-size:12px;color:#14532d;&quot;&gt;Retrieval Subsystem (app.retrieval)&lt;/b&gt;&lt;br/&gt;&lt;div style=&quot;font-size:10.5px;color:#14532d;text-align:left;line-height:1.35;&quot;&gt;&amp;#8226; &lt;b&gt;BM25 Lexical:&lt;/b&gt; Okapi BM25 index (k1=1.5, b=0.75) with character offsets&lt;br/&gt;&amp;#8226; &lt;b&gt;Dense Cosine:&lt;/b&gt; all-minilm:22m (384-dim BERT) embeddings via Ollama /api/embed&lt;br/&gt;&amp;#8226; &lt;b&gt;Hybrid RRF:&lt;/b&gt; Reciprocal Rank Fusion (k=60) over merged candidate pools &amp;#8226; LRU Cache (Capacity 8)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#86efac;strokeWidth=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="515" width="675" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Subsystem 7C: Decision & Generation Engine -->
+        <mxCell id="subsys_generation" value="&lt;b style=&quot;font-size:12px;color:#78350f;&quot;&gt;Decision &amp;amp; Generation Engine (app.generation)&lt;/b&gt;&lt;br/&gt;&lt;div style=&quot;font-size:10.5px;color:#78350f;text-align:left;line-height:1.35;&quot;&gt;&amp;#8226; &lt;b&gt;Threshold Abstention:&lt;/b&gt; Short-circuits prior to generation if max retrieval score &amp;lt; threshold&lt;br/&gt;&amp;#8226; &lt;b&gt;Prompt Abstention:&lt;/b&gt; Structured sufficiency judgment (insufficient, conflicting, or out-of-scope)&lt;br/&gt;&amp;#8226; &lt;b&gt;Exact Citation Verification:&lt;/b&gt; Character-slice containment [start_char, end_char] against chunks&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#fde68a;strokeWidth=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="615" width="675" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Subsystem 7D: Experiment & Evaluation Engine -->
+        <mxCell id="subsys_eval" value="&lt;b style=&quot;font-size:12px;color:#0e7490;&quot;&gt;Experiment &amp;amp; Evaluation Engine (app.evaluation &amp;amp; app.db)&lt;/b&gt;&lt;br/&gt;&lt;div style=&quot;font-size:10.5px;color:#164e63;text-align:left;line-height:1.35;&quot;&gt;&amp;#8226; &lt;b&gt;Experiment Jobs Queue:&lt;/b&gt; Bounded worker (1 running, 4 queued) with atomic SQLite transactions&lt;br/&gt;&amp;#8226; &lt;b&gt;Selective Risk-Coverage:&lt;/b&gt; Computes Coverage &amp;Phi;(&amp;tau;), Selective Risk R(&amp;tau;), and right-step AURC&lt;br/&gt;&amp;#8226; &lt;b&gt;Confidence Calibration:&lt;/b&gt; Binned reliability diagrams and paired bootstrap intervals&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfeff;strokeColor=#a5f3fc;strokeWidth=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="715" width="675" height="85" as="geometry" />
+        </mxCell>
+    
+
+        <mxCell id="storage_boundary" value="&lt;b style=&quot;font-size:13px;color:#78350f;&quot;&gt;PERSISTENT STORAGE &amp;amp; DATA MOUNTS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;strokeWidth=1.5;dashed=1;verticalAlign=top;align=center;spacingTop=8;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;" vertex="1" parent="1">
+          <mxGeometry x="1375" y="125" width="305" height="810" as="geometry" />
+        </mxCell>
+
+        <!-- Block 8: Named State Volume -->
+        <mxCell id="volume_state" value="&lt;b style=&quot;font-size:13px;color:#92400e;&quot;&gt;Docker Named Volume (state:/state)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#b45309;&quot;&gt;Runtime Persistence&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #fde68a;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#451a03;line-height:1.45;&quot;&gt;&amp;#8226; &lt;b&gt;/state/experiments.sqlite3:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;- Table &lt;i&gt;jobs&lt;/i&gt; (payloads, results)&lt;br/&gt;&amp;nbsp;&amp;nbsp;- Table &lt;i&gt;freezes&lt;/i&gt; (immutable baselines)&lt;br/&gt;&amp;#8226; &lt;b&gt;/state/experiments.lock:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;- OS file-locking mechanism&lt;br/&gt;&amp;#8226; &lt;b&gt;/state/dense/:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;- Precomputed document vectors&lt;br/&gt;&amp;#8226; Persists across all restarts&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="165" width="275" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- Block 9: Read-Only Host Mounts -->
+        <mxCell id="mounted_corpus" value="&lt;b style=&quot;font-size:13px;color:#78350f;&quot;&gt;Read-Only Host Mounts (:ro)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#92400e;&quot;&gt;Immutable Test Datasets&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #fde68a;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#451a03;line-height:1.45;&quot;&gt;&amp;#8226; &lt;b&gt;data/benchmark/documents.jsonl:ro&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;Python stdlib source documentation with character-offset ground truth&lt;br/&gt;&lt;br/&gt;&amp;#8226; &lt;b&gt;data/fixtures/p4_synthetic_v1:ro&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;Synthetic development evaluation split (train &amp;amp; dev questions; no leakage)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="415" width="275" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Block 10: Research Asset Boundary -->
+        <mxCell id="research_isolation" value="&lt;b style=&quot;font-size:13px;color:#78350f;&quot;&gt;Research Asset Isolation&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#92400e;&quot;&gt;Unaccepted Asset Boundary&lt;/span&gt;&lt;hr style=&quot;border:0;border-top:1px solid #fde68a;margin:8px 0;&quot;/&gt;&lt;div style=&quot;text-align:left;font-size:11px;color:#451a03;line-height:1.45;&quot;&gt;&amp;#8226; &lt;b&gt;B2 Candidate Benchmark:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;Maintained in &lt;i&gt;research/benchmarks/&lt;/i&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;Explicitly marked &lt;b&gt;UNACCEPTED&lt;/b&gt;&lt;br/&gt;&amp;#8226; &lt;b&gt;Pilot30 Audit Infrastructure:&lt;/b&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;Review tooling only; no human claims&lt;br/&gt;&amp;#8226; &lt;b&gt;Strict Isolation:&lt;/b&gt; Not mounted to runtime&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;strokeWidth=1.2;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="650" width="275" height="210" as="geometry" />
+        </mxCell>
+    
+
+        <!-- 1. Browser to Gateway Ingress -->
+        <mxCell id="edge_user_gateway" value="HTTP&lt;br/&gt;127.0.0.1:3000" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#0284c7;strokeWidth=2;fontColor=#0369a1;" edge="1" parent="1" source="user_client" target="gateway_ingress_proxy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Gateway to App Proxy -->
+        <mxCell id="edge_gateway_proxy" value="Proxy Pass (:8080)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#0284c7;strokeWidth=2;fontColor=#0369a1;" edge="1" parent="1" source="gateway_ingress_proxy" target="container_app_proxy">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="277" />
+              <mxPoint x="585" y="207" />
+            </Array>
+            <mxPoint y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. App Proxy to Frontend UI -->
+        <mxCell id="edge_proxy_frontend" value="Web Routes (/*)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#06b6d4;strokeWidth=1.5;fontColor=#0e7490;" edge="1" parent="1" source="container_app_proxy" target="container_frontend">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="55" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. App Proxy to Backend API -->
+        <mxCell id="edge_proxy_backend" value="API Routes (/api/*)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#16a34a;strokeWidth=1.5;fontColor=#166534;" edge="1" parent="1" source="container_app_proxy" target="subsys_api">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1320" y="235" />
+              <mxPoint x="1320" y="460" />
+            </Array>
+            <mxPoint x="-45" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Backend to Internal Ollama Egress Relay -->
+        <mxCell id="edge_backend_egress" value="LLM &amp; Embed Calls (:11434)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#d97706;strokeWidth=1.5;fontColor=#b45309;" edge="1" parent="1" source="subsys_generation" target="gateway_ollama_relay">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="657" />
+              <mxPoint x="590" y="717" />
+            </Array>
+            <mxPoint y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Gateway Relay to Host Ollama -->
+        <mxCell id="edge_relay_ollama" value="Whitelisted Relay Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#d97706;strokeWidth=2;fontColor=#b45309;" edge="1" parent="1" source="gateway_ollama_relay" target="host_ollama">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Backend to Volume Storage -->
+        <mxCell id="edge_backend_storage" value="SQLite Persistence" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#d97706;strokeWidth=1.5;fontColor=#b45309;" edge="1" parent="1" source="subsys_eval" target="volume_state">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1350" y="757" />
+              <mxPoint x="1350" y="275" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Backend to Host Mounts -->
+        <mxCell id="edge_backend_mounts" value="Read Corpus (:ro)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=11;labelBackgroundColor=#ffffff;labelBorderColor=#cbd5e1;fontColor=#0f172a;;strokeColor=#d97706;strokeWidth=1.5;fontColor=#b45309;" edge="1" parent="1" source="subsys_retrieval" target="mounted_corpus">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1340" y="557" />
+              <mxPoint x="1340" y="520" />
+            </Array>
+            <mxPoint y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+    
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
