@@ -296,7 +296,9 @@ h2 { font: 700 var(--type-section)/1.1 var(--font-plex-sans), Arial, sans-serif;
 .risk-plot { margin-inline: 0; max-width: 680px; overflow-x: auto; }
 .risk-plot svg { width: 100%; min-width: 520px; height: auto; color: var(--ink); }
 .risk-plot text { fill: currentColor; font: 13px var(--font-sans), sans-serif; }
-.risk-plot figcaption { color: var(--muted); }
+.risk-plot figcaption { color: var(--muted); font-size: var(--type-sm); margin-top: var(--s2); }
+.risk-plot:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.outcome-breakdown-chart, .retrieval-performance-plot, .policy-comparison-plot, .calibration-diagram { margin-block: var(--s4); }
 .risk-analysis td, .risk-analysis code { font-variant-numeric: tabular-nums; }
 @media (max-width: 600px) {
   .risk-analysis .analysis-form { gap: var(--s4); }

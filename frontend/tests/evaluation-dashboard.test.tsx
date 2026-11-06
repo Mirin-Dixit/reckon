@@ -9,9 +9,9 @@ import { parseAnalysis } from "../lib/analysis-api";
 import { parseResults, type Job, type Results } from "../lib/experiment-api";
 import { ApiClientError } from "../lib/api";
 import { buildEvaluationReport, exportEvaluationReport, filterObservations, observationOutcome, savedRetrievalRecall, type AnalysisSelection } from "../lib/evaluation-report";
-import { EvaluationObservations } from "../components/evaluation-observations";
+import { EvaluationObservations, OutcomeBreakdownChart, RetrievalPerformancePlot } from "../components/evaluation-observations";
 import { EvaluationReport } from "../components/evaluation-report";
-import { RiskPlot } from "../components/risk-analysis";
+import { CalibrationDiagram, PolicyComparisonPlot, RiskPlot } from "../components/risk-analysis";
 
 const result = (): Results => parseResults(JSON.parse(readFileSync("tests/fixture_job_result.json", "utf8")));
 const report = () => parseAnalysis(JSON.parse(readFileSync("tests/fixture_analysis.json", "utf8")));
@@ -296,4 +296,44 @@ test("recorded-error visualization displays counts without exposing raw exceptio
   const html = renderToStaticMarkup(<EvaluationObservations detail={detail} />);
   assert.match(html, /provider_error: 1 of 3 observations/); assert.doesNotMatch(html, /internal-private-path/);
   assert.match(html, /EXECUTION_FAILURE: 1 of 3 observations/);
+});
+
+test("outcome breakdown chart renders segmented bars for recorded outcomes", () => {
+  const detail = result();
+  const html = renderToStaticMarkup(<OutcomeBreakdownChart observations={detail.observations} />);
+  assert.match(html, /outcome-breakdown-chart/);
+  assert.match(html, /Filtered cohort/);
+  assert.match(html, /n=3/);
+  assert.match(html, /Outcome categories legend/);
+});
+
+test("retrieval performance plot shows active method recall and honest un-evaluated state", () => {
+  const detail = result();
+  const html = renderToStaticMarkup(<RetrievalPerformancePlot detail={detail} />);
+  assert.match(html, /retrieval-performance-plot/);
+  assert.match(html, /BM25/);
+  assert.match(html, /Dense/);
+  assert.match(html, /Hybrid/);
+  assert.match(html, /Active run/);
+  assert.match(html, /Not evaluated in this run/);
+});
+
+test("policy comparison plot renders grouped metrics and respects undefined risk", () => {
+  const analysis = report();
+  const html = renderToStaticMarkup(<PolicyComparisonPlot report={analysis} />);
+  assert.match(html, /policy-comparison-plot/);
+  assert.match(html, /Coverage A\/N/);
+  assert.match(html, /Success Cov/);
+  assert.match(html, /Selective Risk/);
+  assert.match(html, /Failures E\/N/);
+});
+
+test("calibration reliability diagram truthfully reports uncalibrated status when judgments are unknown", () => {
+  const analysis = report();
+  analysis.loss_basis = "unknown";
+  const html = renderToStaticMarkup(<CalibrationDiagram report={analysis} />);
+  assert.match(html, /calibration-diagram/);
+  assert.match(html, /Ideal \(y = x\)/);
+  assert.match(html, /Confidence calibration not evaluated/);
+  assert.match(html, /Answer accuracy judgments are unknown/);
 });

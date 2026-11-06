@@ -254,6 +254,13 @@ def test_threshold_boundary_and_direction(score, threshold, direction, expected)
     assert selection.policy_parameters["observed_aggregate_score"] == score
     assert selection.policy_parameters["threshold"] == threshold
     assert selection.policy_parameters["aggregation"] == "max"
+    expected_comp = (
+        (">=" if expected is Decision.ANSWER else "<")
+        if direction is ThresholdDirection.AT_LEAST
+        else ("<=" if expected is Decision.ANSWER else ">")
+    )
+    expected_text = f"retrieval score {score} {expected_comp} threshold {threshold}"
+    assert expected_text in selection.reason.explanation
 
 
 def test_threshold_uses_max_and_preserves_contradictions_and_partial_assessment():

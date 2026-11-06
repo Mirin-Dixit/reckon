@@ -328,9 +328,14 @@ class ThresholdAbstentionPolicy:
             else aggregate_score <= self.threshold
         )
         decision = Decision.ANSWER if passed else Decision.ABSTAIN
+        comparator = (
+            (">=" if passed else "<")
+            if self.direction is ThresholdDirection.AT_LEAST
+            else ("<=" if passed else ">")
+        )
         explanation = (
             f"Maximum {expected_method} retrieval score {aggregate_score} "
-            f"{'>=' if self.direction is ThresholdDirection.AT_LEAST else '<='} "
+            f"{comparator} "
             f"threshold {self.threshold}."
         )
         reason = DecisionReason(

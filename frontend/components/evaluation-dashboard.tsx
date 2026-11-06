@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { metrics, type AnalysisReport } from "../lib/analysis-api";
 import { canAnalyze, comparisonBlocker, createEvaluationClient, evaluationSession, initialEvaluationState, type EvaluationState } from "../lib/evaluation-dashboard";
 import type { Job, Results } from "../lib/experiment-api";
-import { IntervalText, RiskPlot } from "./risk-analysis";
+import { CalibrationDiagram, IntervalText, PolicyComparisonPlot, RiskPlot } from "./risk-analysis";
 import { EvaluationObservations } from "./evaluation-observations";
 import { EvaluationReport } from "./evaluation-report";
 
@@ -16,6 +16,7 @@ export function PolicyPerformance({ report }: { report: AnalysisReport }) {
   return <section className="evaluation-section" aria-labelledby="performance-heading">
     <h2 id="performance-heading">Policy performance</h2>
     <p>{report.loss_basis === "unknown" ? "Answer judgments are unknown. Selective risk remains undefined." : "Synthetic lexical exact-match proxy only, not verified semantic correctness."} Each policy uses the same {report.matched_questions} matched questions; observations across policies are not independent samples.</p>
+    <PolicyComparisonPlot report={report} />
     <div className="ledger-scroll" role="region" aria-label="Saved policy metrics" tabIndex={0}><table className="evidence-table">
       <caption>R1 policy metrics, with undefined values retained</caption><thead><tr><th scope="col">Policy / experiment</th><th scope="col">End-to-end coverage A/N</th><th scope="col">Successful-execution coverage A/(A+B+C)</th><th scope="col">Selective risk</th><th scope="col">Failure rate</th><th scope="col">Missing observation rate</th><th scope="col">Judgment completeness</th></tr></thead>
       <tbody>{report.rows.map(row => <tr key={row.id}><th scope="row">{row.policy}<br /><code>{row.experiment_id}</code>{row.threshold !== null && <p>{row.direction} threshold {row.threshold}</p>}</th>
@@ -36,6 +37,7 @@ export function EvaluationAnalysis({ report }: { report: AnalysisReport }) {
       {!report.curves.length ? <p>No saved threshold series. Individual operating points do not establish AURC.</p> : report.curves.map(curve => <div className="evaluation-area" key={curve.id}><h3>{curve.area.full_aurc !== null ? "Complete threshold sweep" : curve.area.partial_aurc !== null ? "Partial threshold curve" : "Undefined AURC"}</h3><p>Series <code>{curve.id}</code> / {curve.points.length} saved operating points. {curve.area.full_aurc !== null ? `Full right-step AURC: ${metric(curve.area.full_aurc)}` : curve.area.partial_aurc !== null ? `Partial right-step area: ${metric(curve.area.partial_aurc)}` : `Unavailable: ${curve.area.undefined_reason}`}</p><p>Coverage domain: {curve.area.coverage_bounds ? `[${curve.area.coverage_bounds.map(metric).join(", ")}]` : "Unavailable"}.</p><IntervalText interval={curve.uncertainty} /></div>)}
       {report.curve_comparisons.map(pair => <p key={`${pair.left}:${pair.right}`}>Validated AURC difference <code>{pair.left}</code> minus <code>{pair.right}</code>: {metric(pair.uncertainty.estimate)}. <IntervalText interval={pair.uncertainty} /></p>)}
     </section>
+    <section className="evaluation-section" aria-labelledby="calibration-heading"><h2 id="calibration-heading">Confidence calibration</h2><p>Reliability diagram comparing model-assigned confidence to observed accuracy. Uncalibrated ranking scores cannot be interpreted as calibrated probabilities.</p><CalibrationDiagram report={report} /></section>
     <section className="evaluation-section" aria-labelledby="analysis-provenance"><h2 id="analysis-provenance">Analysis provenance and limitations</h2><dl className="ledger-metadata">
       <div><dt>Analysis schema</dt><dd><code>{report.schema_version}</code></dd></div><div><dt>Compatibility fingerprint</dt><dd><code>{report.provenance_sha256}</code></dd></div><div><dt>Split / retrieval</dt><dd>{report.split} / {report.retrieval_method}</dd></div><div><dt>Judgment basis</dt><dd>{report.loss_basis}; no verified human semantic judgments are supplied.</dd></div><div><dt>Bootstrap</dt><dd>{report.interval_method}; {report.resamples} resamples; seed {report.seed}; {report.resampling_units} units</dd></div>
     </dl><details><summary>Source-record fingerprints</summary><ul>{report.rows.map(row => <li key={row.id}><code>{row.experiment_id}</code> / {row.policy}: <code>{row.source_record_sha256}</code></li>)}</ul></details><ul>{report.limitations.map(text => <li key={text}>{text}</li>)}</ul></section>
