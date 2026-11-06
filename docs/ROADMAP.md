@@ -1,5 +1,31 @@
 # Reckon implementation roadmap
 
+## Approved pilot scope update — 4 November 2026
+
+The user approved a separate `python311-pilot30.v1` track for the next application
+milestones. See the [pilot protocol](benchmark/pilot30_protocol.md). This is a
+scope revision within B2, not a new milestone or completion of original B2.3.
+
+| Track | Current status and applicable gate |
+|---|---|
+| Full Python benchmark | 160 unaccepted candidates; original 250-review gate intact; Test unfrozen |
+| New exploratory pilot | 30 selected references, Dev 15 / held-out 15; zero reviews; separate 60-review/semantic/overlap/agreement/explicit-freeze gate |
+| P4/R1/P5 infrastructure | May be developed now using clearly labeled synthetic fixtures; not implemented or accepted by the pilot protocol work |
+| Empirical pilot evaluation | Blocked until pilot acceptance and separate local-inference authorization; tune only on pilot Dev |
+
+All original full-benchmark sources, questions, hashes, packets and acceptance
+contracts remain unchanged. The old 54-question mixed-domain pilot is a third,
+historical dataset, not this selection. The full target's S3 requirements are not
+earned by selecting or accepting a 30-question exploratory subset.
+
+After pilot acceptance, P4 may integrate its gated evaluator-only selection and
+fingerprints; R1 may evaluate a frozen configuration on its 15 held-out questions;
+P5 may display those actual exploratory results with counts and uncertainty. Before
+then, all three milestones can progress on synthetic fixtures without waiting for
+60 reviews. Preserve P4 → R1 → P5 → P6 sequencing; no empirical claims from fixtures.
+The rules below apply to the full benchmark unless this explicit pilot exception
+is stated. Original B2.3 remains pending rather than being retroactively accepted.
+
 The finished product is defined by the local `TARGET_SPEC.md`; this roadmap
 orders implementation and acceptance work without redefining that target.
 Track functional application milestones separately from the weighted S1-S13
@@ -126,7 +152,7 @@ keyboard focus and screen-reader acceptance remain manual gates. See the
 Begin immediately alongside P1; its placement here is not a serial dependency
 on P3.
 
-- [ ] Audit existing questions, evidence, source provenance and near-miss pairs.
+- [x] Audit existing questions, evidence, source provenance and near-miss pairs.
 - [ ] Establish Python 3.11 source scope and topic clusters; keep related
   near-miss questions in the same held-out group.
 - [ ] Reach at least 100 verified questions, including at least 30 held-out Test.
@@ -136,6 +162,29 @@ on P3.
 
 Gate: loader and exact-offset checks pass, source/topic leakage is reviewed,
 review decisions are recorded, and the immutable Test freeze is approved.
+
+B2 Batch 1 audit is accepted. The approved v2 design preserves the mixed-domain
+pilot and targets a separate Python 3.11 corpus with 160 human-verified questions
+(Train 96, Dev 24, Test 40; answerable 96, negative/clarification 64), exceeding
+the interim 100/30 gate without changing the finished target. Batch 2A established
+[source/taxonomy/review planning](benchmark/python311_v2_plan.md). Batch 2 now
+contains a separate [Python 3.11.9 candidate corpus](../data/benchmark_v2/python311_3_11_9/README.md):
+34 official pages pinned to CPython commit
+`de54cf5be371a6f5e2e9f208c38def5f81d3ef02`, 160 machine-authored candidates with
+the approved counts, versioned offline schemas, exact-offset/hash validation and
+a pending human-review ledger. Zero records have human acceptance. Semantic
+verification, corpus-wide negative checks and independent split-overlap review
+remain required; Test is not frozen. Neither v1 loader/runtime behavior nor the
+existing pilot/sample records change. No Test inference or automatic Batch 3
+transition is authorized by candidate structural validation.
+
+B2 Batch 3 has prepared the [independent human-review queue](benchmark/human_review_workflow.md):
+16 ten-question packets, 90 dual-review candidates and 70 single-review candidates
+(250 minimum human reviews), plus deterministic duplicate/leakage alarms and blank
+pair-adjudication forms. Zero human decisions are recorded. Source/hash/split
+validation does not satisfy human acceptance, agreement or Test-freeze gates.
+The benchmark remains candidate-only and Test unfrozen. P4 completion below is
+limited to synthetic fixtures and does not satisfy these benchmark gates.
 
 ### P4 - Experiment Runner
 
@@ -228,8 +277,10 @@ criteria independently of Pass 1 functional progress.
 
 ## Non-negotiable rules
 
-1. The Test split is never used until B2 is frozen.
-2. R1's reported Test run cannot start before B2 is frozen.
+1. Full-benchmark Test remains gated by the original B2 freeze. Only the separately
+   accepted pilot's selected held-out members may be evaluated under its protocol.
+2. R1's full reported Test run cannot start before the full B2 freeze; an exploratory
+   pilot run instead requires its own acceptance/freeze and inference authorization.
 3. Prompts and thresholds are tuned using Train/Dev only.
 4. No fabricated model results or dashboard metrics.
 5. Gold labels never reach the runtime inference path.

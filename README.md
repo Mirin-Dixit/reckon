@@ -23,6 +23,15 @@ See [identity and storage compatibility](docs/rebranding.md) before restarting a
 
 ## Current Backend Status
 
+**Evaluation scope update, 4 November 2026:** the next application milestones may
+use the separate [30-question exploratory pilot](docs/benchmark/pilot30_protocol.md)
+after its own 60-review acceptance gate. The full 160-question benchmark remains
+unaccepted, with its original gate and unfrozen Test. P4/R1/P5 infrastructure may
+be developed with clearly labeled synthetic fixtures before human review completes;
+empirical evaluation requires pilot acceptance and separately authorized inference.
+Start the existing review interface with `--pilot` for its three selected packets.
+This pilot does not replace the older 54-question mixed-domain dataset.
+
 P1 now defaults to a local-only Ollama provider with structured JSON, bounded
 context/output, one-inference concurrency and a shared attempt budget. The
 project has a strict zero-spending constraint: paid inference plans are cancelled.
@@ -313,3 +322,43 @@ P3 Batch 2 adds the evidence ledger, exact Unicode citation highlights, typed
 score provenance and supplied execution metadata. Manual browser acceptance
 remains pending; these interfaces do not establish semantic grounding, retrieval
 quality or benchmark-wide reliability.
+
+### B2 Batch 2 - Python 3.11 benchmark candidates
+
+The [separate v2 corpus](data/benchmark_v2/python311_3_11_9/README.md) contains
+34 official Python 3.11.9 source pages pinned to an immutable CPython commit and
+160 machine-authored **candidates**, not human-verified questions: Train 96,
+Dev 24, Test 40; answerable 96 and negative/clarification 64. The review ledger
+contains zero completed human reviews. Exact-offset, source-hash, schema and
+structural split checks are available through the offline
+`app.evaluation.benchmark_v2` validator. Independent semantic/negative-case and
+split-overlap review remains required before acceptance or Test freeze.
+The frozen 54-question pilot and application dataset selection are unchanged;
+there is no v2 evaluation adapter or new model inference in this batch.
+
+### B2 Batch 3 — local human-review interface
+
+The offline review page provides packet navigation, full pinned-source search,
+exact passage selection, saved first-pass judgments and annotation verification.
+It reuses the existing submission validator. Start it from the repository root:
+
+```powershell
+$env:PYTHONPATH = 'backend'
+$reviewerId = Read-Host 'Your real reviewer identifier (no spaces)'
+.\.venv\Scripts\python.exe -m app.evaluation.review_app --reviewer $reviewerId --port 8010
+```
+
+Open `http://127.0.0.1:8010`. This separate local curation service makes no model
+calls and is not part of Query Lab. It binds only to loopback, serves one configured
+reviewer and writes drafts under `.ragbench-cache/human-review/browser/`.
+It does not authenticate human identity. Reviewers work separately; do not expose
+the service through a public proxy or tunnel. Stop it with Ctrl+C.
+
+Annotations stay hidden until all ten first-pass entries in a packet are saved;
+reveal locks those judgments. Assisted notes retain a null independence attestation
+and cannot pass the independent-review gate. Exported files retain the existing
+submission schema. Saving or obtaining `validated_not_imported` receipts does not
+import reviews, accept candidates, compute agreement or freeze Test. The 250-review
+requirement and all other release gates remain in force. See the
+[review workflow](docs/benchmark/human_review_workflow.md#local-browser-interface)
+for resume, validation, the existing Q1/Q2 discrepancy and manual acceptance checks.

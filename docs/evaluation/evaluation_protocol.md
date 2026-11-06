@@ -1,5 +1,14 @@
 # Reckon Evaluation Protocol
 
+> **Separate scope, 4 November 2026:** This document describes the historical
+> 54-question mixed-domain evaluator. The new 30-question Python exploratory pilot
+> has its own [protocol and gate](../benchmark/pilot30_protocol.md), while the full
+> 160-question benchmark remains unaccepted and Test unfrozen. Infrastructure for
+> P4/R1/P5 may use labeled synthetic fixtures immediately. Empirical pilot use must
+> wait for its 60 genuine reviews, other release gates and explicit approval; model
+> inference still requires separate authorization. Its 15 held-out questions are
+> never used for tuning. No pilot-to-runtime adapter is implemented by this scope.
+
 > **Pilot limitation:** this benchmark has 54 questions total, with only 3 Dev
 > questions and 1 Test question. These splits do not support generalization or
 > statistically reliable performance claims.
