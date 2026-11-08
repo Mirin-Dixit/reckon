@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { analysisFailure, createAnalysisClient, createAnalysisTask, parseAnalysis, type AnalysisReport } from "../lib/analysis-api";
 import { ApiClientError } from "../lib/api";
-import { AnalysisAction, AnalysisView, RiskAnalysis, RiskPlot } from "../components/risk-analysis";
+import { AnalysisAction, AnalysisView, RiskAnalysis, RiskPlot, PolicyComparisonPlot, CalibrationDiagram } from "../components/risk-analysis";
 
 const fixture = (): AnalysisReport => JSON.parse(readFileSync(resolve(process.cwd(), "tests/fixture_analysis.json"), "utf8"));
 const id = fixture().rows[0].experiment_id;
@@ -243,4 +243,27 @@ test("analysis styles define input boundaries, separate checkbox rows, focus and
   assert.match(css, /\.risk-analysis :is\(input, button\):focus-visible[^}]*outline: 2px solid var\(--accent\)/);
   assert.match(css, /\.risk-analysis \.analysis-results[^}]*border-top: 1px solid var\(--stone\)/);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.analysis-action \.query-actions[^}]*flex-direction: column/);
+});
+
+test("research visualizations render enhanced gridlines, tooltips, and ideal calibration reference", () => {
+  const report = fixture();
+  const riskHtml = renderToStaticMarkup(<RiskPlot report={report} />);
+  assert.match(riskHtml, /stroke="var\(--stone\)" stroke-dasharray="3 3"/);
+  assert.match(riskHtml, /End-to-end coverage A\/N/);
+  assert.match(riskHtml, /Selective lexical-proxy risk/);
+
+  const policyHtml = renderToStaticMarkup(<PolicyComparisonPlot report={report} />);
+  assert.match(policyHtml, /Rate \/ Fraction/);
+  assert.match(policyHtml, /Coverage A\/N/);
+  assert.match(policyHtml, /Success Cov/);
+  assert.match(policyHtml, /Selective Risk/);
+
+  const calHtml = renderToStaticMarkup(<CalibrationDiagram report={report} />);
+  assert.match(calHtml, /Ideal \(y = x\)/);
+  assert.match(calHtml, /Mean predicted confidence bin/);
+  assert.match(calHtml, /Observed empirical accuracy/);
+  assert.match(calHtml, /Synthetic lexical proxy reliability/);
+
+  const calUnknownHtml = renderToStaticMarkup(<CalibrationDiagram report={{ ...report, loss_basis: "unknown" }} />);
+  assert.match(calUnknownHtml, /Confidence calibration not evaluated/);
 });

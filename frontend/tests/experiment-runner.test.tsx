@@ -17,7 +17,7 @@ import {
 } from "../lib/experiment-api";
 import { ApiClientError } from "../lib/api";
 import { createMutationGate, downloadJson } from "../lib/workspace-actions";
-import { ExperimentRunner, ExperimentResults, ExperimentHistory, ExperimentDetail, nextExperimentSelection } from "../components/experiment-runner";
+import { ExperimentRunner, ExperimentResults, ExperimentHistory, ExperimentDetail, ExperimentStatusOverview, nextExperimentSelection } from "../components/experiment-runner";
 
 const fixturePath = resolve(process.cwd(), "tests/fixture_job_result.json");
 const validResults: Results = JSON.parse(readFileSync(fixturePath, "utf-8"));
@@ -484,4 +484,26 @@ test("shared research controls remain visible, responsive and reduced-motion saf
   assert.match(css, /@media \(max-width: 1200px\) and \(min-width: 601px\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition: none/);
   assert.match(css, /experiment-history progress[^}]*accent-color: var\(--accent\)/);
+});
+
+test("experiment status overview visualizes real persisted job counts with proportional meter and accessibility", () => {
+  const sampleJobs: Job[] = [
+    { ...validJob, id: "00000000-0000-0000-0000-000000000001", status: "done" },
+    { ...validJob, id: "00000000-0000-0000-0000-000000000002", status: "running" },
+    { ...validJob, id: "00000000-0000-0000-0000-000000000003", status: "queued" },
+    { ...validJob, id: "00000000-0000-0000-0000-000000000004", status: "failed" },
+  ];
+  const html = renderToStaticMarkup(<ExperimentStatusOverview jobs={sampleJobs} />);
+  assert.match(html, /class="experiment-status-overview"/);
+  assert.match(html, /Saved run cohort \(4 total\)/);
+  assert.match(html, /Completed<\/span><span class="status-chip-count">1 <small>\(25%\)<\/small><\/span>/);
+  assert.match(html, /Running<\/span><span class="status-chip-count">1 <small>\(25%\)<\/small><\/span>/);
+  assert.match(html, /Queued<\/span><span class="status-chip-count">1 <small>\(25%\)<\/small><\/span>/);
+  assert.match(html, /Failed \/ Partial<\/span><span class="status-chip-count">1 <small>\(25%\)<\/small><\/span>/);
+  assert.match(html, /role="img" aria-label="Status breakdown: 1 completed \(25%\), 1 running \(25%\), 1 queued \(25%\), 1 failed \(25%\)"/);
+
+  // Empty state test
+  const emptyHtml = renderToStaticMarkup(<ExperimentStatusOverview jobs={[]} />);
+  assert.match(emptyHtml, /class="experiment-status-overview is-empty"/);
+  assert.match(emptyHtml, /No saved experiments recorded on this page/);
 });

@@ -380,4 +380,10 @@ def _execution_status(error: Exception) -> ExecutionStatus:
             ProviderErrorKind.REFUSAL: ExecutionStatus.REFUSED,
             ProviderErrorKind.INCOMPLETE: ExecutionStatus.INCOMPLETE,
         }.get(error.kind, ExecutionStatus.FAILED)
+    from app.retrieval.runtime import RetrievalFailure
+
+    if isinstance(error, RetrievalFailure) and error.execution_status == "timed_out":
+        return ExecutionStatus.TIMED_OUT
+    if isinstance(error, TimeoutError):
+        return ExecutionStatus.TIMED_OUT
     return ExecutionStatus.FAILED

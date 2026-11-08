@@ -139,3 +139,21 @@ test("cancelled old evidence cannot replace a newer result or survive the next l
   assert.deepEqual(states.map(s => s.phase), ["loading", "cancelled", "loading", "ready"]);
   assert.doesNotMatch(renderToStaticMarkup(<QueryResult state={states[2]} />), /A grounded claim|Evidence ledger/);
 });
+
+test("evidence passage renders retrieval rank badge and uncalibrated score meter with probability disclaimer", () => {
+  const html = renderToStaticMarkup(<EvidenceLedger result={response} />);
+  assert.match(html, /class="retrieval-rank-badge" aria-label="Retrieval rank 1">Rank #1<\/span>/);
+  assert.match(html, /class="retrieval-method-tag">DENSE COSINE<\/span>/);
+  assert.match(html, /class="evidence-support-card"/);
+  assert.match(html, /Uncalibrated dense_cosine score: <strong>0.0000<\/strong>/);
+  assert.match(html, /Raw ranking score — not a probability/);
+  assert.match(html, /Relative ranking signal within candidate set/);
+});
+
+test("decision details renders structured categorical assessment indicators", () => {
+  const html = renderToStaticMarkup(<DecisionDetails result={response} />);
+  assert.match(html, /class="assessment-badges-grid"/);
+  assert.match(html, /Relevance Assessment/);
+  assert.match(html, /Sufficiency Assessment/);
+  assert.match(html, /Categorical heuristic/);
+});

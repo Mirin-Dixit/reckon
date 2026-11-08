@@ -22,20 +22,26 @@ export function RiskPlot({ report }: { report: AnalysisReport }) {
     return <figure className="risk-plot" tabIndex={0} aria-label="Scrollable synthetic risk–coverage chart">
       <svg viewBox="0 0 560 295" role="img" aria-labelledby={title}>
         <title id={title}>Synthetic risk versus end-to-end coverage coordinate frame. No defined risk points.</title>
+        {[0.25, 0.5, 0.75, 1].map(t => (
+          <line key={`gx-${t}`} x1={x(t)} y1="35" x2={x(t)} y2="230" stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+        ))}
+        {[0.25, 0.5, 0.75, 1].map(t => (
+          <line key={`gy-${t}`} x1="65" y1={y(t)} x2="515" y2={y(t)} stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+        ))}
         <path d="M65 35V230H515" fill="none" stroke="currentColor" strokeWidth="1.5" />
         {[0, 0.25, 0.5, 0.75, 1].map(t => (
           <g key={t}>
-            <line x1={x(t)} y1="230" x2={x(t)} y2="235" stroke="currentColor" strokeWidth="1" />
-            <line x1="60" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1" />
-            <text x={x(t)} y="250" textAnchor="middle">{t}</text>
-            <text x="54" y={y(t)+4} textAnchor="end">{t}</text>
+            <line x1={x(t)} y1="230" x2={x(t)} y2="236" stroke="currentColor" strokeWidth="1.2" />
+            <line x1="59" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1.2" />
+            <text x={x(t)} y="250" textAnchor="middle" fontSize="11" fill="var(--muted)">{t}</text>
+            <text x="54" y={y(t)+4} textAnchor="end" fontSize="11" fill="var(--muted)">{t}</text>
           </g>
         ))}
-        <text x="285" y="280" textAnchor="middle">End-to-end coverage A/N</text>
-        <text transform="translate(17 140) rotate(-90)" textAnchor="middle">Selective lexical-proxy risk</text>
-        <rect x="95" y="105" width="380" height="55" rx="6" fill="var(--surface-card)" stroke="var(--stone)" />
-        <text x="285" y="128" textAnchor="middle" fill="var(--muted)" fontSize="13">No defined risk points.</text>
-        <text x="285" y="146" textAnchor="middle" fill="var(--muted)" fontSize="12">Zero answers or unknown judgments cannot be plotted as zero risk.</text>
+        <text x="285" y="278" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">End-to-end coverage A/N</text>
+        <text transform="translate(17 140) rotate(-90)" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">Selective lexical-proxy risk</text>
+        <rect x="95" y="105" width="380" height="55" rx="6" fill="var(--surface-card)" stroke="var(--stone)" strokeWidth="1" />
+        <text x="285" y="128" textAnchor="middle" fill="var(--ink)" fontSize="13" fontWeight="600">No defined risk points.</text>
+        <text x="285" y="146" textAnchor="middle" fill="var(--muted)" fontSize="11">Zero answers or unknown judgments cannot be plotted as zero risk.</text>
       </svg>
       <figcaption>No defined risk points. Zero answers or unknown judgments cannot be plotted as zero risk.</figcaption>
     </figure>;
@@ -43,10 +49,23 @@ export function RiskPlot({ report }: { report: AnalysisReport }) {
   return <figure className="risk-plot" tabIndex={0} aria-label="Scrollable synthetic risk–coverage chart">
     <svg viewBox="0 0 560 295" role="img" aria-labelledby={title}>
       <title id={title}>Synthetic risk versus end-to-end coverage. Saved operating points; lines only for complete native threshold sweeps.</title>
+      {[0.25, 0.5, 0.75, 1].map(t => (
+        <line key={`gx-${t}`} x1={x(t)} y1="35" x2={x(t)} y2="230" stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+      ))}
+      {[0.25, 0.5, 0.75, 1].map(t => (
+        <line key={`gy-${t}`} x1="65" y1={y(t)} x2="515" y2={y(t)} stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+      ))}
       <path d="M65 35V230H515" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      {[0,.25,.5,.75,1].map(t => <g key={t}><text x={x(t)} y="250" textAnchor="middle">{t}</text><text x="54" y={y(t)+4} textAnchor="end">{t}</text></g>)}
-      <text x="285" y="280" textAnchor="middle">End-to-end coverage A/N</text>
-      <text transform="translate(17 140) rotate(-90)" textAnchor="middle">Selective lexical-proxy risk</text>
+      {[0, 0.25, 0.5, 0.75, 1].map(t => (
+        <g key={t}>
+          <line x1={x(t)} y1="230" x2={x(t)} y2="236" stroke="currentColor" strokeWidth="1.2" />
+          <line x1="59" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1.2" />
+          <text x={x(t)} y="250" textAnchor="middle" fontSize="11" fill="var(--muted)">{t}</text>
+          <text x="54" y={y(t)+4} textAnchor="end" fontSize="11" fill="var(--muted)">{t}</text>
+        </g>
+      ))}
+      <text x="285" y="278" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">End-to-end coverage A/N</text>
+      <text transform="translate(17 140) rotate(-90)" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">Selective lexical-proxy risk</text>
       {report.curves.filter(c => c.area.undefined_reason === null).map(curve => {
         let previous = curve.points[0]?.coverage ?? 0;
         let path = "";
@@ -56,9 +75,16 @@ export function RiskPlot({ report }: { report: AnalysisReport }) {
           }
           previous = point.coverage;
         }
-        return <path key={curve.id} d={path} stroke="var(--accent)" fill="none" strokeWidth="1.5" />;
+        return <path key={curve.id} d={path} stroke="var(--accent)" fill="none" strokeWidth="2" strokeLinejoin="miter" strokeLinecap="square" />;
       })}
-      {visible.map(row => <circle key={row.id} cx={x(row.end_to_end_coverage.value!)} cy={y(row.selective_risk!)} r="5" fill={policyColors[row.policy]} stroke="var(--ink)"><title>{`${row.experiment_id} / ${row.policy}${row.threshold === null ? "" : ` / threshold ${row.threshold}`}: coverage ${value(row.end_to_end_coverage.value)}, risk ${value(row.selective_risk)}`}</title></circle>)}
+      {visible.map(row => (
+        <g key={row.id}>
+          <circle cx={x(row.end_to_end_coverage.value!)} cy={y(row.selective_risk!)} r="8" fill="none" stroke={policyColors[row.policy]} strokeWidth="1" opacity="0.3" />
+          <circle cx={x(row.end_to_end_coverage.value!)} cy={y(row.selective_risk!)} r="5.5" fill={policyColors[row.policy]} stroke="var(--canvas)" strokeWidth="1.5">
+            <title>{`Policy: ${row.policy}\nExperiment: ${row.experiment_id}${row.threshold !== null ? `\nThreshold: ${row.direction} ${row.threshold}` : ""}\nEnd-to-end coverage: ${value(row.end_to_end_coverage.value)}\nSelective risk: ${value(row.selective_risk)}`}</title>
+          </circle>
+        </g>
+      ))}
     </svg>
     <figcaption>Saved operating points, not a fitted confidence curve. Exact values and uncertainty are in the accompanying tables. No zero-risk point is invented.</figcaption>
     <ul className="risk-legend" aria-label="Policy and experiment legend">{report.rows.map(row => <li key={row.id}><span aria-hidden="true" className="risk-swatch" style={{ backgroundColor: policyColors[row.policy] }} />{row.policy}{row.threshold !== null && ` / threshold ${row.threshold}`} / <code>{row.experiment_id}</code>{row.selective_risk === null && " / risk undefined, no point plotted"}</li>)}</ul>
@@ -78,22 +104,24 @@ export function PolicyComparisonPlot({ report }: { report: AnalysisReport }) {
 
   const rowCount = report.rows.length;
   const colWidth = 430 / Math.max(1, rowCount);
-  const barWidth = Math.min(22, (colWidth - 24) / 4);
+  const barWidth = Math.min(22, (colWidth - 22) / 4);
   const y = (v: number) => 190 - v * 150;
 
   return (
     <figure className="risk-plot policy-comparison-plot" tabIndex={0} aria-label="Abstention policy comparison chart">
-      <svg viewBox="0 0 560 250" role="img" aria-labelledby={title}>
+      <svg viewBox="0 0 560 255" role="img" aria-labelledby={title}>
         <title id={title}>Abstention policy comparison: Coverage, Risk, and Failure rates with 95% bootstrap intervals</title>
+        {[0.25, 0.5, 0.75, 1].map(t => (
+          <line key={t} x1="60" y1={y(t)} x2="515" y2={y(t)} stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+        ))}
         <path d="M65 30V190H515" fill="none" stroke="currentColor" strokeWidth="1.5" />
         {[0, 0.25, 0.5, 0.75, 1].map(t => (
           <g key={t}>
-            <line x1="60" y1={y(t)} x2="515" y2={y(t)} stroke="var(--stone-subtle)" strokeDasharray="3 3" />
-            <line x1="60" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1" />
-            <text x="54" y={y(t) + 4} textAnchor="end" fontSize="12">{t}</text>
+            <line x1="59" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1.2" />
+            <text x="54" y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)">{t}</text>
           </g>
         ))}
-        <text transform="translate(17 110) rotate(-90)" textAnchor="middle" fontSize="12">Rate / Fraction</text>
+        <text transform="translate(17 110) rotate(-90)" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">Rate / Fraction</text>
         {report.rows.map((row, idx) => {
           const groupX = 75 + idx * colWidth;
           const label = row.policy + (row.threshold !== null ? ` (τ=${row.threshold})` : "");
@@ -112,7 +140,7 @@ export function PolicyComparisonPlot({ report }: { report: AnalysisReport }) {
                 if (val === null) {
                   return (
                     <g key={key}>
-                      <rect x={bx} y={y(0.08)} width={barWidth} height={y(0) - y(0.08)} fill="none" stroke="var(--muted)" strokeDasharray="2 2" />
+                      <rect x={bx} y={y(0.08)} width={barWidth} height={y(0) - y(0.08)} fill="none" stroke="var(--muted)" strokeDasharray="2 2" rx="2" />
                       <text x={bx + barWidth / 2} y={y(0.09)} textAnchor="middle" fontSize="9" fill="var(--muted)">undef</text>
                     </g>
                   );
@@ -121,20 +149,20 @@ export function PolicyComparisonPlot({ report }: { report: AnalysisReport }) {
                 const by = y(val);
                 return (
                   <g key={key}>
-                    <rect x={bx} y={by} width={barWidth} height={barH} fill={color} opacity="0.9" rx="1">
-                      <title>{`${label} - ${metricsList[mIdx].label}: ${value(val)}`}</title>
+                    <rect x={bx} y={by} width={barWidth} height={barH} fill={color} opacity="0.95" rx="2">
+                      <title>{`${label}\n${metricsList[mIdx].label}: ${value(val)}${interval && interval.lower !== null ? `\n95% Bootstrap interval: [${value(interval.lower)}, ${value(interval.upper)}]` : ""}`}</title>
                     </rect>
                     {interval && interval.lower !== null && interval.upper !== null && (
-                      <g stroke="var(--ink)" strokeWidth="1.2">
+                      <g stroke="var(--ink)" strokeWidth="1.4">
                         <line x1={bx + barWidth / 2} y1={y(interval.lower)} x2={bx + barWidth / 2} y2={y(interval.upper)} />
-                        <line x1={bx + barWidth / 2 - 3} y1={y(interval.lower)} x2={bx + barWidth / 2 + 3} y2={y(interval.lower)} />
-                        <line x1={bx + barWidth / 2 - 3} y1={y(interval.upper)} x2={bx + barWidth / 2 + 3} y2={y(interval.upper)} />
+                        <line x1={bx + barWidth / 2 - 3.5} y1={y(interval.lower)} x2={bx + barWidth / 2 + 3.5} y2={y(interval.lower)} />
+                        <line x1={bx + barWidth / 2 - 3.5} y1={y(interval.upper)} x2={bx + barWidth / 2 + 3.5} y2={y(interval.upper)} />
                       </g>
                     )}
                   </g>
                 );
               })}
-              <text x={groupX + (barWidth * 2)} y="210" textAnchor="middle" fontSize="11" fill="var(--ink)">
+              <text x={groupX + (barWidth * 2)} y="210" textAnchor="middle" fontSize="11" fontWeight="600" fill="var(--ink)">
                 {row.policy.replace("_", " ")}
               </text>
               {row.threshold !== null && (
@@ -169,23 +197,30 @@ export function CalibrationDiagram({ report }: { report: AnalysisReport }) {
     <figure className="risk-plot calibration-diagram" tabIndex={0} aria-label="Confidence calibration reliability diagram">
       <svg viewBox="0 0 560 270" role="img" aria-labelledby={title}>
         <title id={title}>Reliability diagram: Model confidence vs empirical accuracy</title>
+        {[0.25, 0.5, 0.75, 1].map(t => (
+          <g key={`g-${t}`}>
+            <line x1={x(t)} y1="45" x2={x(t)} y2="210" stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+            <line x1="65" y1={y(t)} x2="500" y2={y(t)} stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+          </g>
+        ))}
         <path d="M65 45V210H500" fill="none" stroke="currentColor" strokeWidth="1.5" />
         {[0, 0.25, 0.5, 0.75, 1].map(t => (
           <g key={t}>
-            <line x1={x(t)} y1="210" x2={x(t)} y2="215" stroke="currentColor" strokeWidth="1" />
-            <line x1="60" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1" />
-            <text x={x(t)} y="230" textAnchor="middle" fontSize="12">{t}</text>
-            <text x="54" y={y(t) + 4} textAnchor="end" fontSize="12">{t}</text>
+            <line x1={x(t)} y1="210" x2={x(t)} y2="216" stroke="currentColor" strokeWidth="1.2" />
+            <line x1="59" y1={y(t)} x2="65" y2={y(t)} stroke="currentColor" strokeWidth="1.2" />
+            <text x={x(t)} y="230" textAnchor="middle" fontSize="11" fill="var(--muted)">{t}</text>
+            <text x="54" y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)">{t}</text>
           </g>
         ))}
         <line x1={x(0)} y1={y(0)} x2={x(1)} y2={y(1)} stroke="var(--muted)" strokeDasharray="4 4" strokeWidth="1.5" />
-        <text x="440" y="60" fontSize="11" fill="var(--muted)">Ideal (y = x)</text>
-        <text x="282" y="255" textAnchor="middle" fontSize="12">Mean predicted confidence bin</text>
-        <text transform="translate(17 130) rotate(-90)" textAnchor="middle" fontSize="12">Observed empirical accuracy</text>
+        <rect x="365" y="52" width="130" height="20" rx="3" fill="var(--surface-subtle)" stroke="var(--stone)" />
+        <text x="430" y="66" textAnchor="middle" fontSize="10" fill="var(--muted)">Ideal (y = x)</text>
+        <text x="282" y="255" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">Mean predicted confidence bin</text>
+        <text transform="translate(17 130) rotate(-90)" textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)">Observed empirical accuracy</text>
 
         {isLossUnknown ? (
           <g>
-            <rect x="95" y="100" width="375" height="58" rx="6" fill="var(--surface-card)" stroke="var(--stone)" />
+            <rect x="90" y="98" width="385" height="62" rx="8" fill="var(--surface-card)" stroke="var(--stone)" strokeWidth="1" />
             <text x="282" y="122" textAnchor="middle" fill="var(--ink)" fontSize="13" fontWeight="600">
               Confidence calibration not evaluated
             </text>
@@ -195,7 +230,7 @@ export function CalibrationDiagram({ report }: { report: AnalysisReport }) {
           </g>
         ) : (
           <g>
-            <rect x="95" y="100" width="375" height="58" rx="6" fill="var(--surface-card)" stroke="var(--stone)" />
+            <rect x="90" y="98" width="385" height="62" rx="8" fill="var(--surface-card)" stroke="var(--stone)" strokeWidth="1" />
             <text x="282" y="122" textAnchor="middle" fill="var(--ink)" fontSize="13" fontWeight="600">
               Synthetic lexical proxy reliability
             </text>

@@ -179,10 +179,15 @@ class ProviderAnswerGenerator:
                 ProviderErrorKind.MALFORMED_RESPONSE,
                 "Provider citation does not resolve to supplied evidence",
             ) from error
+        effective_unsupported = list(unsupported)
+        if not citations and not effective_unsupported:
+            effective_unsupported.append(
+                "Answer contains no grounded citations in retrieved evidence."
+            )
         return GeneratedAnswer(
             answer=answer,
             citations=tuple(citations),
-            unsupported_premises=tuple(unsupported),
+            unsupported_premises=tuple(effective_unsupported),
             contradictions=tuple(contradictions),
             provider=response.metadata,
             latency_ms=response.latency_ms,

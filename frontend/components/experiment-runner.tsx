@@ -10,6 +10,64 @@ export function nextExperimentSelection(previous: { id: string; revision: number
   return { id, revision: previous.revision + 1 };
 }
 
+export function ExperimentStatusOverview({ jobs }: { jobs: Job[] }) {
+  const total = jobs.length;
+  const completed = jobs.filter(j => j.status === "done").length;
+  const running = jobs.filter(j => j.status === "running").length;
+  const queued = jobs.filter(j => j.status === "queued").length;
+  const failed = jobs.filter(j => j.status === "failed" || j.status === "partial" || j.error !== null).length;
+
+  if (total === 0) {
+    return (
+      <div className="experiment-status-overview is-empty" role="region" aria-label="Experiment status summary">
+        <p className="experiment-status-empty-note">No saved experiments recorded on this page.</p>
+      </div>
+    );
+  }
+
+  const pct = (n: number) => total > 0 ? ((n / total) * 100).toFixed(0) : "0";
+
+  return (
+    <div className="experiment-status-overview" role="region" aria-label="Persisted experiment status distribution">
+      <div className="status-overview-header">
+        <span className="status-overview-title">Saved run cohort ({total} total)</span>
+      </div>
+      <div className="status-chips-grid">
+        <div className="status-chip is-completed">
+          <span className="status-chip-dot" aria-hidden="true" />
+          <span className="status-chip-name">Completed</span>
+          <span className="status-chip-count">{completed} <small>({pct(completed)}%)</small></span>
+        </div>
+        <div className="status-chip is-running">
+          <span className="status-chip-dot" aria-hidden="true" />
+          <span className="status-chip-name">Running</span>
+          <span className="status-chip-count">{running} <small>({pct(running)}%)</small></span>
+        </div>
+        <div className="status-chip is-queued">
+          <span className="status-chip-dot" aria-hidden="true" />
+          <span className="status-chip-name">Queued</span>
+          <span className="status-chip-count">{queued} <small>({pct(queued)}%)</small></span>
+        </div>
+        <div className="status-chip is-failed">
+          <span className="status-chip-dot" aria-hidden="true" />
+          <span className="status-chip-name">Failed / Partial</span>
+          <span className="status-chip-count">{failed} <small>({pct(failed)}%)</small></span>
+        </div>
+      </div>
+      <div
+        className="status-proportional-meter"
+        role="img"
+        aria-label={`Status breakdown: ${completed} completed (${pct(completed)}%), ${running} running (${pct(running)}%), ${queued} queued (${pct(queued)}%), ${failed} failed (${pct(failed)}%)`}
+      >
+        {completed > 0 && <div className="meter-slice is-completed" style={{ width: `${(completed / total) * 100}%` }} title={`Completed: ${completed} (${pct(completed)}%)`} />}
+        {running > 0 && <div className="meter-slice is-running" style={{ width: `${(running / total) * 100}%` }} title={`Running: ${running} (${pct(running)}%)`} />}
+        {queued > 0 && <div className="meter-slice is-queued" style={{ width: `${(queued / total) * 100}%` }} title={`Queued: ${queued} (${pct(queued)}%)`} />}
+        {failed > 0 && <div className="meter-slice is-failed" style={{ width: `${(failed / total) * 100}%` }} title={`Failed / Partial: ${failed} (${pct(failed)}%)`} />}
+      </div>
+    </div>
+  );
+}
+
 export function ExperimentHistory({ jobs, selected, busy, onSelect }: {
   jobs: Job[]; selected: string; busy: boolean; onSelect: (id: string) => void;
 }) {
@@ -184,7 +242,7 @@ export function ExperimentRunner() {
       <button type="button" disabled={busy || loading} onClick={() => { setLoading(true); setRefresh(v => v + 1); }}>{loading ? "Refreshing history…" : "Refresh history"}</button>
       {error && <p className="experiment-error" role="alert">{error}</p>}
       {loading && <p role="status">Loading saved experiments…</p>}
-      {!loading && jobs.length === 0 && <p>No saved experiments on this history page.</p>}
+      {!loading && <ExperimentStatusOverview jobs={jobs} />}
       <ExperimentHistory jobs={jobs} selected={selected || jobs[0]?.id || ""} busy={busy} onSelect={selectJob} />
       <div className="query-actions"><button type="button" disabled={offset === 0 || busy || loading} onClick={() => { setExportFeedback(null); setLoading(true); setOffset(v => Math.max(0, v - 50)); setSelection(previous => nextExperimentSelection(previous, "")); setResult(null); setFreeze(null); setDetailLoading(true); }}>Newer</button><button type="button" disabled={jobs.length < 50 || busy || loading} onClick={() => { setExportFeedback(null); setLoading(true); setOffset(v => v + 50); setSelection(previous => nextExperimentSelection(previous, "")); setResult(null); setFreeze(null); setDetailLoading(true); }}>Older</button></div>
     </section></div>

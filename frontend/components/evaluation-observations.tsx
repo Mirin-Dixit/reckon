@@ -23,45 +23,48 @@ export function OutcomeBreakdownChart({ observations }: { observations: Observat
   ];
 
   const barWidth = 360;
-  const chartHeight = 25 + rows.length * 36 + 25;
+  const chartHeight = 25 + rows.length * 38 + 25;
 
   return (
     <figure className="risk-plot outcome-breakdown-chart" tabIndex={0} aria-label="Outcome breakdown stacked chart">
       <svg viewBox={`0 0 560 ${chartHeight}`} role="img" aria-labelledby={title}>
         <title id={title}>Distribution of Answer, Abstain, Clarify, and Failure outcomes</title>
         {rows.map((row, rIdx) => {
-          const ry = 20 + rIdx * 36;
+          const ry = 20 + rIdx * 38;
           const total = row.items.length;
           let currentX = 130;
           return (
             <g key={row.label}>
-              <text x="120" y={ry + 15} textAnchor="end" fontSize="11" fill="var(--ink)">
+              <text x="120" y={ry + 15} textAnchor="end" fontSize="11" fontWeight="600" fill="var(--ink)">
                 {row.label.length > 15 ? row.label.slice(0, 14) + "…" : row.label}
               </text>
               {total === 0 ? (
-                <rect x="130" y={ry} width={barWidth} height="20" rx="2" fill="var(--surface-subtle)" stroke="var(--stone)" />
+                <rect x="130" y={ry} width={barWidth} height="22" rx="3" fill="var(--surface-subtle)" stroke="var(--stone)" strokeWidth="1" />
               ) : (
-                outcomes.map(out => {
-                  const count = row.items.filter(o => observationOutcome(o) === out.id).length;
-                  if (count === 0) return null;
-                  const segW = (count / total) * barWidth;
-                  const segX = currentX;
-                  currentX += segW;
-                  return (
-                    <g key={out.id}>
-                      <rect x={segX} y={ry} width={segW} height="20" fill={out.color} rx="1">
-                        <title>{`${row.label} - ${out.label}: ${count}/${total} (${((count/total)*100).toFixed(1)}%)`}</title>
-                      </rect>
-                      {segW >= 20 && (
-                        <text x={segX + segW / 2} y={ry + 14} textAnchor="middle" fontSize="10" fill="var(--canvas)" fontWeight="600">
-                          {count}
-                        </text>
-                      )}
-                    </g>
-                  );
-                })
+                <g>
+                  <rect x="130" y={ry} width={barWidth} height="22" rx="3" fill="var(--surface-subtle)" stroke="var(--stone)" strokeWidth="1" />
+                  {outcomes.map(out => {
+                    const count = row.items.filter(o => observationOutcome(o) === out.id).length;
+                    if (count === 0) return null;
+                    const segW = (count / total) * barWidth;
+                    const segX = currentX;
+                    currentX += segW;
+                    return (
+                      <g key={out.id}>
+                        <rect x={segX} y={ry} width={segW} height="22" fill={out.color} rx="2">
+                          <title>{`${row.label}\nOutcome: ${out.label}\nCount: ${count} of ${total} (${((count/total)*100).toFixed(1)}%)`}</title>
+                        </rect>
+                        {segW >= 22 && (
+                          <text x={segX + segW / 2} y={ry + 15} textAnchor="middle" fontSize="10" fill={out.id === "ABSTAIN" || out.id === "UNCLASSIFIED" ? "var(--ink)" : "var(--canvas)"} fontWeight="700">
+                            {count}
+                          </text>
+                        )}
+                      </g>
+                    );
+                  })}
+                </g>
               )}
-              <text x={130 + barWidth + 10} y={ry + 15} fontSize="11" fill="var(--muted)">
+              <text x={130 + barWidth + 12} y={ry + 15} fontSize="11" fill="var(--muted)">
                 n={total}
               </text>
             </g>
@@ -98,15 +101,21 @@ export function RetrievalPerformancePlot({ detail }: { detail: Results }) {
 
   return (
     <figure className="risk-plot retrieval-performance-plot" tabIndex={0} aria-label="Retrieval performance comparison chart">
-      <svg viewBox="0 0 560 175" role="img" aria-labelledby={title}>
+      <svg viewBox="0 0 560 185" role="img" aria-labelledby={title}>
         <title id={title}>Gold evidence retrieval recall by method</title>
+        {[0.25, 0.5, 0.75, 1].map(t => {
+          const bx = 120 + t * 370;
+          return (
+            <line key={`gx-${t}`} x1={bx} y1="20" x2={bx} y2="145" stroke="var(--stone)" strokeDasharray="3 3" opacity="0.6" />
+          );
+        })}
         <path d="M120 20V145H510" fill="none" stroke="currentColor" strokeWidth="1.5" />
         {[0, 0.25, 0.5, 0.75, 1].map(t => {
           const bx = 120 + t * 370;
           return (
             <g key={t}>
-              <line x1={bx} y1="145" x2={bx} y2="150" stroke="currentColor" strokeWidth="1" />
-              <text x={bx} y="165" textAnchor="middle" fontSize="11">{t}</text>
+              <line x1={bx} y1="145" x2={bx} y2="151" stroke="currentColor" strokeWidth="1.2" />
+              <text x={bx} y="166" textAnchor="middle" fontSize="11" fill="var(--muted)">{t}</text>
             </g>
           );
         })}
@@ -126,21 +135,21 @@ export function RetrievalPerformancePlot({ detail }: { detail: Results }) {
           const isEvaluated = recallValue !== null;
           return (
             <g key={m.id}>
-              <text x="110" y={by + 16} textAnchor="end" fontSize="12" fill={isEvaluated ? "var(--ink)" : "var(--muted)"}>
+              <text x="110" y={by + 16} textAnchor="end" fontSize="12" fontWeight="600" fill={isEvaluated ? "var(--ink)" : "var(--muted)"}>
                 {m.name}
               </text>
               {isEvaluated ? (
                 <g>
-                  <rect x="120" y={by} width={Math.max(4, recallValue! * 370)} height="22" rx="2" fill="var(--accent)" opacity="0.9">
-                    <title>{`${m.name}: Gold recall ${recallValue!.toFixed(3)}`}</title>
+                  <rect x="120" y={by} width={Math.max(4, recallValue! * 370)} height="22" rx="3" fill="var(--accent)" opacity="0.95">
+                    <title>{`${m.name} Retrieval\nGold recall: ${recallValue!.toFixed(3)}\nEvaluated in this active experiment`}</title>
                   </rect>
-                  <text x={120 + Math.max(4, recallValue! * 370) + 8} y={by + 16} fontSize="11" fill="var(--ink)">
+                  <text x={120 + Math.max(4, recallValue! * 370) + 8} y={by + 16} fontSize="11" fontWeight="600" fill="var(--ink)">
                     {recallValue!.toFixed(3)} (Active run)
                   </text>
                 </g>
               ) : (
                 <g>
-                  <rect x="120" y={by} width="370" height="22" rx="2" fill="none" stroke="var(--stone)" strokeDasharray="3 3" />
+                  <rect x="120" y={by} width="370" height="22" rx="3" fill="var(--surface-subtle)" stroke="var(--stone)" strokeDasharray="3 3" />
                   <text x="305" y={by + 15} textAnchor="middle" fontSize="11" fill="var(--muted)">
                     Not evaluated in this run
                   </text>

@@ -47,6 +47,8 @@ class LocalHttpTransport:
     def __call__(
         self, method: str, path: str, payload: dict | None, timeout: float
     ) -> dict[str, Any]:
+        if timeout <= 0:
+            raise _error(ProviderErrorKind.TIMEOUT, "Local Ollama request timed out")
         body = (
             None
             if payload is None
@@ -131,6 +133,7 @@ class OllamaProvider:
         self._lock = threading.Lock()
         self._attempts = 0
         self._closed = False
+        self._metadata_cache: dict[str, tuple[ProviderMetadata, int]] = {}
 
     def close(self) -> None:
         with self._lock:
@@ -138,6 +141,10 @@ class OllamaProvider:
 
     def _metadata(self, model: str, timeout: float) -> ProviderMetadata:
         validate_local_model(model)
+        if model in self._metadata_cache:
+            metadata, allowance = self._metadata_cache[model]
+            self._template_allowance = allowance
+            return metadata
         deadline = time.monotonic() + timeout
 
         def read(method: str, path: str, body: dict | None = None) -> dict:
@@ -202,13 +209,15 @@ class OllamaProvider:
             version = read("GET", "/api/version").get("version")
         except ProviderError:
             pass  # Runtime version is optional provenance, never invented.
-        return ProviderMetadata(
+        metadata = ProviderMetadata(
             provider="ollama",
             model=model,
             model_digest=_optional_text(item.get("digest")),
             quantization=_optional_text(details.get("quantization_level")),
             api_version=_optional_text(version),
         )
+        self._metadata_cache[model] = (metadata, self._template_allowance)
+        return metadata
 
     def available(self, model: str) -> bool:
         try:

@@ -28,8 +28,62 @@ function Passage({ chunk, citations, index }: { chunk: EvidenceResponse; citatio
   const metadata = [["Document", chunk.document_id], ["Chunk", chunk.chunk_id], ["Rank", chunk.retrieval_rank],
     ["Retrieval method", chunk.retrieval_method], ["Raw retrieval score", chunk.retrieval_score],
     ["Source URL (text only)", chunk.source_url], ["Version", chunk.version], ["Source date", chunk.source_date], ["Domain", chunk.domain]] as const;
+  const rawScore = chunk.retrieval_score;
+  const method = chunk.retrieval_method ?? "retrieval";
+  const rank = chunk.retrieval_rank ?? index + 1;
+
+  let meterPercent = 50;
+  if (typeof rawScore === "number") {
+    if (chunk.retrieval_method === "dense_cosine" || chunk.retrieval_method === "dense") {
+      meterPercent = Math.max(4, Math.min(100, rawScore >= 0 ? rawScore * 100 : ((rawScore + 1) / 2) * 100));
+    } else if (chunk.retrieval_method === "hybrid_rrf" || chunk.retrieval_method === "hybrid") {
+      meterPercent = Math.max(4, Math.min(100, (rawScore / 0.033) * 100));
+    } else {
+      // BM25 or general unbounded relevance
+      meterPercent = Math.max(4, Math.min(100, (rawScore / 15) * 100));
+    }
+  }
+
   return <article className="evidence-passage" id={`evidence-${index + 1}`} tabIndex={-1} aria-labelledby={`evidence-title-${index + 1}`}>
-    <h4 id={`evidence-title-${index + 1}`}>{chunk.title ?? "Untitled source"}</h4>
+    <div className="passage-rank-header">
+      <div className="rank-badge-group">
+        <span className="retrieval-rank-badge" aria-label={`Retrieval rank ${rank}`}>
+          Rank #{rank}
+        </span>
+        {chunk.retrieval_method && (
+          <span className="retrieval-method-tag">
+            {String(chunk.retrieval_method).replace("_", " ").toUpperCase()}
+          </span>
+        )}
+      </div>
+      <h4 id={`evidence-title-${index + 1}`}>{chunk.title ?? "Untitled source"}</h4>
+    </div>
+
+    {typeof rawScore === "number" ? (
+      <div className="evidence-support-card" role="region" aria-label={`Retrieval score for passage ${index + 1}`}>
+        <div className="evidence-support-header">
+          <span className="support-meter-title">
+            Uncalibrated {method} score: <strong>{rawScore.toFixed(4)}</strong>
+          </span>
+          <span className="support-meter-disclaimer">Raw ranking score — not a probability</span>
+        </div>
+        <div className="evidence-support-track" aria-hidden="true">
+          <div
+            className="evidence-support-fill"
+            style={{ width: `${meterPercent.toFixed(1)}%` }}
+          />
+        </div>
+        <p className="support-meter-subtext">
+          Relative ranking signal within candidate set. Raw retrieval scores do not represent probability of answer correctness and cannot be compared across different score families.
+        </p>
+      </div>
+    ) : (
+      <div className="evidence-support-card is-empty" role="region" aria-label={`Retrieval score for passage ${index + 1}`}>
+        <span className="support-meter-title">Retrieval score: <span className="missing-value">Unavailable</span></span>
+        <p className="support-meter-subtext">No raw ranking score was recorded for this passage.</p>
+      </div>
+    )}
+
     <dl className="ledger-metadata">{metadata.map(([name, value]) => <div key={name}><dt>{name}</dt><dd><Value value={value} /></dd></div>)}</dl>
     <p>Source offsets: <code>[{chunk.start_char}, {chunk.end_char})</code> · Unicode code points</p>
     {chunk.contains_injection && <p className="evidence-warning">Source flagged as containing injection content. Treat this passage as untrusted data, never instructions.</p>}
@@ -66,6 +120,22 @@ export function DecisionDetails({ result }: { result: QueryResponse }) {
     ["Latency (ms)", result.latency_ms], ["Input tokens", result.token_usage?.input_tokens], ["Output tokens", result.token_usage?.output_tokens], ["Total tokens", result.token_usage?.total_tokens]] as const;
   return <>
     <section className="decision-details" aria-labelledby="assessment-heading"><h3 id="assessment-heading">Evidence assessment</h3>
+      <div className="assessment-badges-grid">
+        <div className="assessment-badge-card">
+          <span className="assessment-badge-label">Relevance Assessment</span>
+          <span className={`assessment-status-badge is-${String(assessment.relevance).toLowerCase()}`}>
+            {assessment.relevance}
+          </span>
+          <span className="assessment-badge-note">Categorical heuristic</span>
+        </div>
+        <div className="assessment-badge-card">
+          <span className="assessment-badge-label">Sufficiency Assessment</span>
+          <span className={`assessment-status-badge is-${String(assessment.sufficiency).toLowerCase()}`}>
+            {assessment.sufficiency}
+          </span>
+          <span className="assessment-badge-note">Categorical heuristic</span>
+        </div>
+      </div>
       <dl className="ledger-metadata"><div><dt>Relevance</dt><dd>{assessment.relevance}</dd></div><div><dt>Sufficiency</dt><dd>{assessment.sufficiency}</dd></div></dl>
       <p>Relevance and sufficiency are separate assessments, not calibrated confidence.</p>
       {assessment.ambiguity_requiring_clarification && <p><strong>Ambiguity:</strong> {assessment.ambiguity_requiring_clarification}</p>}

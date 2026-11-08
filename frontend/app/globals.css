@@ -379,6 +379,239 @@ h2 { font: 700 var(--type-section)/1.1 var(--font-plex-sans), Arial, sans-serif;
 .query-output > [role="status"], .query-output > p { color: var(--muted); }
 .query-output .query-result > :is(p, div) { margin-top: var(--s3); }
 .workbench-footer a:hover { color: var(--positive); }
+
+/* ==========================================================================
+   Enhanced Research Visualizations & Component Ergonomics
+   ========================================================================== */
+
+/* 1. Experiment Status Overview (Experiments Notebook) */
+.experiment-status-overview {
+  background: var(--surface);
+  border: 1px solid var(--stone);
+  border-radius: var(--panel-radius);
+  padding: var(--s4);
+  margin-block: var(--s3) var(--s4);
+}
+.experiment-status-overview.is-empty {
+  padding: var(--s3) var(--s4);
+  border-style: dashed;
+}
+.experiment-status-empty-note {
+  color: var(--muted);
+  font-size: var(--type-sm);
+  margin: 0;
+}
+.status-overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--s3);
+}
+.status-overview-title {
+  font-size: var(--type-sm);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.status-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+}
+.status-chip {
+  background: var(--surface-card);
+  border: 1px solid var(--stone);
+  border-radius: var(--control-radius);
+  padding: var(--s2) var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.status-chip-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.status-chip.is-completed .status-chip-dot { background: var(--accent); }
+.status-chip.is-running .status-chip-dot { background: var(--wave-sea); }
+.status-chip.is-queued .status-chip-dot { background: var(--muted); }
+.status-chip.is-failed .status-chip-dot { background: #d47373; }
+
+.status-chip-name {
+  font-size: var(--type-xs);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+}
+.status-chip-count {
+  font-size: var(--type-sm);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.status-chip-count small {
+  color: var(--muted);
+  font-size: var(--type-xs);
+  font-weight: normal;
+}
+.status-proportional-meter {
+  display: flex;
+  height: 8px;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--stone);
+}
+.meter-slice {
+  height: 100%;
+  transition: width var(--duration-draw) var(--ease);
+}
+.meter-slice.is-completed { background: var(--accent); }
+.meter-slice.is-running { background: var(--wave-sea); }
+.meter-slice.is-queued { background: var(--muted); }
+.meter-slice.is-failed { background: #d47373; }
+
+/* 2. Evidence Support & Retrieval Rank Indicators (Query Lab) */
+.passage-rank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+  border-bottom: 1px solid var(--stone);
+  padding-bottom: var(--s2);
+}
+.passage-rank-header h4 {
+  margin: 0;
+  font-size: var(--type-body);
+  font-weight: 600;
+  color: var(--ink);
+}
+.rank-badge-group {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.retrieval-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--control-radius);
+  background: var(--surface-card);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: var(--type-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.retrieval-method-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--stone);
+  color: var(--muted);
+  font-size: var(--type-xs);
+  font-weight: 500;
+}
+.evidence-support-card {
+  background: var(--surface-card);
+  border: 1px solid var(--stone);
+  border-radius: var(--control-radius);
+  padding: var(--s3);
+  margin-block: var(--s2) var(--s3);
+}
+.evidence-support-card.is-empty {
+  border-style: dashed;
+}
+.evidence-support-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s2);
+}
+.support-meter-title {
+  font-size: var(--type-sm);
+  color: var(--ink);
+}
+.support-meter-disclaimer {
+  font-size: var(--type-xs);
+  color: var(--muted);
+  background: var(--surface-subtle);
+  border: 1px solid var(--stone);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.evidence-support-track {
+  height: 6px;
+  width: 100%;
+  border-radius: 3px;
+  background: var(--stone);
+  overflow: hidden;
+  margin-block: var(--s2);
+}
+.evidence-support-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width var(--duration-draw) var(--ease);
+}
+.support-meter-subtext {
+  font-size: var(--type-xs);
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* 3. Decision Details Categorical Badges */
+.assessment-badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--s3);
+  margin-block: var(--s3);
+}
+.assessment-badge-card {
+  background: var(--surface-card);
+  border: 1px solid var(--stone);
+  border-radius: var(--control-radius);
+  padding: var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+.assessment-badge-label {
+  font-size: var(--type-xs);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.assessment-status-badge {
+  font-size: var(--type-body);
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: capitalize;
+}
+.assessment-status-badge.is-relevant,
+.assessment-status-badge.is-sufficient {
+  color: var(--accent);
+}
+.assessment-status-badge.is-partial {
+  color: var(--wave-sea);
+}
+.assessment-status-badge.is-irrelevant,
+.assessment-status-badge.is-insufficient {
+  color: #d47373;
+}
+.assessment-badge-note {
+  font-size: var(--type-xs);
+  color: var(--muted);
+}
+
 @media (max-width: 1200px) and (min-width: 601px) {
   .masthead { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
   .workspace-links { flex-wrap: wrap; gap: var(--s3) var(--s5); }
