@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import http.client
 import json
+import re
 import threading
 import time
 from collections.abc import Callable
@@ -82,6 +83,8 @@ class LocalHttpTransport:
                 kind = (
                     ProviderErrorKind.CONFIGURATION
                     if response.status == 404
+                    else ProviderErrorKind.INVALID_REQUEST
+                    if response.status in (400, 422)
                     else ProviderErrorKind.TRANSIENT
                 )
                 raise _error(kind, "Local Ollama request failed")
@@ -99,8 +102,21 @@ class LocalHttpTransport:
                 )
             result = json.loads(data)
             if not isinstance(result, dict) or "error" in result:
+                msg = (
+                    str(result.get("error", ""))
+                    if isinstance(result, dict)
+                    else ""
+                )
+                kind = (
+                    ProviderErrorKind.INVALID_REQUEST
+                    if "context" in msg.lower()
+                    else ProviderErrorKind.MALFORMED_RESPONSE
+                )
                 raise _error(
-                    ProviderErrorKind.MALFORMED_RESPONSE, "Invalid Ollama response"
+                    kind,
+                    f"Local Ollama request rejected: {msg}"
+                    if msg
+                    else "Invalid Ollama response",
                 )
             return result
         except TimeoutError:
@@ -196,14 +212,19 @@ class OllamaProvider:
         if not isinstance(details, dict):
             details = {}
         # Context accounting is restricted to the approved Qwen3 family. Include
-        # reported template text as additional conservative framing allowance.
+        # coarse static template text and delimiters as a preflight framing estimate.
+        # Dynamic template directives (loops/conditionals) are stripped so template
+        # source syntax is not counted as tokens; dynamic framing expansions remain
+        # bounded by CONTEXT_OVERHEAD.
         info = shown.get("model_info") or {}
         if not isinstance(info, dict) or info.get("general.architecture") != "qwen3":
             raise _error(
                 ProviderErrorKind.CONFIGURATION,
                 "Only local Qwen3 is verified for context accounting",
             )
-        self._template_allowance = len(str(shown.get("template", "")).encode("utf-8"))
+        template_raw = str(shown.get("template", ""))
+        template_static = re.sub(r"\{\{.*?\}\}", "", template_raw, flags=re.DOTALL)
+        self._template_allowance = len(template_static.encode("utf-8"))
         version = None
         try:
             version = read("GET", "/api/version").get("version")
@@ -278,22 +299,29 @@ class OllamaProvider:
             }
             if request.structured_output is not None:
                 payload["format"] = request.structured_output.schema
-            # One UTF-8 byte per token is a conservative upper bound for Qwen3
-            # byte-level tokenization. Include schema and fixed framing allowance.
-            input_allowance = len(
+            payload_bytes = len(
                 json.dumps(payload, ensure_ascii=False).encode("utf-8")
             )
+            if payload_bytes > MAX_REQUEST_BYTES:
+                raise _error(
+                    ProviderErrorKind.INVALID_REQUEST, "Local request is too large"
+                )
+            # Coarse preflight estimate: in byte-level BPE, prompt tokens typically
+            # average ~3.5-4.5 B/tok for English and structured JSON. 2 bytes per
+            # token provides a preflight estimate to reject obviously oversized
+            # inputs before network dispatch without claiming a guaranteed upper bound.
+            # Exact token limits are enforced post-response from Ollama token counts.
+            prompt_bytes = len(
+                request.system_instruction.encode("utf-8")
+            ) + len(request.user_content.encode("utf-8"))
+            estimated_prompt_tokens = (prompt_bytes + 1) // 2
             if (
-                input_allowance + output_limit + CONTEXT_OVERHEAD
+                estimated_prompt_tokens + output_limit + CONTEXT_OVERHEAD
                 > self.config.context_size
             ):
                 raise _error(
                     ProviderErrorKind.INVALID_REQUEST,
                     "Context budget exceeded; no evidence was truncated",
-                )
-            if input_allowance > MAX_REQUEST_BYTES:
-                raise _error(
-                    ProviderErrorKind.INVALID_REQUEST, "Local request is too large"
                 )
 
             def remaining() -> float:
@@ -304,7 +332,7 @@ class OllamaProvider:
 
             metadata = self._metadata(model, remaining())
             if (
-                input_allowance
+                estimated_prompt_tokens
                 + output_limit
                 + CONTEXT_OVERHEAD
                 + self._template_allowance
